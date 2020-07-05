@@ -1,7 +1,7 @@
 package it.polito.ai.virtuallabs.backend.security;
 
-import it.polito.ai.virtuallabs.backend.entities.Actor;
+import it.polito.ai.virtuallabs.backend.entities.AuthenticatedEntity;
 
-public interface AuthenticatedEntity {
-    Actor get();
+public interface AuthenticatedEntityMapper {
+    AuthenticatedEntity get();
 }

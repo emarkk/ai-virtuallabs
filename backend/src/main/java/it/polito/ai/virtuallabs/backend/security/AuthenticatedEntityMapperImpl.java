@@ -1,16 +1,15 @@
 package it.polito.ai.virtuallabs.backend.security;
 
-import it.polito.ai.virtuallabs.backend.entities.Actor;
+import it.polito.ai.virtuallabs.backend.entities.AuthenticatedEntity;
 import it.polito.ai.virtuallabs.backend.repositories.ProfessorRepository;
 import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.services.InvalidUserException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthenticatedEntityImpl implements AuthenticatedEntity {
+public class AuthenticatedEntityMapperImpl implements AuthenticatedEntityMapper {
 
     @Autowired
     private StudentRepository studentRepository;
@@ -19,7 +18,7 @@ public class AuthenticatedEntityImpl implements AuthenticatedEntity {
     private ProfessorRepository professorRepository;
 
     @Override
-    public Actor get() {
+    public AuthenticatedEntity get() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Long id = Long.parseLong(username.substring(1));
 

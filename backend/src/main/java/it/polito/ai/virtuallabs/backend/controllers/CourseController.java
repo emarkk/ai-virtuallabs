@@ -89,6 +89,8 @@ public class CourseController {
             courseService.enableCourse(courseCode);
         } catch(CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         }
     }
 
@@ -98,6 +100,8 @@ public class CourseController {
             courseService.disableCourse(courseCode);
         } catch(CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         }
     }
 
@@ -116,6 +120,48 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course '" + courseCode + "' is not enabled");
         } catch(StudentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student '" + studentId + "' not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        }
+    }
+
+    @PostMapping("/{code}/professors")
+    public void addProfessor(@PathVariable("code") String courseCode, @RequestBody Map<String, String> input) {
+        if(!input.containsKey("id"))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+
+        Long professorId = Long.parseLong(input.get("id"));
+        try {
+            if(!courseService.inviteProfessor(courseCode, professorId))
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Professor already managing the course");
+        } catch(CourseNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
+        } catch(ProfessorNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor '" + professorId + "' not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        }
+    }
+
+    @PutMapping("/{code}")
+    public void updateOne(@PathVariable("code") String courseCode, @RequestBody CourseDTO courseDTO) {
+        try {
+            courseService.updateCourse(courseCode, courseDTO);
+        } catch(CourseNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        }
+    }
+
+    @DeleteMapping("/{code}")
+    public void deleteOne(@PathVariable("code") String courseCode) {
+        try {
+            courseService.removeCourse(courseCode);
+        } catch(CourseNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         }
     }
 

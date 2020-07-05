@@ -4,7 +4,6 @@ import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
 import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
 
-import java.io.Reader;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +11,9 @@ public interface CourseService {
     boolean addCourse(CourseDTO course);
     Optional<CourseDTO> getCourse(String courseCode);
     List<CourseDTO> getAllCourses();
+    void updateCourse(String courseCode, CourseDTO course);
+    void removeCourse(String courseCode);
+    boolean inviteProfessor(String courseCode, Long professorId);
     List<StudentDTO> getEnrolledStudents(String courseCode);
     List<TeamDTO> getTeams(String courseCode);
     List<StudentDTO> getStudentsInTeams(String courseCode);
