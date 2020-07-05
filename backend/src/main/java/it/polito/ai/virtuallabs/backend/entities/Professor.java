@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Professor {
+public class Professor extends AuthenticatedEntity {
 
     @Id
     private Long id;
