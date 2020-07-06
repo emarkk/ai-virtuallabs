@@ -23,18 +23,20 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
+import { ContainerComponent } from './container/container.component';
 import { SignInComponent } from './auth/signin/signin.component';
 import { SignUpComponent } from './auth/signup/signup.component';
 import { SignUpSuccessComponent } from './auth/signup-success/signup-success.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
+    ContainerComponent,
     SignInComponent,
     SignUpComponent,
-    SignUpSuccessComponent
+    SignUpSuccessComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

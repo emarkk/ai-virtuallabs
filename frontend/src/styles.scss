@@ -1,15 +1,26 @@
+@import url('https://fonts.googleapis.com/css?family=Catamaran:300,500,700');
+
+@import '~@angular/material/theming';
+$custom-typography: mat-typography-config(
+  $font-family: 'Catamaran'
+);
+@include mat-core($custom-typography);
+
 html, body {
   height: 100%;
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Catamaran", "Helvetica Neue", sans-serif !important;
 }
 a {
   color: #ff6647;
 }
 .space-break {
   height: 5vh;
+}
+.fill {
+  flex: 1 1 auto;
 }
 .disable-click {
   pointer-events: none;

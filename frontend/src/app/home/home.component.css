@@ -1,0 +1,32 @@
+h2 {
+  margin: 0;
+  font-weight: 300;
+  font-size: 4em;
+}
+p {
+  font-size: 1.3em;
+}
+.break {
+  height: 3vh;
+}
+.container {
+  height: calc(100% - 64px);
+  background: url('/assets/img/back.png'), radial-gradient(rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.85));
+  background-blend-mode: color-burn;
+}
+.main {
+  width: 60%;
+  margin-left: 20%;
+  padding-top: 8%;
+}
+.right {
+  position: absolute;
+  right: 20%;
+  top: 20vh;
+  width: 64vh;
+  height: 64vh;
+  margin-left: calc(200px - 14vh);
+  background-image: url('/assets/img/home.png');
+  background-size: contain;
+  outline: none;
+}

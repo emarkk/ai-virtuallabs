@@ -1,0 +1,8 @@
+<mat-toolbar color="primary">
+  <mat-icon (click)="menuIconClicked()">menu</mat-icon>
+  <span class="fill"></span>
+  <div class="logo"></div>
+  <span class="fill"></span>
+  <button mat-button (click)="authButtonClicked()">{{ logged ? 'Logout' : 'Sign in' }}</button>
+</mat-toolbar>
+<router-outlet></router-outlet>

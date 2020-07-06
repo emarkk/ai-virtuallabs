@@ -1,0 +1,18 @@
+mat-toolbar {
+  padding: 0 40px;
+}
+mat-toolbar mat-icon, .main-toolbar-title {
+  cursor: pointer;
+}
+.mat-toolbar.mat-primary {
+  background: #232323;
+  color: #fff;
+}
+.logo {
+  cursor: pointer;
+  width: 162px;
+  height: 20px;
+  background-image: url('/assets/img/logo.png');
+  background-size: contain;
+  outline: none;
+}
