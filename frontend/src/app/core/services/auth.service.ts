@@ -23,7 +23,7 @@ export class AuthService {
   login(username: string, password: string): Observable<boolean> {
     return this.http.post(url('auth'), { username, password }, httpOptions).pipe(
       map((x: any) => {
-        this.token = x.accessToken;
+        this.token = x.token;
         this.expiration = Date.now() + ONE_HOUR;
         return true;
       }),

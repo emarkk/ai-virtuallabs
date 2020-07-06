@@ -1,8 +1,12 @@
 <mat-toolbar color="primary">
-  <mat-icon (click)="menuIconClicked()">menu</mat-icon>
-  <span class="fill"></span>
+  <div class="header-left">
+    <mat-icon *ngIf="logged" (click)="menuIconClicked()">menu</mat-icon>
+  </div>
   <div class="logo"></div>
-  <span class="fill"></span>
-  <button mat-button (click)="authButtonClicked()">{{ logged ? 'Logout' : 'Sign in' }}</button>
+  <div class="header-right">
+    <div class="float">
+      <button mat-button (click)="authButtonClicked()">{{ logged ? 'Logout' : 'Sign in' }}</button>
+    </div>
+  </div>
 </mat-toolbar>
 <router-outlet></router-outlet>

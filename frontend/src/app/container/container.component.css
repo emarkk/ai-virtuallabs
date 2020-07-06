@@ -1,8 +1,8 @@
 mat-toolbar {
   padding: 0 40px;
 }
-mat-toolbar mat-icon, .main-toolbar-title {
-  cursor: pointer;
+mat-icon {
+  vertical-align: middle;
 }
 .mat-toolbar.mat-primary {
   background: #232323;
@@ -15,4 +15,10 @@ mat-toolbar mat-icon, .main-toolbar-title {
   background-image: url('/assets/img/logo.png');
   background-size: contain;
   outline: none;
+}
+.header-left, .header-right {
+  width: calc(50% - 81px);
+}
+.float {
+  float: right;
 }

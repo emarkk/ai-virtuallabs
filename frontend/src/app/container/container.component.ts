@@ -19,6 +19,7 @@ export class ContainerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.authService.isLogged());
     this.logged = this.authService.isLogged();
   }
 
