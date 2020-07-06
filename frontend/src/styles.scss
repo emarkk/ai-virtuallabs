@@ -16,6 +16,14 @@ body {
 a {
   color: #ff6647;
 }
+.copyright {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  opacity: 0.3;
+  font-size: 0.85em;
+  text-align: center;
+}
 .space-break {
   height: 5vh;
 }
