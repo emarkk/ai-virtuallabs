@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { AuthService } from '../../core/services/auth.service';
+import { politoUsernameValidator } from '../authUtils';
 
 @Component({
   selector: 'app-signin',
@@ -10,45 +11,56 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrls: ['./signin.component.css']
 })
 export class SignInComponent implements OnInit {
-  submission: Subscription = null;
+  locked: Boolean = false;
+  params: Params = null;
   
-  username = new FormControl({ value: '', disabled: false }, [Validators.required]);
-  password = new FormControl({ value: '', disabled: false }, [Validators.required]);
+  form = new FormGroup({
+    username: new FormControl({ value: '', disabled: false }, [Validators.required, politoUsernameValidator]),
+    password: new FormControl({ value: '', disabled: false }, [Validators.required])
+  });
 
-  constructor(private authService: AuthService) { }
+  constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService) {
+  }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.params = params;
+    });
   }
   
   getUsernameErrorMessage() {
-    if(this.username.hasError('required'))
+    if(this.form.get('username').hasError('required'))
       return 'You must enter a value';
+    if(this.form.get('username').hasError('username'))
+      return 'Not a valid PoliTo username';
   }
   getPasswordErrorMessage() {
-    if(this.password.hasError('required'))
-      return 'You must enter a value';
-    if(this.password.hasError('wrong'))
-      return 'Your email and password do not match any account.';
+    if(this.form.get('password').hasError('required'))
+      return 'You must enter the password';
+    if(this.form.get('password').hasError('wrong'))
+      return 'Your email and password do not match any account';
   }
   lock() {
-    this.username.disable();
-    this.password.disable();
+    this.locked = true;
+    this.form.get('username').disable();
+    this.form.get('password').disable();
   }
   unlock() {
-    this.username.enable();
-    this.password.enable();
+    this.locked = false;
+    this.form.get('username').enable();
+    this.form.get('password').enable();
   }
   loginButtonClicked() {
-    if(this.username.invalid || this.password.invalid || this.submission)
+    if(this.form.get('username').invalid || this.form.get('password').invalid || this.locked)
       return;
 
     this.lock();
-    this.submission = this.authService.login(this.username.value, this.password.value).subscribe(res => {
+    this.authService.login(this.form.get('username').value, this.form.get('password').value).subscribe(res => {
       this.unlock();
       if(res)
-        doSomeThing();
+        this.router.navigate([this.params.redirect || '/']);
       else
-        this.password.setErrors({ wrong: true });
+        this.form.get('password').setErrors({ wrong: true });
     });
   }
 

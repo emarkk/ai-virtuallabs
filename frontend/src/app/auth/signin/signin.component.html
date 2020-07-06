@@ -1,24 +1,24 @@
 <div class="container">
-  <div class="logo"></div>
+  <div class="logo" routerLink="/"></div>
   <p>Sign in to access your VirtualLabs workspace.</p>
-  <form>
+  <form [formGroup]="form">
     <div class="input-container">
       <mat-form-field appearance="legacy">
         <mat-label>Username</mat-label>
-        <input matInput placeholder="PoliTo email or S123456/D12345" [formControl]="username" required>
+        <input matInput placeholder="PoliTo email or S123456/D12345" formControlName="username" required>
         <mat-icon matSuffix>person_outline</mat-icon>
-        <mat-error *ngIf="username.invalid">{{ getUsernameErrorMessage() }}</mat-error>
+        <mat-error *ngIf="form.get('username').invalid">{{ getUsernameErrorMessage() }}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="legacy">
         <mat-label>Password</mat-label>
-        <input matInput type="password" placeholder="Password" [formControl]="password" required>
+        <input matInput type="password" placeholder="Password" formControlName="password" required>
         <mat-icon matSuffix>lock_open</mat-icon>
-        <mat-error *ngIf="password.invalid">{{ getPasswordErrorMessage() }}</mat-error>
+        <mat-error *ngIf="form.get('password').invalid">{{ getPasswordErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>
-    <button mat-flat-button color="primary" (click)="loginButtonClicked()" [class.disable-click]="submission">
-      <span *ngIf="!submission">Login</span>
-      <mat-spinner *ngIf="submission" diameter="20" strokeWidth="2"></mat-spinner>
+    <button mat-flat-button color="primary" (click)="loginButtonClicked()" [class.disable-click]="locked">
+      <span *ngIf="!locked">Sign in</span>
+      <mat-spinner *ngIf="locked" diameter="20" strokeWidth="2"></mat-spinner>
     </button>
   </form>
   <div class="space-break"></div>
