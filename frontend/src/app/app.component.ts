@@ -6,5 +6,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'frontend';
+  title: string = 'ai20-lab05';
+  logged: boolean = false;
+
+  constructor() {
+  }
+
+  ngOnInit(): void {
+  }
+
 }
