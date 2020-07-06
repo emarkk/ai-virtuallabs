@@ -1,0 +1,23 @@
+.container, form, .input-container, mat-form-field {
+  width: 400px;
+}
+p, h2 {
+  text-align: center;
+}
+p {
+  font-weight: 500;
+  font-size: 0.9em;
+}
+mat-icon {
+  color: #ff6647;
+  padding-top: 2px;
+  vertical-align: text-top;
+}
+p.sub {
+  margin-top: 0;
+  font-size: 0.8em;
+}
+.container {
+  margin-left: calc(50% - 200px);
+  padding-top: 20vh;
+}

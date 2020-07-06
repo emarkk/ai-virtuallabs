@@ -26,13 +26,15 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { SignInComponent } from './auth/signin/signin.component';
 import { SignUpComponent } from './auth/signup/signup.component';
+import { SignUpSuccessComponent } from './auth/signup-success/signup-success.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     SignInComponent,
-    SignUpComponent
+    SignUpComponent,
+    SignUpSuccessComponent
   ],
   imports: [
     BrowserModule,

@@ -51,7 +51,7 @@ export class SignInComponent implements OnInit {
     this.form.get('password').enable();
   }
   loginButtonClicked() {
-    if(this.form.get('username').invalid || this.form.get('password').invalid || this.locked)
+    if(this.form.invalid || this.locked)
       return;
 
     this.lock();

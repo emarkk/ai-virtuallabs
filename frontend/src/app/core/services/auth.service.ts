@@ -14,13 +14,14 @@ export class AuthService {
   private token: string = null;
   private expiration: number = null;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   isLogged() {
     return !!this.token && Date.now() < this.expiration;
   }
   login(username: string, password: string): Observable<boolean> {
-    return this.http.post(url('login'), { username, password }, httpOptions).pipe(
+    return this.http.post(url('auth'), { username, password }, httpOptions).pipe(
       map((x: any) => {
         this.token = x.accessToken;
         this.expiration = Date.now() + ONE_HOUR;

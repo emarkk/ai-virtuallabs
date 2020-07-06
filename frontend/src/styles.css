@@ -9,7 +9,7 @@ a {
   color: #ff6647;
 }
 .space-break {
-  height: 60px;
+  height: 5vh;
 }
 .disable-click {
   pointer-events: none;
@@ -17,4 +17,13 @@ a {
 }
 .mat-progress-spinner circle, .mat-spinner circle {
   stroke: #fff;
+}
+.big-logo {
+  cursor: pointer;
+  width: 28vh;
+  height: 17vh;
+  margin-left: calc(200px - 14vh);
+  background-image: url('/assets/img/logo_big.png');
+  background-size: contain;
+  outline: none;
 }
