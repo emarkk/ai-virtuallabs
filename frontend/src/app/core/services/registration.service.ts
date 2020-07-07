@@ -9,7 +9,7 @@ import { url, httpOptions } from '../utils';
   providedIn: 'root'
 })
 export class RegistrationService {
-  registrationSuccessful: Boolean = false;
+  private registrationSuccessful: Boolean = false;
 
   constructor(private http: HttpClient) {
   }

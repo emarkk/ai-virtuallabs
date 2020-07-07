@@ -12,9 +12,8 @@ import { politoEmailValidator, politoMatricolaValidator, politoSignUpFormValidat
   styleUrls: ['./signup.component.css']
 })
 export class SignUpComponent implements OnInit {
-  locked: Boolean = false;
-  
-  form = new FormGroup({
+  private locked: Boolean = false;
+  private form = new FormGroup({
     firstName: new FormControl({ value: '', disabled: false }, [Validators.required]),
     lastName: new FormControl({ value: '', disabled: false }, [Validators.required]),
     matricola: new FormControl({ value: '', disabled: false }, [Validators.required, politoMatricolaValidator]),
@@ -22,7 +21,8 @@ export class SignUpComponent implements OnInit {
     password: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.minLength(6)])
   }, politoSignUpFormValidator);
   
-  constructor(private router: Router, private authService: AuthService, private registrationService: RegistrationService) { }
+  constructor(private router: Router, private authService: AuthService, private registrationService: RegistrationService) {
+  }
 
   ngOnInit(): void {
     if(this.authService.isLogged())

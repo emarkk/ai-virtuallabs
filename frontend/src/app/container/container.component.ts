@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material/sidenav';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../core/services/auth.service';
+import { SideNavService } from '../core/services/sidenav.service';
 
 @Component({
   selector: 'app-container',
@@ -10,12 +10,9 @@ import { AuthService } from '../core/services/auth.service';
   styleUrls: ['./container.component.css']
 })
 export class ContainerComponent implements OnInit {
-  logged: boolean = false;
-  
-  @ViewChild(MatSidenav)
-  matSideNav: MatSidenav;
+  private logged: boolean = false;
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(private router: Router, private authService: AuthService, private sidenavService: SideNavService) {
   }
 
   ngOnInit(): void {
@@ -23,7 +20,7 @@ export class ContainerComponent implements OnInit {
   }
 
   menuIconClicked(): void {
-    this.matSideNav.toggle();
+    this.sidenavService.toggle();
   }
   authButtonClicked(): void {
     if(this.logged) {

@@ -11,8 +11,8 @@ import { politoUsernameValidator } from '../authUtils';
   styleUrls: ['./signin.component.css']
 })
 export class SignInComponent implements OnInit {
-  locked: Boolean = false;
-  params: Params = null;
+  private locked: Boolean = false;
+  private params: Params = null;
   
   form = new FormGroup({
     username: new FormControl({ value: '', disabled: false }, [Validators.required, politoUsernameValidator]),
