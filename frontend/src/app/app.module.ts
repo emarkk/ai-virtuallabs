@@ -39,6 +39,7 @@ import { ProfessorContainerComponent } from './professor/container/container.com
 import { ProfessorHomeComponent } from './professor/home/home.component';
 import { ProfessorCoursesComponent } from './professor/courses/courses.component';
 import { ProfessorCourseDetailComponent } from './professor/course-detail/course-detail.component';
+import { ProfessorNewCourseComponent } from './professor/new-course/new-course.component';
 import { StudentContainerComponent } from './student/container/container.component';
 import { StudentHomeComponent } from './student/home/home.component';
 
@@ -59,6 +60,7 @@ import { StudentHomeComponent } from './student/home/home.component';
     ProfessorContainerComponent,
     ProfessorHomeComponent,
     ProfessorCoursesComponent,
+    ProfessorNewCourseComponent,
     ProfessorCourseDetailComponent,
     StudentContainerComponent,
     StudentHomeComponent

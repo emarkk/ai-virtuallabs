@@ -4,3 +4,6 @@ export const navHome = {
 export const navCourses = {
     name: 'Courses', link: '/professor/courses'
 };
+export const navNewCourse = {
+    name: 'New course'
+};

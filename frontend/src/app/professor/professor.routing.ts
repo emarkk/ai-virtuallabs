@@ -4,6 +4,7 @@ import { AuthGuard } from '../core/guards/auth.guard';
 import { ProfessorContainerComponent } from './container/container.component';
 import { ProfessorHomeComponent } from './home/home.component';
 import { ProfessorCoursesComponent } from './courses/courses.component';
+import { ProfessorNewCourseComponent } from './new-course/new-course.component';
 
 export const professorRouting = [
   {
@@ -23,7 +24,11 @@ export const professorRouting = [
       },
       {
         path: 'courses',
-        component: ProfessorCoursesComponent
+        component: ProfessorCoursesComponent,
+      },
+      {
+        path: 'courses/new',
+        component: ProfessorNewCourseComponent,
       }
     ]
   }
