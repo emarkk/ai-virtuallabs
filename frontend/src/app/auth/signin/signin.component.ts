@@ -23,6 +23,9 @@ export class SignInComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if(this.authService.isLogged())
+      this.router.navigate(['/']);
+    
     this.route.queryParams.subscribe(params => {
       this.params = params;
     });

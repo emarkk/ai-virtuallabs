@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { AuthService } from 'src/app/core/services/auth.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { politoEmailValidator, politoMatricolaValidator, politoSignUpFormValidator } from '../authUtils';
 
@@ -21,9 +22,11 @@ export class SignUpComponent implements OnInit {
     password: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.minLength(6)])
   }, politoSignUpFormValidator);
   
-  constructor(private router: Router, private registrationService: RegistrationService) { }
+  constructor(private router: Router, private authService: AuthService, private registrationService: RegistrationService) { }
 
   ngOnInit(): void {
+    if(this.authService.isLogged())
+      this.router.navigate(['/']);
   }
   
   getFormErrorMessage() {

@@ -11,27 +11,25 @@ const ONE_HOUR = 60*60*1000;
   providedIn: 'root'
 })
 export class AuthService {
-  private token: string = null;
-  private expiration: number = null;
 
   constructor(private http: HttpClient) {
   }
 
   isLogged() {
-    return !!this.token && Date.now() < this.expiration;
+    const { token, expiration } = this.getToken();
+    return !!token && Date.now() < expiration;
   }
   login(username: string, password: string): Observable<boolean> {
     return this.http.post(url('auth'), { username, password }, httpOptions).pipe(
       map((x: any) => {
-        this.token = x.token;
-        this.expiration = Date.now() + ONE_HOUR;
+        this.setToken(x.token, Date.now() + ONE_HOUR);
         return true;
       }),
       catchError(error => of(false))
     );
   }
   logout(): void {
-    this.token = null;
+    this.setToken(null, null);
   }
   authorizeRequest(request: HttpRequest<any>): HttpRequest<any> {
     if(!this.isLogged())
@@ -39,9 +37,18 @@ export class AuthService {
 
     return request.clone({
       setHeaders: {
-        Authorization: 'Bearer ' + this.token
+        Authorization: 'Bearer ' + this.getToken().token
       }
     });
+  }
+  getToken(): { token: string, expiration: number } {
+    const token = localStorage.getItem('jwt_token');
+    const expiration = parseInt(localStorage.getItem('jwt_expiration'));
+    return { token, expiration };
+  }
+  setToken(token: string, expiration: number): void {
+    localStorage.setItem('jwt_token', token);
+    localStorage.setItem('jwt_expiration', expiration.toString());
   }
 
 }
