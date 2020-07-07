@@ -28,6 +28,10 @@ import { SignInComponent } from './auth/signin/signin.component';
 import { SignUpComponent } from './auth/signup/signup.component';
 import { SignUpSuccessComponent } from './auth/signup-success/signup-success.component';
 import { HomeComponent } from './home/home.component';
+import { ProfessorContainerComponent } from './professor/container/container.component';
+import { ProfessorHomeComponent } from './professor/home/home.component';
+import { StudentContainerComponent } from './student/container/container.component';
+import { StudentHomeComponent } from './student/home/home.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +40,11 @@ import { HomeComponent } from './home/home.component';
     SignInComponent,
     SignUpComponent,
     SignUpSuccessComponent,
-    HomeComponent
+    HomeComponent,
+    ProfessorContainerComponent,
+    ProfessorHomeComponent,
+    StudentContainerComponent,
+    StudentHomeComponent
   ],
   imports: [
     BrowserModule,

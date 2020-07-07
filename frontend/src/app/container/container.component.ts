@@ -19,7 +19,6 @@ export class ContainerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.authService.isLogged());
     this.logged = this.authService.isLogged();
   }
 
@@ -30,7 +29,8 @@ export class ContainerComponent implements OnInit {
     if(this.logged) {
       this.logged = false;
       this.authService.logout();
+      this.router.navigate(['/']);
     } else
-      this.router.navigate(['/signin'])
+      this.router.navigate(['/signin']);
   }
 }

@@ -19,6 +19,15 @@ export class AuthService {
     const { token, expiration } = this.getToken();
     return !!token && Date.now() < expiration;
   }
+  getUserData() {
+    const { token, expiration } = this.getToken();
+
+    if(!token || Date.now() >= expiration)
+      return null;
+
+    const data = JSON.parse(atob(token.split('.')[1]));
+    return { username: data.sub, roles: data.roles };
+  }
   login(username: string, password: string): Observable<boolean> {
     return this.http.post(url('auth'), { username, password }, httpOptions).pipe(
       map((x: any) => {
@@ -29,7 +38,7 @@ export class AuthService {
     );
   }
   logout(): void {
-    this.setToken(null, null);
+    this.deleteToken();
   }
   authorizeRequest(request: HttpRequest<any>): HttpRequest<any> {
     if(!this.isLogged())
@@ -41,14 +50,17 @@ export class AuthService {
       }
     });
   }
-  getToken(): { token: string, expiration: number } {
+  private getToken(): { token: string, expiration: number } {
     const token = localStorage.getItem('jwt_token');
     const expiration = parseInt(localStorage.getItem('jwt_expiration'));
     return { token, expiration };
   }
-  setToken(token: string, expiration: number): void {
+  private setToken(token: string, expiration: number): void {
     localStorage.setItem('jwt_token', token);
     localStorage.setItem('jwt_expiration', expiration.toString());
   }
-
+  private deleteToken(): void {
+    localStorage.removeItem('jwt_token');
+    localStorage.removeItem('jwt_expiration');
+  }
 }
