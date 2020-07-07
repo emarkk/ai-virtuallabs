@@ -6,6 +6,10 @@ $custom-typography: mat-typography-config(
 );
 @include mat-core($custom-typography);
 
+mat-icon {
+  padding-top: 6px;
+  vertical-align: text-top;
+}
 html, body {
   height: 100%;
 }

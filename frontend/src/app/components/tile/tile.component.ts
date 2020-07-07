@@ -6,10 +6,18 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./tile.component.css']
 })
 export class TileComponent implements OnInit {
-  tileTitle: String = null;
+  tileIcon: string;
+  tileTitle: string;
+  tileTitleLink: string;
 
-  @Input() set title(value: String) {
+  @Input() set icon(name: string) {
+    this.tileIcon = name;
+  }
+  @Input() set title(value: string) {
     this.tileTitle = value;
+  }
+  @Input() set titleLink(value: string) {
+    this.tileTitleLink = value;
   }
 
   constructor() {

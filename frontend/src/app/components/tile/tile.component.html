@@ -1,4 +1,13 @@
 <div class="tile">
-  <h2 *ngIf="tileTitle" class="title">{{ tileTitle }}</h2>
+  <h2 *ngIf="tileTitle && !tileTitleLink" class="title">
+    <mat-icon *ngIf="tileIcon">{{ tileIcon }}</mat-icon>
+    {{ tileTitle }}
+  </h2>
+  <a *ngIf="tileTitle && tileTitleLink" [routerLink]="tileTitleLink">
+    <h2 class="title">
+      <mat-icon *ngIf="tileIcon">{{ tileIcon }}</mat-icon>
+      {{ tileTitle }}
+    </h2>
+  </a>
   <ng-content></ng-content>
 </div>

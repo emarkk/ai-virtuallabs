@@ -1,7 +1,8 @@
 <div class="container">
   <app-page>
     <app-welcome></app-welcome>
-    <app-tile title="Courses">
+    <app-tile title="Courses" titleLink="/professor/courses" icon="library_books">
+      <app-course-list [courses]="courses"></app-course-list>
     </app-tile>
   </app-page>
 </div>

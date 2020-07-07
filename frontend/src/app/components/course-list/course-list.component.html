@@ -1,0 +1,6 @@
+<div class="course-list">
+  <div *ngFor="let course of courseList">
+    <app-course-item></app-course-item>
+  </div>
+  <p *ngIf="!courseList.length" class="empty">No courses to show.</p>
+</div>

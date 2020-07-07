@@ -1,5 +1,9 @@
-.page {
-  width: 960px;
-  margin: 50px auto;
-  padding: 20px;
+* {
+  font-size: 0.95em;
+}
+a {
+  color: #000;
+}
+.sep {
+  padding: 0 6px;
 }

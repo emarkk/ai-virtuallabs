@@ -27,6 +27,8 @@ import { PageComponent } from './components/page/page.component';
 import { TileComponent } from './components/tile/tile.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
+import { CourseItemComponent } from './components/course-item/course-item.component';
+import { CourseListComponent } from './components/course-list/course-list.component';
 
 import { ContainerComponent } from './container/container.component';
 import { SignInComponent } from './auth/signin/signin.component';
@@ -36,6 +38,7 @@ import { HomeComponent } from './home/home.component';
 import { ProfessorContainerComponent } from './professor/container/container.component';
 import { ProfessorHomeComponent } from './professor/home/home.component';
 import { ProfessorCoursesComponent } from './professor/courses/courses.component';
+import { ProfessorCourseDetailComponent } from './professor/course-detail/course-detail.component';
 import { StudentContainerComponent } from './student/container/container.component';
 import { StudentHomeComponent } from './student/home/home.component';
 
@@ -46,6 +49,8 @@ import { StudentHomeComponent } from './student/home/home.component';
     TileComponent,
     WelcomeComponent,
     NavigationComponent,
+    CourseItemComponent,
+    CourseListComponent,
     ContainerComponent,
     SignInComponent,
     SignUpComponent,
@@ -54,6 +59,7 @@ import { StudentHomeComponent } from './student/home/home.component';
     ProfessorContainerComponent,
     ProfessorHomeComponent,
     ProfessorCoursesComponent,
+    ProfessorCourseDetailComponent,
     StudentContainerComponent,
     StudentHomeComponent
   ],
