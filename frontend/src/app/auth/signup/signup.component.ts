@@ -12,8 +12,8 @@ import { politoEmailValidator, politoMatricolaValidator, politoSignUpFormValidat
   styleUrls: ['./signup.component.css']
 })
 export class SignUpComponent implements OnInit {
-  private locked: Boolean = false;
-  private form = new FormGroup({
+  locked: boolean = false;
+  form = new FormGroup({
     firstName: new FormControl({ value: '', disabled: false }, [Validators.required]),
     lastName: new FormControl({ value: '', disabled: false }, [Validators.required]),
     matricola: new FormControl({ value: '', disabled: false }, [Validators.required, politoMatricolaValidator]),

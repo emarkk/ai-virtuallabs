@@ -23,6 +23,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppComponent } from './app.component';
+import { PageComponent } from './components/page/page.component';
+import { TileComponent } from './components/tile/tile.component';
+import { NavigationComponent } from './components/navigation/navigation.component';
+import { WelcomeComponent } from './components/welcome/welcome.component';
+
 import { ContainerComponent } from './container/container.component';
 import { SignInComponent } from './auth/signin/signin.component';
 import { SignUpComponent } from './auth/signup/signup.component';
@@ -30,12 +35,17 @@ import { SignUpSuccessComponent } from './auth/signup-success/signup-success.com
 import { HomeComponent } from './home/home.component';
 import { ProfessorContainerComponent } from './professor/container/container.component';
 import { ProfessorHomeComponent } from './professor/home/home.component';
+import { ProfessorCoursesComponent } from './professor/courses/courses.component';
 import { StudentContainerComponent } from './student/container/container.component';
 import { StudentHomeComponent } from './student/home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    PageComponent,
+    TileComponent,
+    WelcomeComponent,
+    NavigationComponent,
     ContainerComponent,
     SignInComponent,
     SignUpComponent,
@@ -43,6 +53,7 @@ import { StudentHomeComponent } from './student/home/home.component';
     HomeComponent,
     ProfessorContainerComponent,
     ProfessorHomeComponent,
+    ProfessorCoursesComponent,
     StudentContainerComponent,
     StudentHomeComponent
   ],

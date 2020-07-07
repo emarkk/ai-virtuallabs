@@ -26,7 +26,7 @@ export class AuthService {
       return null;
 
     const data = JSON.parse(atob(token.split('.')[1]));
-    return { username: data.sub, roles: data.roles };
+    return { username: data.sub, id: parseInt(data.sub.substring(1)), roles: data.roles };
   }
   login(username: string, password: string): Observable<boolean> {
     return this.http.post(url('auth'), { username, password }, httpOptions).pipe(

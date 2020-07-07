@@ -1,7 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material/sidenav';
-
-import { SideNavService } from 'src/app/core/services/sidenav.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-professor-container',
@@ -10,16 +7,10 @@ import { SideNavService } from 'src/app/core/services/sidenav.service';
 })
 export class ProfessorContainerComponent implements OnInit {
 
-  @ViewChild(MatSidenav)
-  private matSideNav: MatSidenav;
-
-  constructor(private sidenavService: SideNavService) {
+  constructor() {
   }
 
   ngOnInit(): void {
-    this.sidenavService.get().subscribe(() => {
-      this.matSideNav.toggle();
-    });
   }
 
 }

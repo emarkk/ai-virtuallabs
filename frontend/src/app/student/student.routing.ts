@@ -1,4 +1,4 @@
-import { Role } from '../core/models/role';
+import { Role } from '../core/models/role.enum';
 import { AuthGuard } from '../core/guards/auth.guard';
 
 import { StudentContainerComponent } from './container/container.component';

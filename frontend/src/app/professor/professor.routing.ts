@@ -1,8 +1,9 @@
-import { Role } from '../core/models/role';
+import { Role } from '../core/models/role.enum';
 import { AuthGuard } from '../core/guards/auth.guard';
 
 import { ProfessorContainerComponent } from './container/container.component';
 import { ProfessorHomeComponent } from './home/home.component';
+import { ProfessorCoursesComponent } from './courses/courses.component';
 
 export const professorRouting = [
   {
@@ -19,6 +20,10 @@ export const professorRouting = [
       {
         path: 'home',
         component: ProfessorHomeComponent
+      },
+      {
+        path: 'courses',
+        component: ProfessorCoursesComponent
       }
     ]
   }

@@ -9,20 +9,20 @@ import { url, httpOptions } from '../utils';
   providedIn: 'root'
 })
 export class RegistrationService {
-  private registrationSuccessful: Boolean = false;
+  private registrationSuccessful: boolean = false;
 
   constructor(private http: HttpClient) {
   }
 
-  public hasRegisteredSuccessfully(): Boolean {
+  public hasRegisteredSuccessfully(): boolean {
     return this.registrationSuccessful;
   }
 
-  public setRegistrationSuccessful(value: Boolean) {
+  public setRegistrationSuccessful(value: boolean) {
     this.registrationSuccessful = value;
   }
 
-  public signup(firstName: String, lastName: String, matricola: String, email: String, password: String): Observable<Boolean> {
+  public signup(firstName: String, lastName: String, matricola: String, email: String, password: String): Observable<boolean> {
     return this.http.post(url('signup'),{ firstName, lastName, id: parseInt(matricola.substring(1)), email, password }, httpOptions).pipe(
       map(_ => true),
       catchError(error => of(false))

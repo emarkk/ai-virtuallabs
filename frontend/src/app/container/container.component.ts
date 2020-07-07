@@ -10,7 +10,7 @@ import { SideNavService } from '../core/services/sidenav.service';
   styleUrls: ['./container.component.css']
 })
 export class ContainerComponent implements OnInit {
-  private logged: boolean = false;
+  logged: boolean = false;
 
   constructor(private router: Router, private authService: AuthService, private sidenavService: SideNavService) {
   }
