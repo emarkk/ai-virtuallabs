@@ -81,8 +81,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Optional<CourseDTO> getCourse(String courseCode) {
-        Optional<Course> courseOpt = courseRepository.findById(courseCode);
-        return courseOpt.map(c -> modelMapper.map(c, CourseDTO.class));
+        Optional<Course> courseOptional = courseRepository.findById(courseCode);
+        return courseOptional.map(c -> modelMapper.map(c, CourseDTO.class));
     }
 
     @Override

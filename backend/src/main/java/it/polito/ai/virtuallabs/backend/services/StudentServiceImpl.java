@@ -35,8 +35,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Optional<StudentDTO> getStudent(Long studentId) {
-        Optional<Student> studentOpt = studentRepository.findById(studentId);
-        return studentOpt.map(s -> modelMapper.map(s, StudentDTO.class));
+        Optional<Student> studentOptional = studentRepository.findById(studentId);
+        return studentOptional.map(s -> modelMapper.map(s, StudentDTO.class));
     }
 
     @Override
