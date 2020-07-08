@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import { Course } from '../models/course.model';
+import { Professor } from '../models/professor.model';
 
 import { url, httpOptions } from '../utils';
 
@@ -29,6 +30,12 @@ export class CourseService {
   get(code: string): Observable<Course> {
     return this.http.get<Course>(url('courses/' + code)).pipe(
       map(x => new Course(x.code, x.name, x.acronym, x.minTeamMembers, x.maxTeamMembers, x.enabled)),
+      catchError(error => of(null))
+    );
+  }
+  getProfessors(code: string): Observable<Professor[]> {
+    return this.http.get<Professor[]>(url('courses/' + code + '/professors')).pipe(
+      map(arr => arr.map(x => new Professor(x.id, x.firstName, x.lastName, x.email, x.picturePath))),
       catchError(error => of(null))
     );
   }

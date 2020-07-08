@@ -1,6 +1,31 @@
 <div class="container">
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
-    <h1>{{ course.code + ' - ' + course.name }}</h1>
+    <div class="head">
+      <div class="title">
+        <h1>{{ course.code + ' - ' + course.name }}</h1>
+      </div>
+      <div class="status">
+        active
+      </div>
+    </div>
+    <table class="info">
+      <tr>
+        <td>Professors</td>
+        <td>
+          <div *ngFor="let professor of professors" class="professor">
+            <span><b>{{ professor.lastName.toUpperCase() }}</b></span><span>, {{ professor.firstName }}</span>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Students enrolled</td>
+        <td><b>150</b></td>
+      </tr>
+      <tr>
+        <td>Team size constraints</td>
+        <td><i>min&emsp;</i><b>{{ course.minTeamMembers }}</b><span class="sep"></span><i>max&emsp;</i><b>{{ course.maxTeamMembers }}</b></td>
+      </tr>
+    </table>
   </app-page>
 </div>
