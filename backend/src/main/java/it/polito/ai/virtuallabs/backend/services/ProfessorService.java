@@ -1,6 +1,7 @@
 package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
+import it.polito.ai.virtuallabs.backend.dtos.ProfessorDTO;
 
 import java.util.List;
 import java.util.Optional;

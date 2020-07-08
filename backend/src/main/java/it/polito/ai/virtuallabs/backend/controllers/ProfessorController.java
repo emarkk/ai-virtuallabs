@@ -1,6 +1,7 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
 import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
+import it.polito.ai.virtuallabs.backend.dtos.ProfessorDTO;
 import it.polito.ai.virtuallabs.backend.services.ProfessorNotFoundException;
 import it.polito.ai.virtuallabs.backend.services.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;

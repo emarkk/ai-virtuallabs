@@ -1,6 +1,7 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
 import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
+import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
