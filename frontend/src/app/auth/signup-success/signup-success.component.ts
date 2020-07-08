@@ -16,7 +16,6 @@ export class SignUpSuccessComponent implements OnInit {
   ngOnInit(): void {
     if(!this.registrationService.hasRegisteredSuccessfully())
       this.router.navigate(['/']);
-    this.registrationService.setRegistrationSuccessful(false);
   }
 
 }

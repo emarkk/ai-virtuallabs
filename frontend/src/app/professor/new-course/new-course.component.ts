@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { navHome, navCourses, navNewCourse } from '../professor.navdata';
+import { Router } from '@angular/router';
+import { CourseService } from 'src/app/core/services/course.service';
+import { CourseFormComponent } from 'src/app/components/course-form/course-form.component';
 
 @Component({
   selector: 'app-professor-new-course',
@@ -13,12 +16,28 @@ export class ProfessorNewCourseComponent implements OnInit {
     navCourses,
     navNewCourse
   ];
+  
+  @ViewChild(CourseFormComponent)
+  formComponent: CourseFormComponent;
 
-  constructor() {
+  constructor(private router: Router, private courseService: CourseService) {
   }
 
   ngOnInit(): void {
 
+  }
+
+  saveCourse(courseData) {
+    this.formComponent.lock();
+    const { code, name, acronym, minTeamMembers, maxTeamMembers, enabled } = courseData;
+    this.courseService.add(code, name, acronym, minTeamMembers, maxTeamMembers, enabled).subscribe(res => {
+      this.formComponent.unlock();
+      if(res) {
+        this.courseService.hasInsertedSuccessfully();
+        this.router.navigate(['/professor/courses?insertionSuccess']);
+      } else
+        this.formComponent.form.setErrors({ error: true });
+    });
   }
 
 }

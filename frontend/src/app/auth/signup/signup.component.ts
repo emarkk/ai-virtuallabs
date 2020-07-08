@@ -81,7 +81,7 @@ export class SignUpComponent implements OnInit {
     this.registrationService.signup(firstName, lastName, matricola, email, password).subscribe(res => {
       this.unlock();
       if(res) {
-        this.registrationService.setRegistrationSuccessful(true);
+        this.registrationService.registrationSuccessful();
         this.router.navigate(['/signup/success']);
       } else {
         this.form.setErrors({ error: true });

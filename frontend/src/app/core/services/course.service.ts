@@ -11,8 +11,19 @@ import { url, httpOptions } from '../utils';
   providedIn: 'root'
 })
 export class CourseService {
+  private _insertionSuccessful: boolean = false;
   
   constructor(private http: HttpClient) {
+  }
+
+  public hasInsertedSuccessfully(): boolean {
+    const value = this._insertionSuccessful;
+    this._insertionSuccessful = false;
+    return value;
+  }
+
+  public insertionSuccessful() {
+    this._insertionSuccessful = true;
   }
 
   add(code: string, name: string, acronym: string, minTeamMembers: number, maxTeamMembers: number, enabled: boolean): Observable<boolean> {

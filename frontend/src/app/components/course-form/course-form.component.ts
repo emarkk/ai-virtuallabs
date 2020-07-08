@@ -1,8 +1,5 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-
-import { CourseService } from 'src/app/core/services/course.service';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 @Component({
@@ -23,7 +20,9 @@ export class CourseFormComponent implements OnInit {
   @ViewChild(MatSlideToggle)
   enableSwitch: MatSlideToggle;
 
-  constructor(private router: Router, private courseService: CourseService) {
+  @Output() update = new EventEmitter<object>();
+
+  constructor() {
   }
 
   ngOnInit(): void {
@@ -64,8 +63,6 @@ export class CourseFormComponent implements OnInit {
   saveButtonClicked() {
     if(this.form.invalid || this.locked)
       return;
-
-    this.lock();
     
     const code = this.form.get('code').value;
     const name = this.form.get('name').value;
@@ -74,12 +71,6 @@ export class CourseFormComponent implements OnInit {
     const maxTeamMembers = this.form.get('maxTeamMembers').value;
     const enabled = this.enableSwitch.checked;
 
-    this.courseService.add(code, name, acronym, minTeamMembers, maxTeamMembers, enabled).subscribe(res => {
-      this.unlock();
-      if(res)
-        this.router.navigate(['/professor/courses?insertionSuccess']);
-      else
-        this.form.setErrors({ error: true });
-    });
+    this.update.emit({ data: { code, name, acronym, minTeamMembers, maxTeamMembers, enabled } });
   }
 }

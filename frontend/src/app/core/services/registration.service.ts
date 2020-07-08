@@ -9,17 +9,19 @@ import { url, httpOptions } from '../utils';
   providedIn: 'root'
 })
 export class RegistrationService {
-  private registrationSuccessful: boolean = false;
+  private _registrationSuccessful: boolean = false;
 
   constructor(private http: HttpClient) {
   }
 
   public hasRegisteredSuccessfully(): boolean {
-    return this.registrationSuccessful;
+    const value = this._registrationSuccessful;
+    this._registrationSuccessful = false;
+    return value;
   }
 
-  public setRegistrationSuccessful(value: boolean) {
-    this.registrationSuccessful = value;
+  public registrationSuccessful() {
+    this._registrationSuccessful = true;
   }
 
   public signup(firstName: String, lastName: String, matricola: String, email: String, password: String): Observable<boolean> {
