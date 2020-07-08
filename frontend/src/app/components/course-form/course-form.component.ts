@@ -1,5 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { CourseService } from 'src/app/core/services/course.service';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-course-form',
@@ -9,21 +13,73 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class CourseFormComponent implements OnInit {
   locked: boolean = false;
   form = new FormGroup({
-    firstName: new FormControl({ value: '', disabled: false }, [Validators.required]),
-    lastName: new FormControl({ value: '', disabled: false }, [Validators.required]),
-    matricola: new FormControl({ value: '', disabled: false }, [Validators.required]),
-    email: new FormControl({ value: '', disabled: false }, [Validators.required]),
-    password: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.minLength(6)])
+    code: new FormControl({ value: '', disabled: false }, [Validators.required]),
+    name: new FormControl({ value: '', disabled: false }, [Validators.required]),
+    acronym: new FormControl({ value: '', disabled: false }, [Validators.required]),
+    minTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required]),
+    maxTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required])
   });
 
-  constructor() {
+  @ViewChild(MatSlideToggle)
+  enableSwitch: MatSlideToggle;
+
+  constructor(private router: Router, private courseService: CourseService) {
   }
 
   ngOnInit(): void {
   }
 
-  saveButtonClicked() {
-    
+  getFormErrorMessage() {
+    if(this.form.hasError('error'))
+      return 'An error occurred.';
   }
+  getCodeErrorMessage() {
+    if(this.form.get('code').hasError('required'))
+      return 'You must enter the course code';
+  }
+  getNameErrorMessage() {
+    if(this.form.get('name').hasError('required'))
+      return 'You must enter the course name';
+  }
+  getAcronymErrorMessage() {
+    if(this.form.get('acronym').hasError('required'))
+      return 'You must enter the course acronym';
+  }
+  getMinTeamMembersErrorMessage() {
+    if(this.form.get('minTeamMembers').hasError('required'))
+      return 'You must enter the minimum number of team members';
+  }
+  getMaxTeamMembersErrorMessage() {
+    if(this.form.get('maxTeamMembers').hasError('required'))
+      return 'You must enter the maximum number of team members';
+  }
+  lock() {
+    this.locked = true;
+    this.form.disable();
+  }
+  unlock() {
+    this.locked = false;
+    this.form.enable();
+  }
+  saveButtonClicked() {
+    if(this.form.invalid || this.locked)
+      return;
 
+    this.lock();
+    
+    const code = this.form.get('code').value;
+    const name = this.form.get('name').value;
+    const acronym = this.form.get('acronym').value;
+    const minTeamMembers = this.form.get('minTeamMembers').value;
+    const maxTeamMembers = this.form.get('maxTeamMembers').value;
+    const enabled = this.enableSwitch.checked;
+
+    this.courseService.add(code, name, acronym, minTeamMembers, maxTeamMembers, enabled).subscribe(res => {
+      this.unlock();
+      if(res)
+        this.router.navigate(['/professor/courses?insertionSuccess']);
+      else
+        this.form.setErrors({ error: true });
+    });
+  }
 }

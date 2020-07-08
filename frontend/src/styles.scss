@@ -41,9 +41,35 @@ a {
 .mat-progress-spinner circle, .mat-spinner circle {
   stroke: #fff;
 }
+.mat-flat-button {
+  width: 120px;
+}
 .mat-flat-button[color="brand"] {
   background: #ff6647;
   color: #fff;
+}
+mat-form-field.half {
+  width: 47%;
+}
+mat-form-field.third {
+  width: 29.3%;
+}
+mat-form-field.fraction:not(.first) {
+  margin-left: 6%;
+}
+mat-form-field {
+  margin: 6px 0;
+}
+form mat-form-field, form input {
+  width: 100%;
+}
+.error-box:not(:empty) {
+  padding: 10px;
+  color: #da3125;
+  background: #f8d7da;
+  border-radius: 8px;
+  border: 1px solid #f5c6cb;
+  margin-bottom: 30px;
 }
 .big-logo {
   cursor: pointer;
@@ -57,4 +83,10 @@ a {
 .controls {
   margin-top: 3em;
   text-align: center;
+}
+.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+  background: #ffaa99;
+}
+.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+  background: #ff6647;
 }

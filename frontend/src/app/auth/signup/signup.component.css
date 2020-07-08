@@ -1,14 +1,5 @@
-.container, form, .input-container, mat-form-field {
+.container, form, .input-container {
   width: 400px;
-}
-mat-form-field.half {
-  width: 190px;
-}
-mat-form-field.right-half {
-  margin-left: 20px;
-}
-mat-form-field {
-  margin: 6px 0;
 }
 app-async-button {
   margin: 30px 0 0 140px;
@@ -18,9 +9,6 @@ p {
   font-weight: 500;
   font-size: 0.9em;
   margin-bottom: 40px;
-}
-input {
-  width: 100%;
 }
 .container {
   margin-left: calc(50% - 200px);

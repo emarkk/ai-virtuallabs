@@ -1,23 +1,37 @@
 <div class="container">
   <form [formGroup]="form">
+    <mat-error *ngIf="form.invalid" class="error-box">{{ getFormErrorMessage() }}</mat-error>
     <div class="input-container">
-      <mat-form-field class="half" appearance="legacy">
-        <mat-label>First name</mat-label>
-        <input matInput formControlName="firstName" required>
-        <mat-error *ngIf="form.get('firstName').invalid"></mat-error>
+      <mat-form-field class="fraction third first" appearance="legacy">
+        <mat-label>Code</mat-label>
+        <input matInput placeholder="02JGROV" formControlName="code" required>
+        <mat-error *ngIf="form.get('code').invalid">{{ getCodeErrorMessage() }}</mat-error>
       </mat-form-field>
-      <mat-form-field class="half right-half" appearance="legacy">
-        <mat-label>Last name</mat-label>
-        <input matInput formControlName="lastName" required>
-        <mat-error *ngIf="form.get('lastName').invalid"></mat-error>
+      <mat-form-field class="fraction third" appearance="legacy">
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Applicazioni Internet" formControlName="name" required>
+        <mat-error *ngIf="form.get('name').invalid">{{ getNameErrorMessage() }}</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="legacy">
-        <mat-label>Matricola</mat-label>
-        <input matInput placeholder="S123456 or D12345" formControlName="matricola" required>
-        <mat-icon matSuffix>person_outline</mat-icon>
-        <mat-error *ngIf="form.get('matricola').invalid"></mat-error>
+      <mat-form-field class="fraction third" appearance="legacy">
+        <mat-label>Acronym</mat-label>
+        <input matInput placeholder="AI" formControlName="acronym" required>
+        <mat-error *ngIf="form.get('acronym').invalid">{{ getAcronymErrorMessage() }}</mat-error>
       </mat-form-field>
+      <mat-form-field class="fraction third first" appearance="legacy">
+        <mat-label>Minimum team members</mat-label>
+        <input matInput placeholder="3" formControlName="minTeamMembers" required>
+        <mat-error *ngIf="form.get('minTeamMembers').invalid">{{ getMinTeamMembersErrorMessage() }}</mat-error>
+      </mat-form-field>
+      <mat-form-field class="fraction third" appearance="legacy">
+        <mat-label>Maximum team members</mat-label>
+        <input matInput placeholder="6" formControlName="maxTeamMembers" required>
+        <mat-error *ngIf="form.get('maxTeamMembers').invalid">{{ getMaxTeamMembersErrorMessage() }}</mat-error>
+      </mat-form-field>
+      <mat-slide-toggle [disabled]="locked">Enabled</mat-slide-toggle>
     </div>
-    <app-async-button (click)="saveButtonClicked()" [loading]="locked">Save</app-async-button>
+    <div class="actions">
+      <button mat-flat-button routerLink="/professor/courses">Cancel</button>
+      <app-async-button (click)="saveButtonClicked()" [loading]="locked">Save</app-async-button>
+    </div>
   </form>
 </div>

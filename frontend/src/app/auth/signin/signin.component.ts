@@ -45,13 +45,11 @@ export class SignInComponent implements OnInit {
   }
   lock() {
     this.locked = true;
-    this.form.get('username').disable();
-    this.form.get('password').disable();
+    this.form.disable();
   }
   unlock() {
     this.locked = false;
-    this.form.get('username').enable();
-    this.form.get('password').enable();
+    this.form.enable();
   }
   loginButtonClicked() {
     if(this.form.invalid || this.locked)

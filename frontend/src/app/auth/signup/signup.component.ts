@@ -60,9 +60,11 @@ export class SignUpComponent implements OnInit {
   }
   lock() {
     this.locked = true;
+    this.form.disable();
   }
   unlock() {
     this.locked = false;
+    this.form.enable();
   }
   signupButtonClicked() {
     if(this.form.invalid || this.locked)

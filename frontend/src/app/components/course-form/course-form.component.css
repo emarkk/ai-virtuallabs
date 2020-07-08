@@ -1,0 +1,14 @@
+mat-slide-toggle {
+  margin-left: 6%;
+}
+.input-container {
+  margin-bottom: 60px;
+}
+.actions {
+  float: right;
+  display: flex;
+  align-items: end;
+}
+.actions .mat-flat-button {
+  margin: 0 10px;
+}
