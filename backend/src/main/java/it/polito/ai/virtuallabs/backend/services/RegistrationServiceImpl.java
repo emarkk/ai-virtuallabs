@@ -33,7 +33,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public boolean addUser(CredentialsDTO credentialsDTO) {
+    public String addUser(CredentialsDTO credentialsDTO) {
         String role = "", username = "";
 
         if (credentialsDTO.getEmail().endsWith("@studenti.polito.it")) {
@@ -45,7 +45,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         } else throw new InvalidUserException();
 
         if(userRepository.existsByEmail(credentialsDTO.getEmail()) || userRepository.existsByUsername(username))
-            return false;
+            return null;
 
         User user = User.builder()
                 .id(null)
@@ -77,7 +77,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             professorRepository.save(professor);
         }
 
-        return true;
+        return user.getEmailVerificationToken();
     }
 
     public boolean confirmUser(String token) {
