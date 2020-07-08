@@ -1,6 +1,7 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
 import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
+import it.polito.ai.virtuallabs.backend.dtos.ProfessorDTO;
 import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
 import it.polito.ai.virtuallabs.backend.services.*;
@@ -39,6 +40,15 @@ public class CourseController {
     public List<StudentDTO> getEnrolledStudents(@PathVariable("code") String courseCode) {
         try {
             return courseService.getEnrolledStudents(courseCode);
+        } catch(CourseNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
+        }
+    }
+
+    @GetMapping("/{code}/professors")
+    public List<ProfessorDTO> getProfessors(@PathVariable("code") String courseCode) {
+        try {
+            return courseService.getProfessors(courseCode);
         } catch(CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
         }

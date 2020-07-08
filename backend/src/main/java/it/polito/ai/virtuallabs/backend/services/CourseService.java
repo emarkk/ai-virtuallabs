@@ -1,6 +1,7 @@
 package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
+import it.polito.ai.virtuallabs.backend.dtos.ProfessorDTO;
 import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
 
@@ -15,6 +16,7 @@ public interface CourseService {
     void removeCourse(String courseCode);
     boolean inviteProfessor(String courseCode, Long professorId);
     List<StudentDTO> getEnrolledStudents(String courseCode);
+    List<ProfessorDTO> getProfessors(String courseCode);
     List<TeamDTO> getTeams(String courseCode);
     List<StudentDTO> getStudentsInTeams(String courseCode);
     List<StudentDTO> getStudentsNotInTeams(String courseCode);

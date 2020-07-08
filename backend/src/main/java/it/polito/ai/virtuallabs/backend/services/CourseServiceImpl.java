@@ -1,9 +1,9 @@
 package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
+import it.polito.ai.virtuallabs.backend.dtos.ProfessorDTO;
 import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
-import it.polito.ai.virtuallabs.backend.entities.AuthenticatedEntity;
 import it.polito.ai.virtuallabs.backend.entities.Course;
 import it.polito.ai.virtuallabs.backend.entities.Professor;
 import it.polito.ai.virtuallabs.backend.entities.Student;
@@ -70,15 +70,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     public boolean addCourse(CourseDTO course) {
-        
         Course c = modelMapper.map(course, Course.class);
-
 
         if(courseRepository.existsById(course.getCode()))
             return false;
 
-
-        c.addProfessor(((Professor) authenticatedEntityMapper.get()));
+        c.addProfessor((Professor) authenticatedEntityMapper.get());
         courseRepository.save(c);
         return true;
     }
@@ -144,6 +141,14 @@ public class CourseServiceImpl implements CourseService {
         return this._getCourse(courseCode).getStudents()
                 .stream()
                 .map(s -> modelMapper.map(s, StudentDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProfessorDTO> getProfessors(String courseCode) {
+        return this._getCourse(courseCode).getProfessors()
+                .stream()
+                .map(p -> modelMapper.map(p, ProfessorDTO.class))
                 .collect(Collectors.toList());
     }
 
