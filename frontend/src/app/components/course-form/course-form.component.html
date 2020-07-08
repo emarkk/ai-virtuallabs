@@ -1,31 +1,32 @@
 <div class="container">
   <form [formGroup]="form">
-    <mat-error *ngIf="form.invalid" class="error-box">{{ getFormErrorMessage() }}</mat-error>
+    <mat-error>{{ getFormErrorMessage() }}</mat-error>
+    <mat-error class="error-box">{{ getFormSubmissionErrorMessage() }}</mat-error>
     <div class="input-container">
       <mat-form-field class="fraction third first" appearance="legacy">
         <mat-label>Code</mat-label>
         <input matInput placeholder="02JGROV" formControlName="code" required>
-        <mat-error *ngIf="form.get('code').invalid">{{ getCodeErrorMessage() }}</mat-error>
+        <mat-error>{{ getCodeErrorMessage() }}</mat-error>
       </mat-form-field>
       <mat-form-field class="fraction third" appearance="legacy">
         <mat-label>Name</mat-label>
         <input matInput placeholder="Applicazioni Internet" formControlName="name" required>
-        <mat-error *ngIf="form.get('name').invalid">{{ getNameErrorMessage() }}</mat-error>
+        <mat-error>{{ getNameErrorMessage() }}</mat-error>
       </mat-form-field>
       <mat-form-field class="fraction third" appearance="legacy">
         <mat-label>Acronym</mat-label>
         <input matInput placeholder="AI" formControlName="acronym" required>
-        <mat-error *ngIf="form.get('acronym').invalid">{{ getAcronymErrorMessage() }}</mat-error>
+        <mat-error>{{ getAcronymErrorMessage() }}</mat-error>
       </mat-form-field>
       <mat-form-field class="fraction third first" appearance="legacy">
         <mat-label>Minimum team members</mat-label>
         <input matInput placeholder="3" formControlName="minTeamMembers" required>
-        <mat-error *ngIf="form.get('minTeamMembers').invalid">{{ getMinTeamMembersErrorMessage() }}</mat-error>
+        <mat-error>{{ getMinTeamMembersErrorMessage() }}</mat-error>
       </mat-form-field>
       <mat-form-field class="fraction third" appearance="legacy">
         <mat-label>Maximum team members</mat-label>
         <input matInput placeholder="6" formControlName="maxTeamMembers" required>
-        <mat-error *ngIf="form.get('maxTeamMembers').invalid">{{ getMaxTeamMembersErrorMessage() }}</mat-error>
+        <mat-error>{{ getMaxTeamMembersErrorMessage() }}</mat-error>
       </mat-form-field>
       <mat-slide-toggle [disabled]="locked">Enabled</mat-slide-toggle>
     </div>

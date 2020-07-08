@@ -2,6 +2,9 @@ import { Component, OnInit, Input, ViewChild, EventEmitter, Output } from '@angu
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 
+import { numberValidator } from '../../core/validators/core.validator';
+import { newCourseFormValidator } from '../../core/validators/course.validator';
+
 @Component({
   selector: 'app-course-form',
   templateUrl: './course-form.component.html',
@@ -13,9 +16,9 @@ export class CourseFormComponent implements OnInit {
     code: new FormControl({ value: '', disabled: false }, [Validators.required]),
     name: new FormControl({ value: '', disabled: false }, [Validators.required]),
     acronym: new FormControl({ value: '', disabled: false }, [Validators.required]),
-    minTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required]),
-    maxTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required])
-  });
+    minTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required, numberValidator, Validators.min(1)]),
+    maxTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required, numberValidator, Validators.min(1)])
+  }, newCourseFormValidator);
 
   @ViewChild(MatSlideToggle)
   enableSwitch: MatSlideToggle;
@@ -29,6 +32,10 @@ export class CourseFormComponent implements OnInit {
   }
 
   getFormErrorMessage() {
+    if(this.form.hasError('maxmin'))
+      return 'Maximum members number should be greater than or equal to minimum number.';
+  }
+  getFormSubmissionErrorMessage() {
     if(this.form.hasError('error'))
       return 'An error occurred.';
   }
@@ -47,10 +54,12 @@ export class CourseFormComponent implements OnInit {
   getMinTeamMembersErrorMessage() {
     if(this.form.get('minTeamMembers').hasError('required'))
       return 'You must enter the minimum number of team members';
+    return this.form.get('minTeamMembers').hasError('number') ? 'Please enter a number here' : '';
   }
   getMaxTeamMembersErrorMessage() {
     if(this.form.get('maxTeamMembers').hasError('required'))
       return 'You must enter the maximum number of team members';
+    return this.form.get('maxTeamMembers').hasError('number') ? 'Please enter a number here' : '';
   }
   lock() {
     this.locked = true;

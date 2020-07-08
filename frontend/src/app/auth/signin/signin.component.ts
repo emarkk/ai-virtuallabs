@@ -3,7 +3,7 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { AuthService } from '../../core/services/auth.service';
-import { politoUsernameValidator } from '../authUtils';
+import { politoUsernameValidator } from '../../core/validators/auth.validator';
 
 @Component({
   selector: 'app-signin',

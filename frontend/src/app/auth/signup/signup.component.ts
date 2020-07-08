@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { AuthService } from 'src/app/core/services/auth.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
-import { politoEmailValidator, politoMatricolaValidator, politoSignUpFormValidator } from '../authUtils';
+import { politoEmailValidator, politoMatricolaValidator, politoSignUpFormValidator } from '../../core/validators/auth.validator';
 
 @Component({
   selector: 'app-signup',
@@ -32,7 +32,10 @@ export class SignUpComponent implements OnInit {
   getFormErrorMessage() {
     if(this.form.hasError('conflict'))
       return 'Matricola and email are inconsistent';
-    return this.form.hasError('error') ? 'An error occurred' : '';
+  }
+  getFormSubmissionErrorMessage() {
+    if(this.form.hasError('error'))
+      return 'An error occurred.';
   }
   getFirstNameErrorMessage() {
     if(this.form.get('firstName').hasError('required'))

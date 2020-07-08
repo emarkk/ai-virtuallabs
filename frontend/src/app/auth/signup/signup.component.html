@@ -2,35 +2,36 @@
   <div class="big-logo" routerLink="/"></div>
   <p>Create an account to use all VirtualLabs services.</p>
   <form [formGroup]="form">
-    <mat-error *ngIf="form.invalid">{{ getFormErrorMessage() }}</mat-error>
+    <mat-error>{{ getFormErrorMessage() }}</mat-error>
+    <mat-error class="error-box">{{ getFormSubmissionErrorMessage() }}</mat-error>
     <div class="input-container">
       <mat-form-field class="fraction half first" appearance="legacy">
         <mat-label>First name</mat-label>
         <input matInput formControlName="firstName" required>
-        <mat-error *ngIf="form.get('firstName').invalid">{{ getFirstNameErrorMessage() }}</mat-error>
+        <mat-error>{{ getFirstNameErrorMessage() }}</mat-error>
       </mat-form-field>
       <mat-form-field class="fraction half" appearance="legacy">
         <mat-label>Last name</mat-label>
         <input matInput formControlName="lastName" required>
-        <mat-error *ngIf="form.get('lastName').invalid">{{ getLastNameErrorMessage() }}</mat-error>
+        <mat-error>{{ getLastNameErrorMessage() }}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="legacy">
         <mat-label>Matricola</mat-label>
         <input matInput placeholder="S123456 or D12345" formControlName="matricola" required>
         <mat-icon matSuffix>person_outline</mat-icon>
-        <mat-error *ngIf="form.get('matricola').invalid">{{ getMatricolaErrorMessage() }}</mat-error>
+        <mat-error>{{ getMatricolaErrorMessage() }}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="legacy">
         <mat-label>Email</mat-label>
         <input matInput placeholder="someone@polito.it" formControlName="email" required>
         <mat-icon matSuffix>alternate_email</mat-icon>
-        <mat-error *ngIf="form.get('email').invalid">{{ getEmailErrorMessage() }}</mat-error>
+        <mat-error>{{ getEmailErrorMessage() }}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="legacy">
         <mat-label>Password</mat-label>
         <input matInput type="password" placeholder="Password" formControlName="password" required>
         <mat-icon matSuffix>lock_open</mat-icon>
-        <mat-error *ngIf="form.get('password').invalid">{{ getPasswordErrorMessage() }}</mat-error>
+        <mat-error>{{ getPasswordErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>
     <app-async-button (click)="signupButtonClicked()" [loading]="locked">Sign up</app-async-button>
