@@ -1,0 +1,41 @@
+version: '3'
+services:
+
+  mysql:
+    image: "mariadb:10.4"
+    container_name: mariadb
+    volumes:
+      - container-volume:/var/lib/mysql
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=db_root
+      - MYSQL_PASSWORD=strongpassword
+      - MYSQL_DATABASE=virtuallabs
+
+  backend-app:
+    build: ./backend
+    container_name: backend-app
+    environment:
+      - DB_SERVER=mysql
+      - MYSQL_DATABASE=virtuallabs
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+    ports:
+      - 3000:3000
+    links:
+      - mysql
+
+  frontend-app:
+    build: ./frontend
+    container_name: frontend-app
+    ports:
+      - 4200:80
+    links:
+      - backend-app
+
+
+volumes:
+  container-volume:
