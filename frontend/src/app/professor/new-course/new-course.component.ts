@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
-import { navHome, navCourses, navNewCourse } from '../professor.navdata';
+import { navHome, navCourses, nav } from '../professor.navdata';
 import { Router } from '@angular/router';
 import { CourseService } from 'src/app/core/services/course.service';
 import { CourseFormComponent } from 'src/app/components/course-form/course-form.component';
@@ -14,7 +14,7 @@ export class ProfessorNewCourseComponent implements OnInit {
   navigationData: Array<any> = [
     navHome,
     navCourses,
-    navNewCourse
+    nav('New course')
   ];
   
   @ViewChild(CourseFormComponent)

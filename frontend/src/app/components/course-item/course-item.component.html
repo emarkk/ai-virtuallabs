@@ -1,3 +1,11 @@
-<div class="item">
-  AA
+<div class="item" [routerLink]="course.link">
+  <div class="col col-i">
+    <mat-icon>layers</mat-icon>
+  </div>
+  <div class="col col-code">
+    <span>{{ course.code }}</span>
+  </div>
+  <div class="col col-info">
+    <span class="name">{{ course.name }}</span>
+  </div>
 </div>

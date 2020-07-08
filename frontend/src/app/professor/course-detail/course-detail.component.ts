@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
-import { navHome, navCourses } from '../professor.navdata';
+import { Course } from 'src/app/core/models/course.model';
+import { navHome, navCourses, nav } from '../professor.navdata';
+import { ActivatedRoute } from '@angular/router';
+import { CourseService } from 'src/app/core/services/course.service';
 
 @Component({
   selector: 'app-professor-course-detail',
@@ -12,11 +15,18 @@ export class ProfessorCourseDetailComponent implements OnInit {
     navHome,
     navCourses
   ];
+  course: Course;
 
-  constructor() {
+  constructor(private route: ActivatedRoute, private courseService: CourseService) {
   }
 
   ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.courseService.get(params.code).subscribe(course => {
+        this.course = course;
+        this.navigationData = this.navigationData.concat(nav(course.name));
+      });
+   });
   }
 
 }

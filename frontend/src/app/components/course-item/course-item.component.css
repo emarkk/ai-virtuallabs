@@ -1,0 +1,28 @@
+span {
+  display: block;
+}
+.item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 20px 40px;
+  border: 1px solid #fff;
+  box-shadow: 0 0 1px rgba(34, 25, 25, 0.4);
+  border-radius: 6px;
+}
+.item:hover {
+  border: 1px solid #ff6647;
+}
+.col-i {
+  flex: 3;
+}
+.col-code {
+  flex: 4;
+}
+.col-info {
+  flex: 14;
+}
+.name {
+  font-size: 1.2em;
+  font-weight: 500;
+}

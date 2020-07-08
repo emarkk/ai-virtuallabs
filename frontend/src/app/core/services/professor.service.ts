@@ -17,7 +17,7 @@ export class ProfessorService {
 
   getCourses(professorId: number): Observable<Course[]> {
     return this.http.get<Course[]>(url('professors/' + professorId + '/courses')).pipe(
-      map(arr => arr.map(x => new Course(x.code, x.name, x.acronym, x.minTeamMembers, x.maxTeamMembers, x.enabled))),
+      map(arr => arr.map(x => new Course(x.code, x.name, x.acronym, x.minTeamMembers, x.maxTeamMembers, x.enabled, '/professor/course/' + x.code))),
       catchError(error => of(null))
     );
   }

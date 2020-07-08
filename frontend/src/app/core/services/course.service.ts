@@ -26,6 +26,12 @@ export class CourseService {
     this._insertionSuccessful = true;
   }
 
+  get(code: string): Observable<Course> {
+    return this.http.get<Course>(url('courses/' + code)).pipe(
+      map(x => new Course(x.code, x.name, x.acronym, x.minTeamMembers, x.maxTeamMembers, x.enabled)),
+      catchError(error => of(null))
+    );
+  }
   add(code: string, name: string, acronym: string, minTeamMembers: number, maxTeamMembers: number, enabled: boolean): Observable<boolean> {
     return this.http.post<boolean>(url('courses'), { code, name, acronym, minTeamMembers, maxTeamMembers, enabled }, httpOptions).pipe(
       catchError(error => of(null))

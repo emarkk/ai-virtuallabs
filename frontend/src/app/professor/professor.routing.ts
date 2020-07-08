@@ -5,6 +5,7 @@ import { ProfessorContainerComponent } from './container/container.component';
 import { ProfessorHomeComponent } from './home/home.component';
 import { ProfessorCoursesComponent } from './courses/courses.component';
 import { ProfessorNewCourseComponent } from './new-course/new-course.component';
+import { ProfessorCourseDetailComponent } from './course-detail/course-detail.component';
 
 export const professorRouting = [
   {
@@ -29,6 +30,10 @@ export const professorRouting = [
       {
         path: 'courses/new',
         component: ProfessorNewCourseComponent,
+      },
+      {
+        path: 'course/:code',
+        component: ProfessorCourseDetailComponent,
       }
     ]
   }
