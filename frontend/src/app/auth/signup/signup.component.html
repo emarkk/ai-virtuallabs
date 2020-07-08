@@ -34,7 +34,9 @@
         <mat-error>{{ getPasswordErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>
-    <app-async-button (click)="signupButtonClicked()" [loading]="locked">Sign up</app-async-button>
+    <div class="submit">
+      <app-async-button (click)="signupButtonClicked()" [loading]="locked">Sign up</app-async-button>
+    </div>
   </form>
   <div class="space-break"></div>
   <p>Do you already have an account? <a routerLink="/signin">Sign in</a> now.</p>
