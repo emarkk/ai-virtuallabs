@@ -19,6 +19,7 @@ export class ProfessorCourseDetailComponent implements OnInit {
   ];
   course: Course;
   professors: Professor[] = [];
+  updatingStatus: boolean = false;
 
   constructor(private route: ActivatedRoute, private courseService: CourseService) {
   }
@@ -33,4 +34,20 @@ export class ProfessorCourseDetailComponent implements OnInit {
    });
   }
 
+  statusButtonClicked() {
+    this.updatingStatus = true;
+    if(this.course.enabled) {
+      this.courseService.disable(this.course.code).subscribe(res => {
+        this.updatingStatus = false;
+        if(res)
+          this.course.enabled = false;
+      });
+    } else {
+      this.courseService.enable(this.course.code).subscribe(res => {
+        this.updatingStatus = false;
+        if(res)
+          this.course.enabled = true;
+      });
+    }
+  }
 }

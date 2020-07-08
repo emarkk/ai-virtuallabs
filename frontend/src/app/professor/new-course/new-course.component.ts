@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-
-import { navHome, navCourses, nav } from '../professor.navdata';
 import { Router } from '@angular/router';
+
 import { CourseService } from 'src/app/core/services/course.service';
 import { CourseFormComponent } from 'src/app/components/course-form/course-form.component';
+
+import { navHome, navCourses, nav } from '../professor.navdata';
 
 @Component({
   selector: 'app-professor-new-course',

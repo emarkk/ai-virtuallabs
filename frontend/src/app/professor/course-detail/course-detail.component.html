@@ -6,7 +6,10 @@
         <h1>{{ course.code + ' - ' + course.name }}</h1>
       </div>
       <div class="status">
-        active
+        <app-async-button (click)="statusButtonClicked()" [loading]="updatingStatus" color="basic">
+          <span *ngIf="course.enabled"><mat-icon>visibility</mat-icon> enabled</span>
+          <span *ngIf="!course.enabled"><mat-icon>visibility_off</mat-icon> disabled</span>
+        </app-async-button>
       </div>
     </div>
     <table class="info">
@@ -14,7 +17,7 @@
         <td>Professors</td>
         <td>
           <div *ngFor="let professor of professors" class="professor">
-            <span><b>{{ professor.lastName.toUpperCase() }}</b></span><span>, {{ professor.firstName }}</span>
+            <span><b>{{ professor.lastName.toUpperCase() }}</b></span><span> {{ professor.firstName }}</span>
           </div>
         </td>
       </tr>

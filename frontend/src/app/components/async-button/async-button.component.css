@@ -3,5 +3,6 @@ button {
   height: 36px;
 }
 mat-spinner {
-  margin-left: 34px;
+  position: relative;
+  left: 34px;
 }

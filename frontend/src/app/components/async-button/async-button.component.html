@@ -1,4 +1,4 @@
-<button mat-flat-button color="primary" (click)="buttonClicked($event)" [class.disable-click]="showLoader">
+<button mat-flat-button (click)="buttonClicked($event)" [class.disable-click]="showLoader" [color]="buttonColor">
   <span *ngIf="!showLoader"><ng-content></ng-content></span>
-  <mat-spinner *ngIf="showLoader" diameter="20" strokeWidth="2"></mat-spinner>
+  <mat-spinner *ngIf="showLoader" diameter="20" strokeWidth="2" [class]="buttonColor"></mat-spinner>
 </button>

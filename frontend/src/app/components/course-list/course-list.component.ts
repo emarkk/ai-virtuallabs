@@ -8,7 +8,7 @@ import { Course } from 'src/app/core/models/course.model';
   styleUrls: ['./course-list.component.css']
 })
 export class CourseListComponent implements OnInit {
-  courseList: Course[];
+  courseList: Course[] = null;
 
   @Input() set courses(data: Course[]) {
     this.courseList = data;

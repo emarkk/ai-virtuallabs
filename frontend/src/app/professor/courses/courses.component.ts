@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
 
 import { Course } from 'src/app/core/models/course.model';
 import { navHome, navCourses } from '../professor.navdata';
@@ -17,7 +18,7 @@ export class ProfessorCoursesComponent implements OnInit {
     navHome,
     navCourses
   ];
-  courses: Course[] = [];
+  courses$: Observable<Course[]>;
   insertionSuccess: boolean = false;
 
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService,
@@ -30,7 +31,7 @@ export class ProfessorCoursesComponent implements OnInit {
       if(!this.insertionSuccess)
         this.router.navigate(['/professor/courses']);
     }
-    this.professorService.getCourses(this.authService.getUserData().id).subscribe(courses => this.courses = courses);
+    this.courses$ = this.professorService.getCourses(this.authService.getUserData().id);
   }
 
 }

@@ -6,6 +6,13 @@
 .title {
   flex: 1;
 }
+.status {
+  height: 36px;
+}
+.status mat-icon {
+  padding-top: 3px;
+  font-size: 1.1em;
+}
 table.info {
   width: 100%;
   font-size: 0.9em;
@@ -15,6 +22,9 @@ table.info td {
 }
 table.info td:first-child {
   width: 25%;
+}
+.professor {
+  margin-right: 20px;
 }
 .sep {
   display: inline-block;

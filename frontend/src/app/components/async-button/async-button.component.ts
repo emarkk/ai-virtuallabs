@@ -7,9 +7,13 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class AsyncButtonComponent implements OnInit {
   showLoader: boolean = false;
+  buttonColor: string = 'primary';
 
   @Input() set loading(value: boolean) {
     this.showLoader = value;
+  }
+  @Input() set color(value: string) {
+    this.buttonColor = value;
   }
 
   @Output() click = new EventEmitter<MouseEvent>();

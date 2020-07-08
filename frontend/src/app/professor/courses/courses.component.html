@@ -2,7 +2,7 @@
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <h1>Courses</h1>
-    <app-course-list [courses]="courses"></app-course-list>
+    <app-course-list [courses]="courses$ | async"></app-course-list>
     <div class="controls">
       <button mat-flat-button color="brand" routerLink="/professor/courses/new">Add course</button>
     </div>
