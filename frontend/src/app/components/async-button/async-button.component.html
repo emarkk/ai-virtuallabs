@@ -1,0 +1,4 @@
+<button mat-flat-button color="primary" (click)="buttonClicked($event)" [class.disable-click]="loading">
+  <span *ngIf="!loading"><ng-content></ng-content></span>
+  <mat-spinner *ngIf="loading" diameter="20" strokeWidth="2"></mat-spinner>
+</button>

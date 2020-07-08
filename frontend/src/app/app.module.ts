@@ -25,10 +25,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AppComponent } from './app.component';
 import { PageComponent } from './components/page/page.component';
 import { TileComponent } from './components/tile/tile.component';
+import { AsyncButtonComponent } from './components/async-button/async-button.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { CourseItemComponent } from './components/course-item/course-item.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
+import { CourseFormComponent } from './components/course-form/course-form.component';
 
 import { ContainerComponent } from './container/container.component';
 import { SignInComponent } from './auth/signin/signin.component';
@@ -48,10 +50,12 @@ import { StudentHomeComponent } from './student/home/home.component';
     AppComponent,
     PageComponent,
     TileComponent,
+    AsyncButtonComponent,
     WelcomeComponent,
     NavigationComponent,
     CourseItemComponent,
     CourseListComponent,
+    CourseFormComponent,
     ContainerComponent,
     SignInComponent,
     SignUpComponent,

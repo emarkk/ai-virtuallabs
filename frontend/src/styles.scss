@@ -41,6 +41,10 @@ a {
 .mat-progress-spinner circle, .mat-spinner circle {
   stroke: #fff;
 }
+.mat-flat-button[color="brand"] {
+  background: #ff6647;
+  color: #fff;
+}
 .big-logo {
   cursor: pointer;
   width: 28vh;

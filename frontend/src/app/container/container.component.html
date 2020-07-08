@@ -1,7 +1,6 @@
 <mat-toolbar color="primary">
   <div class="logo" routerLink="/"></div>
   <span class="fill"></span>
-  <button mat-button *ngIf="logged" routerLink="/profile">Profile</button>
   <button mat-button (click)="authButtonClicked()">{{ logged ? 'Logout' : 'Sign in' }}</button>
 </mat-toolbar>
 <router-outlet></router-outlet>

@@ -16,10 +16,7 @@
         <mat-error *ngIf="form.get('password').invalid">{{ getPasswordErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>
-    <button mat-flat-button color="primary" (click)="loginButtonClicked()" [class.disable-click]="locked">
-      <span *ngIf="!locked">Sign in</span>
-      <mat-spinner *ngIf="locked" diameter="20" strokeWidth="2"></mat-spinner>
-    </button>
+    <app-async-button (click)="loginButtonClicked()" [loading]="locked">Sign in</app-async-button>
   </form>
   <div class="space-break"></div>
   <p>If you don't have any account yet, you can <a routerLink="/signup">sign up</a> now.</p>
