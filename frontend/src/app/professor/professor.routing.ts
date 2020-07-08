@@ -6,6 +6,7 @@ import { ProfessorHomeComponent } from './home/home.component';
 import { ProfessorCoursesComponent } from './courses/courses.component';
 import { ProfessorNewCourseComponent } from './new-course/new-course.component';
 import { ProfessorCourseDetailComponent } from './course-detail/course-detail.component';
+import { ProfessorEditCourseComponent } from './edit-course/edit-course.component';
 
 export const professorRouting = [
   {
@@ -30,6 +31,10 @@ export const professorRouting = [
       {
         path: 'courses/new',
         component: ProfessorNewCourseComponent,
+      },
+      {
+        path: 'course/:code/edit',
+        component: ProfessorEditCourseComponent,
       },
       {
         path: 'course/:code',

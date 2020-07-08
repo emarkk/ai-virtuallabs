@@ -1,9 +1,9 @@
-<div class="container">
+<div class="container" *ngIf="course$ | async as course; else loading">
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <div class="head">
       <div class="title">
-        <h1>{{ course.code + ' - ' + course.name }}</h1>
+        <h1>{{ course.code + ' - ' + course.name }} <a><mat-icon [routerLink]="'/professor/course/' + course.code + '/edit'">edit</mat-icon></a></h1>
       </div>
       <div class="status">
         <app-async-button (click)="statusButtonClicked()" [loading]="updatingStatus" color="basic">
@@ -16,7 +16,7 @@
       <tr>
         <td>Professors</td>
         <td>
-          <div *ngFor="let professor of professors" class="professor">
+          <div *ngFor="let professor of professors$ | async" class="professor">
             <span><b>{{ professor.lastName.toUpperCase() }}</b></span><span> {{ professor.firstName }}</span>
           </div>
         </td>
@@ -32,3 +32,6 @@
     </table>
   </app-page>
 </div>
+<ng-template #loading>
+  <app-data-placeholder></app-data-placeholder>
+</ng-template>

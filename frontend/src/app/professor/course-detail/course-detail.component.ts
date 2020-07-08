@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Professor } from 'src/app/core/models/professor.model';
@@ -13,12 +14,10 @@ import { navHome, navCourses, nav } from '../professor.navdata';
   styleUrls: ['./course-detail.component.css']
 })
 export class ProfessorCourseDetailComponent implements OnInit {
-  navigationData: Array<any> = [
-    navHome,
-    navCourses
-  ];
-  course: Course;
-  professors: Professor[] = [];
+  courseCode: string;
+  course$: Observable<Course>;
+  professors$: Observable<Professor[]>;
+  navigationData: Array<any>|null = null;
   updatingStatus: boolean = false;
 
   constructor(private route: ActivatedRoute, private courseService: CourseService) {
@@ -26,28 +25,30 @@ export class ProfessorCourseDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.courseService.get(params.code).subscribe(course => {
-        this.course = course;
-        this.navigationData = this.navigationData.concat(nav(course.name));
-      });
-      this.courseService.getProfessors(params.code).subscribe(professors => this.professors = professors);
-   });
+      this.courseCode = params.code;
+      this.course$ = this.courseService.get(this.courseCode);
+      this.professors$ = this.courseService.getProfessors(this.courseCode);
+
+      this.course$.subscribe(course => {
+        this.navigationData = [navHome, navCourses, nav(course.name, '/professor/course/' + course.code)];
+      });      
+    });
   }
 
   statusButtonClicked() {
     this.updatingStatus = true;
-    if(this.course.enabled) {
-      this.courseService.disable(this.course.code).subscribe(res => {
+    /*if(this.course£.) {
+      this.courseService.disable(this.courseCode).subscribe(res => {
         this.updatingStatus = false;
         if(res)
           this.course.enabled = false;
       });
     } else {
-      this.courseService.enable(this.course.code).subscribe(res => {
+      this.courseService.enable(this.courseCode).subscribe(res => {
         this.updatingStatus = false;
         if(res)
           this.course.enabled = true;
       });
-    }
+    }*/
   }
 }

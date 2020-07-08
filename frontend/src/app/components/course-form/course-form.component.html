@@ -31,7 +31,7 @@
       <mat-slide-toggle [disabled]="locked">Enabled</mat-slide-toggle>
     </div>
     <div class="actions">
-      <button mat-flat-button routerLink="/professor/courses">Cancel</button>
+      <button mat-flat-button [routerLink]="cancelButtonLink">Cancel</button>
       <app-async-button (click)="saveButtonClicked()" [loading]="locked">Save</app-async-button>
     </div>
   </form>

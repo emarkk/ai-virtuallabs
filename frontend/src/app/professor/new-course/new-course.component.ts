@@ -12,11 +12,7 @@ import { navHome, navCourses, nav } from '../professor.navdata';
   styleUrls: ['./new-course.component.css']
 })
 export class ProfessorNewCourseComponent implements OnInit {
-  navigationData: Array<any> = [
-    navHome,
-    navCourses,
-    nav('New course')
-  ];
+  navigationData: Array<any> = [navHome, navCourses, nav('New')];
   
   @ViewChild(CourseFormComponent)
   formComponent: CourseFormComponent;

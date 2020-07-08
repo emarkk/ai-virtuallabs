@@ -28,6 +28,7 @@ import { PageComponent } from './components/page/page.component';
 import { TileComponent } from './components/tile/tile.component';
 import { AsyncButtonComponent } from './components/async-button/async-button.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
+import { DataPlaceholderComponent } from './components/data-placeholder/data-placeholder.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { CourseItemComponent } from './components/course-item/course-item.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
@@ -43,6 +44,7 @@ import { ProfessorHomeComponent } from './professor/home/home.component';
 import { ProfessorCoursesComponent } from './professor/courses/courses.component';
 import { ProfessorCourseDetailComponent } from './professor/course-detail/course-detail.component';
 import { ProfessorNewCourseComponent } from './professor/new-course/new-course.component';
+import { ProfessorEditCourseComponent } from './professor/edit-course/edit-course.component';
 import { StudentContainerComponent } from './student/container/container.component';
 import { StudentHomeComponent } from './student/home/home.component';
 
@@ -54,6 +56,7 @@ import { StudentHomeComponent } from './student/home/home.component';
     AsyncButtonComponent,
     WelcomeComponent,
     NavigationComponent,
+    DataPlaceholderComponent,
     CourseItemComponent,
     CourseListComponent,
     CourseFormComponent,
@@ -67,6 +70,7 @@ import { StudentHomeComponent } from './student/home/home.component';
     ProfessorCoursesComponent,
     ProfessorNewCourseComponent,
     ProfessorCourseDetailComponent,
+    ProfessorEditCourseComponent,
     StudentContainerComponent,
     StudentHomeComponent
   ],

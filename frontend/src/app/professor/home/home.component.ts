@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { Course } from 'src/app/core/models/course.model';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ProfessorService } from 'src/app/core/services/professor.service';
+import { Professor } from 'src/app/core/models/professor.model';
 
 @Component({
   selector: 'app-professor-home',
@@ -10,13 +12,15 @@ import { ProfessorService } from 'src/app/core/services/professor.service';
   styleUrls: ['./home.component.css']
 })
 export class ProfessorHomeComponent implements OnInit {
-  courses: Course[] = [];
+  me$: Observable<Professor>;
+  courses$: Observable<Course[]>;
 
   constructor(private authService: AuthService, private professorService: ProfessorService) {
   }
 
   ngOnInit(): void {
-    this.professorService.getCourses(this.authService.getUserData().id).subscribe(courses => this.courses = courses);
+    this.me$ = this.professorService.get(this.authService.getUserData().id);
+    this.courses$ = this.professorService.getCourses(this.authService.getUserData().id);
   }
 
 }

@@ -1,10 +1,13 @@
-<div class="container">
+<div class="container" *ngIf="course$ | async as course; else loading">
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <h1>Update course</h1>
-    <p>Enter the required course information in the form below. By creating a course, you are automatically promoted as the <i>admin</i> of the course.</p>
+    <p>Enter the required course information in the form below.</p>
     <div class="info">
-      <app-course-form (update)="saveCourse($event.data)"></app-course-form>
+      <app-course-form [data]="course" [cancelLink]="'/professor/course/' + course.code" (update)="saveCourse($event.data)"></app-course-form>
     </div>
   </app-page>
 </div>
+<ng-template #loading>
+  <app-data-placeholder></app-data-placeholder>
+</ng-template>

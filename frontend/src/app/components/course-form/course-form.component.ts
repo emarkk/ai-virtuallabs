@@ -2,6 +2,8 @@ import { Component, OnInit, Input, ViewChild, EventEmitter, Output } from '@angu
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 
+import { Course } from 'src/app/core/models/course.model';
+
 import { numberValidator } from '../../core/validators/core.validator';
 import { newCourseFormValidator } from '../../core/validators/course.validator';
 
@@ -11,6 +13,8 @@ import { newCourseFormValidator } from '../../core/validators/course.validator';
   styleUrls: ['./course-form.component.css']
 })
 export class CourseFormComponent implements OnInit {
+  cancelButtonLink: string;
+
   locked: boolean = false;
   form = new FormGroup({
     code: new FormControl({ value: '', disabled: false }, [Validators.required]),
@@ -19,6 +23,18 @@ export class CourseFormComponent implements OnInit {
     minTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required, numberValidator, Validators.min(1)]),
     maxTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required, numberValidator, Validators.min(1)])
   }, newCourseFormValidator);
+
+  @Input() set data(value: Course) {
+    this.form.get('code').setValue(value.code);
+    this.form.get('name').setValue(value.name);
+    this.form.get('acronym').setValue(value.acronym);
+    this.form.get('minTeamMembers').setValue(value.minTeamMembers);
+    this.form.get('maxTeamMembers').setValue(value.maxTeamMembers);
+  }
+
+  @Input() set cancelLink(value: string) {
+    this.cancelButtonLink = value;
+  }
 
   @ViewChild(MatSlideToggle)
   enableSwitch: MatSlideToggle;

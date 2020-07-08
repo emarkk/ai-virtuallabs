@@ -14,10 +14,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
   styleUrls: ['./courses.component.css']
 })
 export class ProfessorCoursesComponent implements OnInit {
-  navigationData: Array<any> = [
-    navHome,
-    navCourses
-  ];
+  navigationData: Array<any> = [navHome, navCourses];
   courses$: Observable<Course[]>;
   insertionSuccess: boolean = false;
 

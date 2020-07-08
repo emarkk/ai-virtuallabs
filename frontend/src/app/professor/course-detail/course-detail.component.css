@@ -6,6 +6,14 @@
 .title {
   flex: 1;
 }
+.title mat-icon {
+  cursor: pointer;
+  margin-left: 10px;
+  color: #ff6647;
+  font-size: 0.7em;
+  line-height: 1.65em;
+  outline: none;
+}
 .status {
   height: 36px;
 }
