@@ -32,7 +32,14 @@ table.info td:first-child {
   width: 25%;
 }
 .professor {
-  margin-right: 20px;
+  display: inline-block;
+  margin-right: 30px;
+}
+.professor-info {
+  display: flex;
+}
+.professor-info div {
+  display: inline-block;
 }
 .sep {
   display: inline-block;

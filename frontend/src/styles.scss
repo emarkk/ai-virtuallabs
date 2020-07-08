@@ -87,6 +87,18 @@ form mat-form-field, form input {
   margin-top: 3em;
   text-align: center;
 }
+.profile-pic {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  border-radius: 50%;
+}
+.profile-pic img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
 .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
   background: #ffaa99;
 }

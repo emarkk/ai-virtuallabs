@@ -1,5 +1,16 @@
-.page {
-  width: 960px;
-  margin: 50px auto;
-  padding: 20px;
+p {
+  font-size: 18px;
+}
+.info {
+  display: flex;
+  align-items: center;
+}
+.profile-pic {
+  width: 22px;
+  height: 22px;
+  margin-right: 10px;
+}
+.profile-pic img {
+  width: 22px;
+  height: 22px;
 }
