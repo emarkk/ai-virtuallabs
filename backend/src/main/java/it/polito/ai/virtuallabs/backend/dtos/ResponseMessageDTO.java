@@ -6,14 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class ImageModelDTO {
-    private Long id;
+public class ResponseMessageDTO {
+    private String message;
 
-    private String name;
-
-    private String type;
-
-    private byte[] picByte;
 }
