@@ -18,13 +18,13 @@ export class StudentService {
   
   get(studentId: number): Observable<Student> {
     return this.http.get<Student>(url('students/' + studentId)).pipe(
-      map(x => new Student(x.id, x.firstName, x.lastName, x.email, x.picturePath)),
+      map(x => new Student(x.id, x.firstName, x.lastName, x.email, x.hasPicture)),
       catchError(error => of(null))
     );
   }
   search(query: string): Observable<Student[]> {
     return this.http.get<Student[]>(url('students/search?q=' + query)).pipe(
-      map(arr => arr.map(x => new Student(x.id, x.firstName, x.lastName, x.email, x.picturePath))),
+      map(arr => arr.map(x => new Student(x.id, x.firstName, x.lastName, x.email, x.hasPicture))),
       catchError(error => of(null))
     );
   }
