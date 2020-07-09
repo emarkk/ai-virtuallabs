@@ -17,6 +17,6 @@ public class ProfessorDTO {
 
     private String lastName;
 
-    private String picturePath;
+    private boolean hasPicture;
 
 }

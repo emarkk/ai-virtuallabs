@@ -25,7 +25,7 @@ public class Professor extends AuthenticatedEntity {
 
     private String lastName;
 
-    private String picturePath;
+    private boolean hasPicture;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "professor_course", joinColumns = @JoinColumn(name = "professor_id"), inverseJoinColumns = @JoinColumn(name = "course_code"))
