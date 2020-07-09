@@ -12,4 +12,6 @@ public interface StudentService {
     List<StudentDTO> getAllStudents();
     List<CourseDTO> getCoursesForStudent(Long studentId);
     List<TeamDTO> getTeamsForStudent(Long studentId);
+
+    List<StudentDTO> getOrderedSearchResult(String q);
 }

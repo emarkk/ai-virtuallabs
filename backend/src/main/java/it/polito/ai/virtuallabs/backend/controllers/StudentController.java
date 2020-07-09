@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,11 @@ public class StudentController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student '" + id + "' not found");
 
         return studentOptional.get();
+    }
+
+    @GetMapping("/search")
+    public List<StudentDTO> searchStudents(@RequestParam(name = "q") String q){
+        return studentService.getOrderedSearchResult(q);
     }
 
     @GetMapping("/{id}/courses")
