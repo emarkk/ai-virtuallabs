@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Course } from 'src/app/core/models/course.model';
+import { Professor } from 'src/app/core/models/professor.model';
+
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ProfessorService } from 'src/app/core/services/professor.service';
-import { Professor } from 'src/app/core/models/professor.model';
 
 @Component({
   selector: 'app-professor-home',

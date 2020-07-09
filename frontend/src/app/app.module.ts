@@ -48,6 +48,8 @@ import { ProfessorNewCourseComponent } from './professor/new-course/new-course.c
 import { ProfessorEditCourseComponent } from './professor/edit-course/edit-course.component';
 import { StudentContainerComponent } from './student/container/container.component';
 import { StudentHomeComponent } from './student/home/home.component';
+import { StudentCoursesComponent } from './student/courses/courses.component';
+import { StudentCourseDetailComponent } from './student/course-detail/course-detail.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +76,9 @@ import { StudentHomeComponent } from './student/home/home.component';
     ProfessorCourseDetailComponent,
     ProfessorEditCourseComponent,
     StudentContainerComponent,
-    StudentHomeComponent
+    StudentHomeComponent,
+    StudentCoursesComponent,
+    StudentCourseDetailComponent
   ],
   imports: [
     BrowserModule,
