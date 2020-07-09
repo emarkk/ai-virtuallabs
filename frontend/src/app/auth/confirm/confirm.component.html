@@ -1,0 +1,18 @@
+<div class="container">
+  <div class="big-logo" routerLink="/"></div>
+  <div *ngIf="{ result: (result$ | async) } as context; else loading">
+    <div *ngIf="context.result">
+      <h2><mat-icon matSuffix>done_outline</mat-icon> Success!</h2>
+      <p>Your account has been successfully activated.</p>
+      <p class="sub">Now you can log in and use all VirtualLabs features.</p>
+    </div>
+    <div *ngIf="!context.result">
+        <h2><mat-icon matSuffix>clear</mat-icon> Oops!</h2>
+        <p>The provided token is invalid or has expired.</p>
+        <p class="sub">Please try registering again. If you have problems, contact tech support.</p>
+    </div>
+  </div>
+  <ng-template #loading>
+    <p>Attempting confirmation, please wait...</p>
+  </ng-template>
+</div>

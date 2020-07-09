@@ -30,4 +30,10 @@ export class RegistrationService {
       catchError(error => of(false))
     );
   }
+  public confirm(token: String): Observable<Boolean> {
+    return this.http.get<Boolean>(url('signup/confirm/' + token)).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
 }

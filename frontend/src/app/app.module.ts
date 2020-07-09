@@ -38,6 +38,7 @@ import { ContainerComponent } from './container/container.component';
 import { SignInComponent } from './auth/signin/signin.component';
 import { SignUpComponent } from './auth/signup/signup.component';
 import { SignUpSuccessComponent } from './auth/signup-success/signup-success.component';
+import { ConfirmComponent } from './auth/confirm/confirm.component';
 import { HomeComponent } from './home/home.component';
 import { ProfessorContainerComponent } from './professor/container/container.component';
 import { ProfessorHomeComponent } from './professor/home/home.component';
@@ -64,6 +65,7 @@ import { StudentHomeComponent } from './student/home/home.component';
     SignInComponent,
     SignUpComponent,
     SignUpSuccessComponent,
+    ConfirmComponent,
     HomeComponent,
     ProfessorContainerComponent,
     ProfessorHomeComponent,

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { AuthService } from 'src/app/core/services/auth.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 
 @Component({
@@ -10,11 +11,11 @@ import { RegistrationService } from 'src/app/core/services/registration.service'
 })
 export class SignUpSuccessComponent implements OnInit {
 
-  constructor(private router: Router, private registrationService: RegistrationService) {
+  constructor(private router: Router, private authService: AuthService, private registrationService: RegistrationService) {
   }
 
   ngOnInit(): void {
-    if(!this.registrationService.hasRegisteredSuccessfully())
+    if(this.authService.isLogged() || !this.registrationService.hasRegisteredSuccessfully())
       this.router.navigate(['/']);
   }
 
