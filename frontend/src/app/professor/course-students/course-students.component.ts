@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { Course } from 'src/app/core/models/course.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
+import { StudentService } from 'src/app/core/services/student.service';
+
+import { FullscreenSearchComponent } from 'src/app/components/fullscreen-search/fullscreen-search.component';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
 
@@ -17,8 +20,14 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   courseCode: string;
   course$: Observable<Course>;
   navigationData: Array<any>|null = null;
+  showSearch: boolean = false;
 
-  constructor(private route: ActivatedRoute, private courseService: CourseService) {
+  searchSubscription: Subscription;
+  
+  @ViewChild(FullscreenSearchComponent)
+  searchComponent: FullscreenSearchComponent;
+
+  constructor(private route: ActivatedRoute, private courseService: CourseService, private studentService: StudentService) {
   }
 
   ngOnInit(): void {
@@ -31,5 +40,13 @@ export class ProfessorCourseStudentsComponent implements OnInit {
       });
     });
   }
-  
+
+  searchChanged(input: string) {
+    if(this.searchSubscription)
+      this.searchSubscription.unsubscribe();
+
+    this.searchSubscription = this.studentService.search(input).subscribe(students => {
+
+    });
+  }
 }

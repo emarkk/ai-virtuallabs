@@ -16,11 +16,14 @@
       <tr>
         <td>Professors</td>
         <td>
-          <div *ngFor="let professor of professors$ | async" class="professor">
-            <div class="professor-info">
-              <div class="profile-pic"><img src="assets/img/user.png" /></div>
-              <div><span><b>{{ professor.lastName.toUpperCase() }}</b></span><span> {{ professor.firstName }}</span></div>
+          <div class="professor-list">
+            <div *ngFor="let professor of professors$ | async" class="professor">
+              <div class="professor-info">
+                <div class="profile-pic"><img src="assets/img/user.png" /></div>
+                <div><span><b>{{ professor.lastName.toUpperCase() }}</b></span><span> {{ professor.firstName }}</span></div>
+              </div>
             </div>
+            <button mat-flat-button color="primary">Add collaborator</button>
           </div>
         </td>
       </tr>

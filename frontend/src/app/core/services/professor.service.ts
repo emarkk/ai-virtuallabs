@@ -22,6 +22,12 @@ export class ProfessorService {
       catchError(error => of(null))
     );
   }
+  search(query: string): Observable<Professor[]> {
+    return this.http.get<Professor[]>(url('professors/search?q=' + query)).pipe(
+      map(arr => arr.map(x => new Professor(x.id, x.firstName, x.lastName, x.email, x.picturePath))),
+      catchError(error => of(null))
+    );
+  }
   getCourses(professorId: number): Observable<Course[]> {
     return this.http.get<Course[]>(url('professors/' + professorId + '/courses')).pipe(
       map(arr => arr.map(x => new Course(x.code, x.name, x.acronym, x.minTeamMembers, x.maxTeamMembers, x.enabled, '/professor/course/' + x.code))),

@@ -2,7 +2,12 @@
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <h1>{{ course.name }} <span class="bar"></span><span>Students</span></h1>
+    <div class="controls">
+      <button mat-flat-button color="brand" (click)="showSearch = true">Enroll student</button>
+    </div>
   </app-page>
+  <app-fullscreen-search [class.hide]="!showSearch" (search)="searchChanged($event)" (close)="showSearch = false">
+  </app-fullscreen-search>
 </div>
 <ng-template #loading>
   <app-data-placeholder></app-data-placeholder>

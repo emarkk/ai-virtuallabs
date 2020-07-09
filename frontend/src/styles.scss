@@ -15,7 +15,7 @@ html, body {
 }
 body {
   margin: 0;
-  font-family: "Catamaran", "Helvetica Neue", sans-serif !important;
+  font-family: "Catamaran", sans-serif !important;
 }
 a {
   color: #ff6647;
@@ -34,6 +34,9 @@ a {
 .fill {
   flex: 1 1 auto;
 }
+.hide {
+  display: none;
+}
 .disable-click {
   pointer-events: none;
   cursor: default;
@@ -45,11 +48,17 @@ a {
   stroke: #232323;
 }
 .mat-flat-button {
-  width: 120px;
+  min-width: 120px !important;
 }
 .mat-flat-button[color="brand"] {
   background: #ff6647;
   color: #fff;
+}
+::selection {
+  background: #ffaa99;
+}
+::-moz-selection {
+  background: #ffaa99;
 }
 mat-form-field.half {
   width: 47%;
@@ -70,7 +79,7 @@ form mat-form-field, form input {
   position: relative;
   top: 5px;
   display: inline-block;
-  width: 1px;
+  width: 2px;
   height: 1em;
   margin: 0 10px;
   background: #000;
