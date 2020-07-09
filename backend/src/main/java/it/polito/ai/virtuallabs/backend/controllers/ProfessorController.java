@@ -36,7 +36,7 @@ public class ProfessorController {
     }
 
     @GetMapping("/search")
-    public List<ProfessorDTO> searchStudents(@RequestParam(name = "q") String q){
+    public List<ProfessorDTO> searchProfessors(@RequestParam(name = "q") String q){
         return professorService.getOrderedSearchResult(q);
     }
 
