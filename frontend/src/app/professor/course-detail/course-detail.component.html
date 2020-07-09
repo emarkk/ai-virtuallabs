@@ -12,7 +12,7 @@
         </app-async-button>
       </div>
     </div>
-    <table class="info">
+    <table class="info main">
       <tr>
         <td>Professors</td>
         <td>
@@ -24,15 +24,33 @@
           </div>
         </td>
       </tr>
-      <tr>
-        <td>Students enrolled</td>
-        <td><b>???</b></td>
-      </tr>
-      <tr>
-        <td>Team size constraints</td>
-        <td><i>min&emsp;</i><b>{{ course.minTeamMembers }}</b><span class="sep"></span><i>max&emsp;</i><b>{{ course.maxTeamMembers }}</b></td>
-      </tr>
     </table>
+    <app-tile title="Students" [titleLink]="'/professor/course/' + course.code + '/students'" icon="supervisor_account">
+      <table class="info">
+        <tr>
+          <td>Students enrolled</td>
+          <td><b>???</b></td>
+        </tr>
+      </table>
+    </app-tile>
+    <app-tile title="Teams" [titleLink]="'/professor/course/' + course.code + '/teams'" icon="account_tree">
+      <table class="info">
+        <tr>
+          <td>Team size constraints</td>
+          <td><i>min&emsp;</i><b>{{ course.minTeamMembers }}</b><span class="sep"></span><i>max&emsp;</i><b>{{ course.maxTeamMembers }}</b></td>
+        </tr>
+        <tr>
+          <td>Teamed students</td>
+          <td><b>???</b></td>
+        </tr>
+        <tr>
+          <td>Unteamed students</td>
+          <td><b>???</b></td>
+        </tr>
+      </table>
+    </app-tile>
+    <app-tile title="Homeworks" [titleLink]="'/professor/course/' + course.code + '/homeworks'" icon="perm_media">
+    </app-tile>
   </app-page>
 </div>
 <ng-template #loading>
