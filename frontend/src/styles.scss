@@ -21,7 +21,7 @@ a {
   color: #ff6647;
 }
 .copyright {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100%;
   opacity: 0.3;
@@ -52,6 +52,10 @@ a {
 }
 .mat-flat-button[color="brand"] {
   background: #ff6647;
+  color: #fff;
+}
+.mat-flat-button[color="danger"] {
+  background: #da3125;
   color: #fff;
 }
 ::selection {

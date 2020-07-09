@@ -6,7 +6,6 @@
         <h1>
           {{ course.code + ' - ' + course.name }}&nbsp;
           <a><mat-icon [routerLink]="'/professor/course/' + course.code + '/edit'">edit</mat-icon></a>
-          <a (click)="deleteButtonClicked()"><mat-icon>delete</mat-icon></a>
         </h1>
       </div>
       <div class="status">
@@ -27,7 +26,7 @@
                 <div><span><b>{{ professor.lastName.toUpperCase() }}</b></span><span> {{ professor.firstName }}</span></div>
               </div>
             </div>
-            <button mat-flat-button color="primary">Add collaborator</button>
+            <button mat-flat-button color="primary" (click)="addCollaboratorButtonClicked()">Add collaborator</button>
           </div>
         </td>
       </tr>
@@ -58,7 +57,15 @@
     </app-tile>
     <app-tile title="Homeworks" [titleLink]="'/professor/course/' + course.code + '/homeworks'" icon="perm_media">
     </app-tile>
+    <app-tile title="Actions" icon="amp_stories">
+      <div class="actions">
+        <button mat-flat-button color="primary" [routerLink]="'/professor/course/' + course.code + '/edit'">Edit course</button>
+        <button mat-flat-button color="danger" (click)="deleteButtonClicked()">Delete course</button>
+      </div>
+    </app-tile>
   </app-page>
+  <app-fullscreen-search [class.hide]="!showSearch" [matches]="studentMatches" (search)="searchChanged($event)" (select)="searchResultSelected($event)" (close)="searchCloseButtonClicked()">
+  </app-fullscreen-search>
 </div>
 <ng-template #loading>
   <app-data-placeholder></app-data-placeholder>

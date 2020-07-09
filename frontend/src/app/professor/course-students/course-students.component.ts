@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription, Subject } from 'rxjs';
-import { debounceTime, filter } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 
@@ -21,14 +21,11 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   courseCode: string;
   course$: Observable<Course>;
   navigationData: Array<any>|null = null;
+  
   showSearch: boolean = false;
   studentMatches: any[] = [];
-
   searchSubject: Subject<string> = new Subject;
   searchSubscription: Subscription;
-  
-  @ViewChild(FullscreenSearchComponent)
-  searchComponent: FullscreenSearchComponent;
 
   constructor(private route: ActivatedRoute, private courseService: CourseService, private studentService: StudentService) {
   }
@@ -64,7 +61,6 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   searchResultSelected(id: number) {
     this.showSearch = false;
     this.studentMatches = [];
-    console.log(id);
   }
   searchCloseButtonClicked() {
     this.showSearch = false;

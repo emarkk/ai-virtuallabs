@@ -23,7 +23,6 @@
 }
 table.info {
   width: 100%;
-  margin-bottom: 20px;
   font-size: 0.9em;
 }
 table.info.main {
@@ -52,4 +51,7 @@ table.info td:first-child {
 .sep {
   display: inline-block;
   width: 40px;
+}
+.actions button {
+  margin: 0 15px;
 }

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Professor } from 'src/app/core/models/professor.model';
@@ -20,6 +20,11 @@ export class ProfessorCourseDetailComponent implements OnInit {
   professors$: Observable<Professor[]>;
   navigationData: Array<any>|null = null;
   updatingStatus: boolean = false;
+
+  showSearch: boolean = false;
+  professorMatches: any[] = [];
+  searchSubject: Subject<string> = new Subject;
+  searchSubscription: Subscription;
 
   constructor(private router: Router, private route: ActivatedRoute, private courseService: CourseService) {
   }
@@ -60,5 +65,19 @@ export class ProfessorCourseDetailComponent implements OnInit {
           this.courseEnabled = true;
       });
     }
+  }
+  addCollaboratorButtonClicked() {
+    this.showSearch = true;
+  }
+  searchChanged(input: string) {
+    this.searchSubject.next(input);
+  }
+  searchResultSelected(id: number) {
+    this.showSearch = false;
+    this.professorMatches = [];
+  }
+  searchCloseButtonClicked() {
+    this.showSearch = false;
+    this.professorMatches = [];
   }
 }

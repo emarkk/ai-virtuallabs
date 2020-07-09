@@ -1,4 +1,4 @@
-<div class="tile">
+<div class="tile" [class.no-pad]="tileNoPadding">
   <h2 *ngIf="tileTitle && !tileTitleLink" class="title">
     <mat-icon *ngIf="tileIcon">{{ tileIcon }}</mat-icon>
     {{ tileTitle }}

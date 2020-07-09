@@ -9,6 +9,7 @@ export class TileComponent implements OnInit {
   tileIcon: string;
   tileTitle: string;
   tileTitleLink: string;
+  tileNoPadding: boolean;
 
   @Input() set icon(name: string) {
     this.tileIcon = name;
@@ -18,6 +19,9 @@ export class TileComponent implements OnInit {
   }
   @Input() set titleLink(value: string) {
     this.tileTitleLink = value;
+  }
+  @Input() set noPad(value: boolean) {
+    this.tileNoPadding = true;
   }
 
   constructor() {
