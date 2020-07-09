@@ -28,7 +28,7 @@
         <input matInput placeholder="6" formControlName="maxTeamMembers" required>
         <mat-error>{{ getMaxTeamMembersErrorMessage() }}</mat-error>
       </mat-form-field>
-      <mat-slide-toggle [disabled]="locked">Enabled</mat-slide-toggle>
+      <mat-slide-toggle formControlName="enabled">Enabled</mat-slide-toggle>
     </div>
     <div class="actions">
       <button mat-flat-button [routerLink]="cancelButtonLink">Cancel</button>

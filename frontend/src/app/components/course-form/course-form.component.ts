@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 import { Course } from 'src/app/core/models/course.model';
 
@@ -21,23 +20,23 @@ export class CourseFormComponent implements OnInit {
     name: new FormControl({ value: '', disabled: false }, [Validators.required]),
     acronym: new FormControl({ value: '', disabled: false }, [Validators.required]),
     minTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required, numberValidator, Validators.min(1)]),
-    maxTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required, numberValidator, Validators.min(1)])
+    maxTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required, numberValidator, Validators.min(1)]),
+    enabled: new FormControl({ value: '', disabled: false }, [Validators.required])
   }, newCourseFormValidator);
 
   @Input() set data(value: Course) {
+    this.form.get('code').disable();
     this.form.get('code').setValue(value.code);
     this.form.get('name').setValue(value.name);
     this.form.get('acronym').setValue(value.acronym);
     this.form.get('minTeamMembers').setValue(value.minTeamMembers);
     this.form.get('maxTeamMembers').setValue(value.maxTeamMembers);
+    this.form.get('enabled').setValue(value.enabled);
   }
 
   @Input() set cancelLink(value: string) {
     this.cancelButtonLink = value;
   }
-
-  @ViewChild(MatSlideToggle)
-  enableSwitch: MatSlideToggle;
 
   @Output() update = new EventEmitter<object>();
 
@@ -94,7 +93,7 @@ export class CourseFormComponent implements OnInit {
     const acronym = this.form.get('acronym').value;
     const minTeamMembers = this.form.get('minTeamMembers').value;
     const maxTeamMembers = this.form.get('maxTeamMembers').value;
-    const enabled = this.enableSwitch.checked;
+    const enabled = this.form.get('enabled').value;
 
     this.update.emit({ data: { code, name, acronym, minTeamMembers, maxTeamMembers, enabled } });
   }

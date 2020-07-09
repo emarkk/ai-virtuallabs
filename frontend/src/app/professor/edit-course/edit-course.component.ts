@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { Course } from 'src/app/core/models/course.model';
@@ -21,7 +21,7 @@ export class ProfessorEditCourseComponent implements OnInit {
   @ViewChild(CourseFormComponent)
   formComponent: CourseFormComponent;
 
-  constructor(private route: ActivatedRoute, private courseService: CourseService) {
+  constructor(private router: Router, private route: ActivatedRoute, private courseService: CourseService) {
   }
 
   ngOnInit(): void {
@@ -33,10 +33,19 @@ export class ProfessorEditCourseComponent implements OnInit {
         this.navigationData = [navHome, navCourses, nav(course.name, '/professor/course/' + course.code), nav('Edit')];
       });
     });
-
   }
 
   saveCourse(courseData) {
+    this.formComponent.lock();
+    const { name, acronym, minTeamMembers, maxTeamMembers, enabled } = courseData;
+    this.courseService.update(this.courseCode, name, acronym, minTeamMembers, maxTeamMembers, enabled).subscribe(res => {
+      this.formComponent.unlock();
+      if(res) {
+        this.courseService.hasUpdatedSuccessfully();
+        this.router.navigate(['/professor/courses'], { queryParams: { updateSuccess: true }});
+      } else
+        this.formComponent.form.setErrors({ error: true });
+    });
   }
 
 }

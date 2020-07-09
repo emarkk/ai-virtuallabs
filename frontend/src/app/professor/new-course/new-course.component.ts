@@ -31,7 +31,7 @@ export class ProfessorNewCourseComponent implements OnInit {
       this.formComponent.unlock();
       if(res) {
         this.courseService.hasInsertedSuccessfully();
-        this.router.navigate(['/professor/courses?insertionSuccess']);
+        this.router.navigate(['/professor/courses'], { queryParams: { insertionSuccess: true }});
       } else
         this.formComponent.form.setErrors({ error: true });
     });

@@ -16,7 +16,9 @@ import { AuthService } from 'src/app/core/services/auth.service';
 export class ProfessorCoursesComponent implements OnInit {
   navigationData: Array<any> = [navHome, navCourses];
   courses$: Observable<Course[]>;
+
   insertionSuccess: boolean = false;
+  updateSuccess: boolean = false;
 
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService,
       private courseService: CourseService, private professorService: ProfessorService) {
@@ -28,6 +30,12 @@ export class ProfessorCoursesComponent implements OnInit {
       if(!this.insertionSuccess)
         this.router.navigate(['/professor/courses']);
     }
+    if(this.route.snapshot.params.updateSuccess) {
+      this.updateSuccess = this.courseService.hasUpdatedSuccessfully();
+      if(!this.updateSuccess)
+        this.router.navigate(['/professor/courses']);
+    }
+    
     this.courses$ = this.professorService.getCourses(this.authService.getUserData().id);
   }
 
