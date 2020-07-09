@@ -1,10 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Professor } from 'src/app/core/models/professor.model';
 import { CourseService } from 'src/app/core/services/course.service';
+
+import { ConfirmDialog } from 'src/app/components/dialogs/confirm/confirm.component';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
 
@@ -15,6 +18,7 @@ import { navHome, navCourses, nav } from '../professor.navdata';
 })
 export class ProfessorCourseDetailComponent implements OnInit {
   courseCode: string;
+  courseName: string;
   courseEnabled: boolean;
   course$: Observable<Course>;
   professors$: Observable<Professor[]>;
@@ -26,7 +30,7 @@ export class ProfessorCourseDetailComponent implements OnInit {
   searchSubject: Subject<string> = new Subject;
   searchSubscription: Subscription;
 
-  constructor(private router: Router, private route: ActivatedRoute, private courseService: CourseService) {
+  constructor(private router: Router, private route: ActivatedRoute, private courseService: CourseService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -36,6 +40,7 @@ export class ProfessorCourseDetailComponent implements OnInit {
       this.professors$ = this.courseService.getProfessors(this.courseCode);
 
       this.course$.subscribe(course => {
+        this.courseName = course.name;
         this.courseEnabled = course.enabled;
         this.navigationData = [navHome, navCourses, nav(course.name, '/professor/course/' + course.code)];
       });
@@ -43,12 +48,19 @@ export class ProfessorCourseDetailComponent implements OnInit {
   }
 
   deleteButtonClicked() {
-    if(confirm('Are you sure?')) {
-      this.courseService.delete(this.courseCode).subscribe(res => {
-        if(res)
-          this.router.navigate(['/professor/courses']);
-      });
-    }
+    this.dialog.open(ConfirmDialog, {
+      data: {
+        title: 'Delete course',
+        message: 'Are you sure you want to delete course "' + this.courseName + '"?'
+      }
+    }).afterClosed().subscribe(confirmed => {
+      if(confirmed) {
+        this.courseService.delete(this.courseCode).subscribe(res => {
+          if(res)
+            this.router.navigate(['/professor/courses']);
+        });
+      }
+    });
   }
   statusButtonClicked() {
     this.updatingStatus = true;

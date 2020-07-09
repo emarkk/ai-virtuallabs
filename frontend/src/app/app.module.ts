@@ -25,6 +25,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { AppComponent } from './app.component';
 import { PageComponent } from './components/page/page.component';
+import { ConfirmDialog } from './components/dialogs/confirm/confirm.component';
 import { TileComponent } from './components/tile/tile.component';
 import { AsyncButtonComponent } from './components/async-button/async-button.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
@@ -61,6 +62,7 @@ import { StudentCourseDetailComponent } from './student/course-detail/course-det
   declarations: [
     AppComponent,
     PageComponent,
+    ConfirmDialog,
     TileComponent,
     AsyncButtonComponent,
     WelcomeComponent,

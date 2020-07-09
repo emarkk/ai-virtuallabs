@@ -1,7 +1,7 @@
 <div class="container" *ngIf="course$ | async as course; else loading">
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
-    <h1>Update course</h1>
+    <h1>Edit course info</h1>
     <p>Enter the required course information in the form below.</p>
     <div class="info">
       <app-course-form [data]="course" [cancelLink]="'/professor/course/' + course.code" (update)="saveCourse($event.data)"></app-course-form>
