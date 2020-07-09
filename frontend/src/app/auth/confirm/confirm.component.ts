@@ -11,7 +11,7 @@ import { RegistrationService } from 'src/app/core/services/registration.service'
   styleUrls: ['./confirm.component.css']
 })
 export class ConfirmComponent implements OnInit {
-  result$: Observable<Boolean>;
+  result$: Observable<boolean>;
 
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService, private registrationService: RegistrationService) {
   }

@@ -15,6 +15,7 @@ import { navHome, navCourses, nav } from '../professor.navdata';
 })
 export class ProfessorCourseDetailComponent implements OnInit {
   courseCode: string;
+  courseEnabled: boolean;
   course$: Observable<Course>;
   professors$: Observable<Professor[]>;
   navigationData: Array<any>|null = null;
@@ -30,6 +31,7 @@ export class ProfessorCourseDetailComponent implements OnInit {
       this.professors$ = this.courseService.getProfessors(this.courseCode);
 
       this.course$.subscribe(course => {
+        this.courseEnabled = course.enabled;
         this.navigationData = [navHome, navCourses, nav(course.name, '/professor/course/' + course.code)];
       });      
     });
@@ -37,18 +39,18 @@ export class ProfessorCourseDetailComponent implements OnInit {
 
   statusButtonClicked() {
     this.updatingStatus = true;
-    /*if(this.course£.) {
+    if(this.courseEnabled) {
       this.courseService.disable(this.courseCode).subscribe(res => {
         this.updatingStatus = false;
         if(res)
-          this.course.enabled = false;
+          this.courseEnabled = false;
       });
     } else {
       this.courseService.enable(this.courseCode).subscribe(res => {
         this.updatingStatus = false;
         if(res)
-          this.course.enabled = true;
+          this.courseEnabled = true;
       });
-    }*/
+    }
   }
 }

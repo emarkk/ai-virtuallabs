@@ -7,8 +7,8 @@
       </div>
       <div class="status">
         <app-async-button (click)="statusButtonClicked()" [loading]="updatingStatus" color="basic">
-          <span *ngIf="course.enabled"><mat-icon>visibility</mat-icon> enabled</span>
-          <span *ngIf="!course.enabled"><mat-icon>visibility_off</mat-icon> disabled</span>
+          <span *ngIf="courseEnabled"><mat-icon>visibility</mat-icon> enabled</span>
+          <span *ngIf="!courseEnabled"><mat-icon>visibility_off</mat-icon> disabled</span>
         </app-async-button>
       </div>
     </div>
