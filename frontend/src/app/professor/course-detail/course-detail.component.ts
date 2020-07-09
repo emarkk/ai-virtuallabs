@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { Course } from 'src/app/core/models/course.model';
@@ -21,7 +21,7 @@ export class ProfessorCourseDetailComponent implements OnInit {
   navigationData: Array<any>|null = null;
   updatingStatus: boolean = false;
 
-  constructor(private route: ActivatedRoute, private courseService: CourseService) {
+  constructor(private router: Router, private route: ActivatedRoute, private courseService: CourseService) {
   }
 
   ngOnInit(): void {
@@ -37,6 +37,14 @@ export class ProfessorCourseDetailComponent implements OnInit {
     });
   }
 
+  deleteButtonClicked() {
+    if(confirm('Are you sure?')) {
+      this.courseService.delete(this.courseCode).subscribe(res => {
+        if(res)
+          this.router.navigate(['/professor/courses']);
+      });
+    }
+  }
   statusButtonClicked() {
     this.updatingStatus = true;
     if(this.courseEnabled) {

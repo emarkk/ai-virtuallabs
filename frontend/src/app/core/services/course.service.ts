@@ -5,6 +5,7 @@ import { map, catchError } from 'rxjs/operators';
 
 import { Course } from '../models/course.model';
 import { Professor } from '../models/professor.model';
+import { Team } from '../models/team.model';
 
 import { url, httpOptions } from '../utils';
 
@@ -47,6 +48,12 @@ export class CourseService {
       catchError(error => of(null))
     );
   }
+  getTeams(code: string): Observable<Team[]> {
+    return this.http.get<Team[]>(url('courses/' + code + '/teams')).pipe(
+      map(arr => arr.map(x => new Team(x.id, x.name, x.status))),
+      catchError(error => of(null))
+    );
+  }
   add(code: string, name: string, acronym: string, minTeamMembers: number, maxTeamMembers: number, enabled: boolean): Observable<boolean> {
     return this.http.post<boolean>(url('courses'), { code, name, acronym, minTeamMembers, maxTeamMembers, enabled }, httpOptions).pipe(
       catchError(error => of(null))
@@ -56,6 +63,12 @@ export class CourseService {
     return this.http.put(url('courses/' + code), { code, name, acronym, minTeamMembers, maxTeamMembers, enabled }, httpOptions).pipe(
       map(_ => true),
       catchError(error => of(null))
+    );
+  }
+  delete(code: string): Observable<boolean> {
+    return this.http.delete(url('courses/' + code)).pipe(
+      map(_ => true),
+      catchError(error => of(false))
     );
   }
   enable(code: string): Observable<boolean> {

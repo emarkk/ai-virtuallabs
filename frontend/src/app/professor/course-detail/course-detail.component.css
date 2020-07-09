@@ -35,9 +35,13 @@ table.info td {
 table.info td:first-child {
   width: 25%;
 }
+.professor-list {
+  display: flex;
+  align-items: center;
+}
 .professor {
   display: inline-block;
-  margin-right: 30px;
+  margin-right: 45px;
 }
 .professor-info {
   display: flex;

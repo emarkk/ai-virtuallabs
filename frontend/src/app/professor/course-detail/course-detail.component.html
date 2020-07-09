@@ -3,7 +3,11 @@
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <div class="head">
       <div class="title">
-        <h1>{{ course.code + ' - ' + course.name }} <a><mat-icon [routerLink]="'/professor/course/' + course.code + '/edit'">edit</mat-icon></a></h1>
+        <h1>
+          {{ course.code + ' - ' + course.name }}&nbsp;
+          <a><mat-icon [routerLink]="'/professor/course/' + course.code + '/edit'">edit</mat-icon></a>
+          <a (click)="deleteButtonClicked()"><mat-icon>delete</mat-icon></a>
+        </h1>
       </div>
       <div class="status">
         <app-async-button (click)="statusButtonClicked()" [loading]="updatingStatus" color="basic">
@@ -16,11 +20,14 @@
       <tr>
         <td>Professors</td>
         <td>
-          <div *ngFor="let professor of professors$ | async" class="professor">
-            <div class="professor-info">
-              <div class="profile-pic"><img src="assets/img/user.png" /></div>
-              <div><span><b>{{ professor.lastName.toUpperCase() }}</b></span><span> {{ professor.firstName }}</span></div>
+          <div class="professor-list">
+            <div *ngFor="let professor of professors$ | async" class="professor">
+              <div class="professor-info">
+                <div class="profile-pic"><img src="assets/img/user.png" /></div>
+                <div><span><b>{{ professor.lastName.toUpperCase() }}</b></span><span> {{ professor.firstName }}</span></div>
+              </div>
             </div>
+            <button mat-flat-button color="primary">Add collaborator</button>
           </div>
         </td>
       </tr>

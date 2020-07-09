@@ -1,0 +1,6 @@
+<div class="student-list">
+  <div *ngFor="let student of studentList">
+    <app-course-item [data]="student"></app-course-item>
+  </div>
+  <p *ngIf="studentList && !studentList.length" class="empty">No students to show.</p>
+</div>
