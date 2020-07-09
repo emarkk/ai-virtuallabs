@@ -43,9 +43,12 @@ import { HomeComponent } from './home/home.component';
 import { ProfessorContainerComponent } from './professor/container/container.component';
 import { ProfessorHomeComponent } from './professor/home/home.component';
 import { ProfessorCoursesComponent } from './professor/courses/courses.component';
-import { ProfessorCourseDetailComponent } from './professor/course-detail/course-detail.component';
 import { ProfessorNewCourseComponent } from './professor/new-course/new-course.component';
 import { ProfessorEditCourseComponent } from './professor/edit-course/edit-course.component';
+import { ProfessorCourseDetailComponent } from './professor/course-detail/course-detail.component';
+import { ProfessorCourseStudentsComponent } from './professor/course-students/course-students.component';
+import { ProfessorCourseTeamsComponent } from './professor/course-teams/course-teams.component';
+import { ProfessorCourseHomeworksComponent } from './professor/course-homeworks/course-homeworks.component';
 import { StudentContainerComponent } from './student/container/container.component';
 import { StudentHomeComponent } from './student/home/home.component';
 import { StudentCoursesComponent } from './student/courses/courses.component';
@@ -73,8 +76,11 @@ import { StudentCourseDetailComponent } from './student/course-detail/course-det
     ProfessorHomeComponent,
     ProfessorCoursesComponent,
     ProfessorNewCourseComponent,
-    ProfessorCourseDetailComponent,
     ProfessorEditCourseComponent,
+    ProfessorCourseDetailComponent,
+    ProfessorCourseStudentsComponent,
+    ProfessorCourseTeamsComponent,
+    ProfessorCourseHomeworksComponent,
     StudentContainerComponent,
     StudentHomeComponent,
     StudentCoursesComponent,

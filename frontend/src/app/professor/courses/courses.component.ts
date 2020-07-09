@@ -3,10 +3,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { Course } from 'src/app/core/models/course.model';
-import { navHome, navCourses } from '../professor.navdata';
+
 import { CourseService } from 'src/app/core/services/course.service';
 import { ProfessorService } from 'src/app/core/services/professor.service';
 import { AuthService } from 'src/app/core/services/auth.service';
+
+import { navHome, navCourses } from '../professor.navdata';
 
 @Component({
   selector: 'app-professor-courses',

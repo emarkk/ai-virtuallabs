@@ -5,8 +5,11 @@ import { ProfessorContainerComponent } from './container/container.component';
 import { ProfessorHomeComponent } from './home/home.component';
 import { ProfessorCoursesComponent } from './courses/courses.component';
 import { ProfessorNewCourseComponent } from './new-course/new-course.component';
-import { ProfessorCourseDetailComponent } from './course-detail/course-detail.component';
 import { ProfessorEditCourseComponent } from './edit-course/edit-course.component';
+import { ProfessorCourseDetailComponent } from './course-detail/course-detail.component';
+import { ProfessorCourseStudentsComponent } from './course-students/course-students.component';
+import { ProfessorCourseTeamsComponent } from './course-teams/course-teams.component';
+import { ProfessorCourseHomeworksComponent } from './course-homeworks/course-homeworks.component';
 
 export const professorRouting = [
   {
@@ -39,6 +42,18 @@ export const professorRouting = [
       {
         path: 'course/:code',
         component: ProfessorCourseDetailComponent,
+      },
+      {
+        path: 'course/:code/students',
+        component: ProfessorCourseStudentsComponent,
+      },
+      {
+        path: 'course/:code/teams',
+        component: ProfessorCourseTeamsComponent,
+      },
+      {
+        path: 'course/:code/homeworks',
+        component: ProfessorCourseHomeworksComponent,
       }
     ]
   }

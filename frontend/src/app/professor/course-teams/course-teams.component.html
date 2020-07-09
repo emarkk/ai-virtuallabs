@@ -1,0 +1,9 @@
+<div class="container" *ngIf="course$ | async as course; else loading">
+  <app-page>
+    <app-navigation [navigationData]="navigationData"></app-navigation>
+    <h1>{{ course.name }} <span class="bar"></span><span>Teams</span></h1>
+  </app-page>
+</div>
+<ng-template #loading>
+  <app-data-placeholder></app-data-placeholder>
+</ng-template>

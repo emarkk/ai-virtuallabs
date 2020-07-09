@@ -33,7 +33,7 @@ export class ProfessorCourseDetailComponent implements OnInit {
       this.course$.subscribe(course => {
         this.courseEnabled = course.enabled;
         this.navigationData = [navHome, navCourses, nav(course.name, '/professor/course/' + course.code)];
-      });      
+      });
     });
   }
 

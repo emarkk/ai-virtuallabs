@@ -66,6 +66,15 @@ mat-form-field {
 form mat-form-field, form input {
   width: 100%;
 }
+.bar {
+  position: relative;
+  top: 5px;
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  margin: 0 10px;
+  background: #000;
+}
 .error-box:not(:empty) {
   padding: 10px;
   color: #da3125;
