@@ -1,4 +1,4 @@
-<div class="item" [routerLink]="course.link">
+<div class="item" [routerLink]="course.link" [class.disabled]="!course.enabled">
   <div class="col col-i">
     <mat-icon>school</mat-icon>
   </div>
