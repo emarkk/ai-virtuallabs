@@ -1,4 +1,5 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-fullscreen-search',
@@ -6,9 +7,18 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./fullscreen-search.component.css']
 })
 export class FullscreenSearchComponent implements OnInit {
+  searchMatches: any[] = null;
+
+  @Input() set matches(data: any[]) {
+    this.searchMatches = data;
+  }
 
   @Output() search = new EventEmitter<string>();
+  @Output() select = new EventEmitter<number>();
   @Output() close = new EventEmitter<void>();
+
+  @ViewChild(MatInput)
+  seachInput: MatInput;
 
   constructor() {
   }
@@ -19,7 +29,12 @@ export class FullscreenSearchComponent implements OnInit {
   searchInputChanged(value: string) {
     this.search.emit(value);
   }
+  matchItemSelected(id: number) {
+    this.seachInput.value = '';
+    this.select.emit(id);
+  }
   closeButtonClicked() {
+    this.seachInput.value = '';
     this.close.emit();
   }
 }

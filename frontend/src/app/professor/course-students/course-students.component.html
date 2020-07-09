@@ -6,7 +6,7 @@
       <button mat-flat-button color="brand" (click)="showSearch = true">Enroll student</button>
     </div>
   </app-page>
-  <app-fullscreen-search [class.hide]="!showSearch" (search)="searchChanged($event)" (close)="showSearch = false">
+  <app-fullscreen-search [class.hide]="!showSearch" [matches]="studentMatches" (search)="searchChanged($event)" (select)="searchResultSelected($event)" (close)="searchCloseButtonClicked()">
   </app-fullscreen-search>
 </div>
 <ng-template #loading>

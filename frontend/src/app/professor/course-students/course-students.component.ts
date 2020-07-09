@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
+import { debounceTime, filter } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 
@@ -21,7 +22,9 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   course$: Observable<Course>;
   navigationData: Array<any>|null = null;
   showSearch: boolean = false;
+  studentMatches: any[] = [];
 
+  searchSubject: Subject<string> = new Subject;
   searchSubscription: Subscription;
   
   @ViewChild(FullscreenSearchComponent)
@@ -38,15 +41,33 @@ export class ProfessorCourseStudentsComponent implements OnInit {
       this.course$.subscribe(course => {
         this.navigationData = [navHome, navCourses, nav(course.name, '/professor/course/' + course.code), nav('Students')];
       });
+
+      this.searchSubject.pipe(
+        debounceTime(400),
+      ).subscribe(input => {
+        if(this.searchSubscription)
+          this.searchSubscription.unsubscribe();
+
+        if(input.length > 2) {
+          this.searchSubscription = this.studentService.search(input).subscribe(students => {
+            this.studentMatches = students.map(s => Object.assign(s, { username: 's' + s.id }));
+          });
+        } else
+          this.studentMatches = [];
+      });
     });
   }
 
   searchChanged(input: string) {
-    if(this.searchSubscription)
-      this.searchSubscription.unsubscribe();
-
-    this.searchSubscription = this.studentService.search(input).subscribe(students => {
-
-    });
+    this.searchSubject.next(input);
+  }
+  searchResultSelected(id: number) {
+    this.showSearch = false;
+    this.studentMatches = [];
+    console.log(id);
+  }
+  searchCloseButtonClicked() {
+    this.showSearch = false;
+    this.studentMatches = [];
   }
 }
