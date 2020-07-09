@@ -65,6 +65,12 @@ export class CourseService {
       catchError(error => of(null))
     );
   }
+  delete(code: string): Observable<boolean> {
+    return this.http.delete(url('courses/' + code)).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
   enable(code: string): Observable<boolean> {
     return this.http.post<boolean>(url('courses/' + code + '/enable'), null, httpOptions).pipe(
       map(_ => true),
