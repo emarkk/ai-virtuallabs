@@ -71,7 +71,7 @@ public class ProfessorServiceImpl implements ProfessorService {
             }
         };
         return professorRepository.getByResumedInfosContaining(q).stream()
-                .limit(4)
+                .limit(3)
                 .sorted(distance)
                 .map(s -> modelMapper.map(s, ProfessorDTO.class))
                 .collect(Collectors.toList());

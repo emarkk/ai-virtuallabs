@@ -1,9 +1,6 @@
 package it.polito.ai.virtuallabs.backend.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -30,7 +27,7 @@ public class Course {
     private Boolean enabled;
 
     @Builder.Default
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany(mappedBy = "courses", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)//Aggiunt MERGE e EAGER
     private List<Student> students = new ArrayList<>();
 
     @Builder.Default

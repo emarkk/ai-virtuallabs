@@ -1,9 +1,6 @@
 package it.polito.ai.virtuallabs.backend.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,7 +26,7 @@ public class Professor extends AuthenticatedEntity {
 
     private String resumedInfos;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER) //Aggiunto EAGER
     @JoinTable(name = "professor_course", joinColumns = @JoinColumn(name = "professor_id"), inverseJoinColumns = @JoinColumn(name = "course_code"))
     private List<Course> courses = new ArrayList<>();
 

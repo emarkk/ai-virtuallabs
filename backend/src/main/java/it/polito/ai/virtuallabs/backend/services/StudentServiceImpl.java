@@ -76,7 +76,7 @@ public class StudentServiceImpl implements StudentService {
             }
         };
         return studentRepository.getByResumedInfosContaining(q).stream()
-                .limit(4)
+                .limit(3)
                 .sorted(distance)
                 .map(s -> modelMapper.map(s, StudentDTO.class))
                 .collect(Collectors.toList());
