@@ -30,13 +30,13 @@ services:
     links:
       - mysql
 
-#  frontend-app:
-#    build: ./frontend
-#    container_name: frontend-app
-#    ports:
-#      - 4200:80
-#    links:
-#      - backend-app
+  frontend-app:
+    build: ./frontend
+    container_name: frontend-app
+    ports:
+      - 4200:80
+    links:
+      - backend-app
 
 
 volumes:

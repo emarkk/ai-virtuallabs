@@ -117,6 +117,10 @@ public class CourseServiceImpl implements CourseService {
         if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
 
+        course.removeAllProfessors();
+        course.removeAllStudents();
+        course.removeAllTeams();
+
         courseRepository.delete(course);
     }
 

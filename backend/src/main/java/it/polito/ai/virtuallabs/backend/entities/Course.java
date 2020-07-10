@@ -48,4 +48,19 @@ public class Course {
         p.getCourses().add(this);
     }
 
+    public void removeAllProfessors() {
+        this.professors.forEach(p -> p.getCourses().remove(this));
+        this.professors.clear();
+    }
+
+    public void removeAllStudents(){
+        this.students.forEach(s -> s.getCourses().remove(this));
+        this.students.clear();
+    }
+
+    public void removeAllTeams(){
+        this.teams.forEach(t -> t.setCourse(null));
+        this.teams.clear();
+    }
+
 }
