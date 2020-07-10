@@ -27,7 +27,7 @@ public class Course {
     private Boolean enabled;
 
     @Builder.Default
-    @ManyToMany(mappedBy = "courses", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)//Aggiunt MERGE e EAGER
+    @ManyToMany(mappedBy = "courses", cascade = CascadeType.MERGE)//Aggiunt MERGE e EAGER
     private List<Student> students = new ArrayList<>();
 
     @Builder.Default
