@@ -37,6 +37,7 @@ import { CourseListComponent } from './components/course-list/course-list.compon
 import { CourseFormComponent } from './components/course-form/course-form.component';
 import { StudentItemComponent } from './components/student-item/student-item.component';
 import { StudentListComponent } from './components/student-list/student-list.component';
+import { StudentTableComponent } from './components/student-table/student-table.component';
 
 import { ContainerComponent } from './container/container.component';
 import { SignInComponent } from './auth/signin/signin.component';
@@ -74,6 +75,7 @@ import { StudentCourseDetailComponent } from './student/course-detail/course-det
     CourseFormComponent,
     StudentItemComponent,
     StudentListComponent,
+    StudentTableComponent,
     ContainerComponent,
     SignInComponent,
     SignUpComponent,

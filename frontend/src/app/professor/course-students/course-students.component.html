@@ -2,9 +2,11 @@
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <h1>{{ course.name }} <span class="bar"></span><span>Students</span></h1>
+    <app-student-table [students]="students" (select)="selectedStudentsChanged($event)"></app-student-table>
     <div class="controls">
-      <button mat-flat-button color="brand" (click)="showSearch = true">Enroll student</button>
-      <button mat-flat-button color="primary" (click)="csvButtonClicked()">Enroll from CSV</button>
+      <button mat-flat-button *ngIf="!selectedEnrolledStudents.size" color="brand" (click)="showSearch = true">Enroll student</button>
+      <button mat-flat-button *ngIf="!selectedEnrolledStudents.size" color="primary" (click)="csvButtonClicked()">Enroll from CSV</button>
+      <button mat-flat-button *ngIf="selectedEnrolledStudents.size" color="danger" (click)="unenrollSelectedButtonClicked()">Unenroll selected ({{ selectedEnrolledStudents.size }})</button>
     </div>
     <input type="file" ng2FileSelect hidden #fileInput />
   </app-page>

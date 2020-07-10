@@ -9,6 +9,7 @@ import { CourseService } from 'src/app/core/services/course.service';
 import { StudentService } from 'src/app/core/services/student.service';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
+import { Student } from 'src/app/core/models/student.model';
 
 @Component({
   selector: 'app-professor-course-students',
@@ -24,6 +25,14 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   studentMatches: any[] = [];
   searchSubject: Subject<string> = new Subject;
   searchSubscription: Subscription;
+
+  selectedEnrolledStudents = new Set<number>();
+  students = [
+    new Student(111111, 'Emanuele', 'Marchetta', 's111111@studenti.polito.it', false),
+    new Student(222222, 'Abba', 'Gallo', 's222222@studenti.polito.it', false),
+    new Student(333333, 'Rotto', 'Tremo', 's333333@studenti.polito.it', false),
+    new Student(444444, 'Pessimo', 'Gusto', 's444444@studenti.polito.it', false)
+  ];
 
   @ViewChild('fileInput')
   fileInput: ElementRef;
@@ -68,7 +77,13 @@ export class ProfessorCourseStudentsComponent implements OnInit {
     this.studentMatches = [];
   }
 
+  selectedStudentsChanged(selected: Set<number>) {
+    this.selectedEnrolledStudents = selected;
+  }
   csvButtonClicked() {
     this.fileInput.nativeElement.click();
+  }
+  unenrollSelectedButtonClicked() {
+    
   }
 }

@@ -1,6 +1,6 @@
 h1 span {
   font-weight: normal;
 }
-.controls button {
-  margin: 0 15px;
+.controls button:not(:first-child) {
+  margin-left: 30px;
 }
