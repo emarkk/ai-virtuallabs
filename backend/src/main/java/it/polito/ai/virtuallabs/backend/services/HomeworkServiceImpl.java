@@ -3,9 +3,12 @@ package it.polito.ai.virtuallabs.backend.services;
 import it.polito.ai.virtuallabs.backend.dtos.HomeworkDTO;
 import it.polito.ai.virtuallabs.backend.entities.Course;
 import it.polito.ai.virtuallabs.backend.entities.Homework;
+import it.polito.ai.virtuallabs.backend.entities.Professor;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.HomeworkRepository;
+import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +30,10 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Autowired
     CourseRepository courseRepository;
 
+    @Autowired
+    AuthenticatedEntityMapper authenticatedEntityMapper;
+
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
     public void storeHomework(MultipartFile file, String courseCode, long dueDate) {
         Optional<Course> courseOptional = courseRepository.findById(courseCode);
@@ -35,14 +42,15 @@ public class HomeworkServiceImpl implements HomeworkService {
             throw new CourseNotFoundException();
         }
         Course c = courseOptional.get();
+        if(!c.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
         try{
             long now = System.currentTimeMillis();
             if(dueDate <= now) {
-                System.out.println(now);
                 throw new HomeworkDueDateException();
             }
             Timestamp due = new Timestamp(dueDate);
-            String filename = due.getTime() + "_"+ file.getOriginalFilename();
+            String filename = now + "_"+ file.getOriginalFilename();
             Path coursePath = Paths.get( "uploads/homeworks/" + courseCode);
             if(!Files.exists(coursePath))
                 Files.createDirectory(coursePath);

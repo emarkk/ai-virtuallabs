@@ -4,9 +4,11 @@ import it.polito.ai.virtuallabs.backend.dtos.HomeworkDTO;
 import it.polito.ai.virtuallabs.backend.services.CourseNotFoundException;
 import it.polito.ai.virtuallabs.backend.services.HomeworkDueDateException;
 import it.polito.ai.virtuallabs.backend.services.HomeworkService;
+import it.polito.ai.virtuallabs.backend.services.NotAllowedException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,7 +25,7 @@ public class HomeworkController {
 
     @PostMapping({ "", "/" })
     @ResponseStatus(HttpStatus.CREATED)
-    public void postHomework(@RequestParam Map<String, Object> input, @RequestParam("file") MultipartFile file) throws CourseNotFoundException, HomeworkDueDateException, RuntimeException {
+    public void postHomework(@RequestParam Map<String, Object> input, @RequestParam("file") MultipartFile file) throws CourseNotFoundException, HomeworkDueDateException, RuntimeException, NotAllowedException {
         String courseCode = "";
 
         if(!input.containsKey("courseCode") || !input.containsKey("homeworkDue")){
@@ -37,7 +39,10 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course Not Found");
         }catch (HomeworkDueDateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Due Date is not correct");
-        }catch (RuntimeException e) {
+        }catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
+        }
+        catch (RuntimeException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
         }
 
