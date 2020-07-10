@@ -17,13 +17,13 @@ export class ProfessorService {
   }
 
   get(professorId: number): Observable<Professor> {
-    return this.http.get<Professor>(url('professors/' + professorId)).pipe(
+    return this.http.get<any>(url('professors/' + professorId)).pipe(
       map(x => new Professor(x.id, x.firstName, x.lastName, x.email, x.hasPicture)),
       catchError(error => of(null))
     );
   }
   search(query: string): Observable<Professor[]> {
-    return this.http.get<Professor[]>(url('professors/search?q=' + query)).pipe(
+    return this.http.get<any[]>(url('professors/search?q=' + query)).pipe(
       map(arr => arr.map(x => new Professor(x.id, x.firstName, x.lastName, x.email, x.hasPicture))),
       catchError(error => of(null))
     );
