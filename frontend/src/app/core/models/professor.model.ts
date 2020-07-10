@@ -3,13 +3,13 @@ export class Professor {
   firstName: string;
   lastName: string;
   email: string;
-  hasPicture: boolean;
+  picturePath: string;
 
   constructor(id: number, firstName: string, lastName: string, email: string, hasPicture: boolean) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
-    this.hasPicture = hasPicture;
+    this.picturePath = null;
   }
 }

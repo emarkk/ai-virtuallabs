@@ -8,8 +8,6 @@ import { Course } from 'src/app/core/models/course.model';
 import { CourseService } from 'src/app/core/services/course.service';
 import { StudentService } from 'src/app/core/services/student.service';
 
-import { FullscreenSearchComponent } from 'src/app/components/fullscreen-search/fullscreen-search.component';
-
 import { navHome, navCourses, nav } from '../professor.navdata';
 
 @Component({
