@@ -1,3 +1,6 @@
 h1 span {
   font-weight: normal;
 }
+.controls button {
+  margin: 0 15px;
+}

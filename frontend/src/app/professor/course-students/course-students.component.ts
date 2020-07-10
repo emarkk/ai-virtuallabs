@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -24,6 +24,9 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   studentMatches: any[] = [];
   searchSubject: Subject<string> = new Subject;
   searchSubscription: Subscription;
+
+  @ViewChild('fileInput')
+  fileInput: ElementRef;
 
   constructor(private route: ActivatedRoute, private courseService: CourseService, private studentService: StudentService) {
   }
@@ -63,5 +66,9 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   searchCloseButtonClicked() {
     this.showSearch = false;
     this.studentMatches = [];
+  }
+
+  csvButtonClicked() {
+    this.fileInput.nativeElement.click();
   }
 }
