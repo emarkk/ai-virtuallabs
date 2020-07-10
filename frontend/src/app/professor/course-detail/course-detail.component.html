@@ -22,7 +22,7 @@
           <div class="professor-list">
             <div *ngFor="let professor of professors$ | async" class="professor">
               <div class="professor-info">
-                <div class="profile-pic"><img src="assets/img/user.png" /></div>
+                <div class="profile-pic"><img [src]="professor.picturePath || 'assets/img/user.png'" /></div>
                 <div><span><b>{{ professor.lastName.toUpperCase() }}</b></span><span> {{ professor.firstName }}</span></div>
               </div>
             </div>

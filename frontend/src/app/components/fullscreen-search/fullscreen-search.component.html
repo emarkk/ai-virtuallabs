@@ -9,7 +9,7 @@
     </div>
     <div class="results">
       <div *ngFor="let match of searchMatches" class="result" (click)="matchItemSelected(match.id)">
-        <div class="profile-pic"><img src="assets/img/user.png" /></div>
+        <div class="profile-pic"><img [src]="match.picturePath || 'assets/img/user.png'" /></div>
         <div>
           <span>{{ match.firstName }}</span>&nbsp;
           <span><b>{{ match.lastName.toUpperCase() }}</b></span>&nbsp;
