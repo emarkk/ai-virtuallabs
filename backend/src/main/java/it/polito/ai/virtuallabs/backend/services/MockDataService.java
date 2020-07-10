@@ -104,7 +104,7 @@ public class MockDataService {
     }
 
     public void addCourse(String code, String name, String acronym, Integer min, Integer max, Boolean enabled) {
-        Course course = new Course(code, name, acronym, min, max, enabled, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        Course course = new Course(code, name, acronym, min, max, enabled, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
         courseRepository.save(course);
     }
 

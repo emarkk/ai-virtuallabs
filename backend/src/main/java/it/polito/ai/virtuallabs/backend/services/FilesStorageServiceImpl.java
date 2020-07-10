@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,16 +15,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+@Transactional
 @Service
 public class FilesStorageServiceImpl implements FilesStorageService {
 
     private final Path root = Paths.get("uploads");
+    private final Path homeworkDir = Paths.get("uploads/homeworks");
 
     @Bean
     public void initDirectory() {
         try {
             if(!Files.exists(root))
                 Files.createDirectory(root);
+            if(!Files.exists(homeworkDir))
+                Files.createDirectory(homeworkDir);
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize folder for upload!");
         }

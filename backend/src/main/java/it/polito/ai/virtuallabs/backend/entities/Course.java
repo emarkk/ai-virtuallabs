@@ -38,6 +38,20 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<Team> teams = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "course")
+    private List<Homework> homeworks = new ArrayList<>();
+
+    public void addHomework(Homework h) {
+        this.homeworks.add(h);
+        h.setCourse(this);
+    }
+
+    public void addTeam(Team h) {
+        this.teams.add(h);
+        h.setCourse(this);
+    }
+
     public void addStudent(Student s) {
         this.students.add(s);
         s.getCourses().add(this);
@@ -63,4 +77,9 @@ public class Course {
         this.teams.clear();
     }
 
+    public void removeAllHomeworks() {
+        this.homeworks.forEach(h -> h.setCourse(null));
+        this.homeworks.clear();
+    }
+    
 }
