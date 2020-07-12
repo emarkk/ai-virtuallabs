@@ -14,11 +14,15 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.authService.isLogged())
-      this.router.navigate(['/' + this.authService.getUserData().roles[0].split('_')[1].toLowerCase()]);
+    // if user is logged, redirect to role-related homepage
+    if(this.authService.isLogged()) {
+      const role = this.authService.getUserData().roles[0].split('_')[1].toLowerCase();
+      this.router.navigate(['/' + role]);
+    }
   }
 
   getStartedButtonClicked() {
+    // head to login page
     this.router.navigate(['/signin']);
   }
 

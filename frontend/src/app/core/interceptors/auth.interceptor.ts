@@ -7,11 +7,12 @@ import { AuthService } from '../services/auth.service';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   
-  constructor(public auth: AuthService) {
+  constructor(public authService: AuthService) {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(this.auth.authorizeRequest(request));
+    // add authorization information to outgoing requests, before sending them
+    return next.handle(this.authService.authorizeRequest(request));
   }
 
 }
