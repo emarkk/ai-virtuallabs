@@ -15,6 +15,8 @@ export class SignUpSuccessComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // if already logged in or if not just registered successfully, should not be here
+    // hasRegisteredSuccessfully() invocation already takes care of resetting flag
     if(this.authService.isLogged() || !this.registrationService.hasRegisteredSuccessfully())
       this.router.navigate(['/']);
   }

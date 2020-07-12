@@ -11,9 +11,12 @@ import { politoUsernameValidator } from '../../core/validators/auth.validator';
   styleUrls: ['./signin.component.css']
 })
 export class SignInComponent implements OnInit {
-  private params: Params = null;
-  
+  // optional link to redirect the user to after successful sign-in
+  private redirectTo: string;
+
+  // whether it is possible to edit the form or not
   locked: boolean = false;
+  // form fields for sign-in
   form = new FormGroup({
     username: new FormControl({ value: '', disabled: false }, [Validators.required, politoUsernameValidator]),
     password: new FormControl({ value: '', disabled: false }, [Validators.required])
@@ -23,12 +26,12 @@ export class SignInComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // if already logged in, should not be here
     if(this.authService.isLogged())
       this.router.navigate(['/']);
     
-    this.route.queryParams.subscribe(params => {
-      this.params = params;
-    });
+    // set redirect param
+    this.redirectTo = this.route.snapshot.params.redirect || null;
   }
   
   getUsernameErrorMessage() {
@@ -52,15 +55,23 @@ export class SignInComponent implements OnInit {
     this.form.enable();
   }
   loginButtonClicked() {
+    // if form is invalid or locked, ignore
     if(this.form.invalid || this.locked)
       return;
 
+    // lock until request is completed
     this.lock();
+
+    // login attempt
     this.authService.login(this.form.get('username').value, this.form.get('password').value).subscribe(res => {
+      // unlock form
       this.unlock();
+
       if(res)
-        this.router.navigate([this.params.redirect || '/']);
+        // ok; redirect to desired path or to /
+        this.router.navigate([this.redirectTo || '/']);
       else
+        // wrong password
         this.form.get('password').setErrors({ wrong: true });
     });
   }

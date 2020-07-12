@@ -11,21 +11,21 @@ import { RegistrationService } from 'src/app/core/services/registration.service'
   styleUrls: ['./confirm.component.css']
 })
 export class ConfirmComponent implements OnInit {
+  // result of account confirmation
   result$: Observable<boolean>;
 
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService, private registrationService: RegistrationService) {
   }
 
   ngOnInit(): void {
+    // if already logged in, should not be here
     if(this.authService.isLogged()) {
       this.router.navigate(['/']);
       return;
     }
 
-    this.route.params.subscribe(params => {
-      const token = params.token;
-      this.result$ = this.registrationService.confirm(token);
-    });
+    // confirm account
+    this.result$ = this.registrationService.confirm(this.route.snapshot.params.token);
   }
 
 }

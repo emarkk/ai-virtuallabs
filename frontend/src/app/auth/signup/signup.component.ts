@@ -12,7 +12,9 @@ import { politoEmailValidator, politoMatricolaValidator, politoSignUpFormValidat
   styleUrls: ['./signup.component.css']
 })
 export class SignUpComponent implements OnInit {
+  // whether it is possible to edit the form or not
   locked: boolean = false;
+  // form fields for sign-up
   form = new FormGroup({
     firstName: new FormControl({ value: '', disabled: false }, [Validators.required]),
     lastName: new FormControl({ value: '', disabled: false }, [Validators.required]),
@@ -25,6 +27,7 @@ export class SignUpComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // if already logged in, should not be here
     if(this.authService.isLogged())
       this.router.navigate(['/']);
   }
@@ -70,23 +73,31 @@ export class SignUpComponent implements OnInit {
     this.form.enable();
   }
   signupButtonClicked() {
+    // if form is invalid or locked, ignore
     if(this.form.invalid || this.locked)
       return;
 
+    // lock until request is completed
     this.lock();
 
+    // collect form data
     const firstName = this.form.get('firstName').value;
     const lastName = this.form.get('lastName').value;
     const matricola = this.form.get('matricola').value;
     const email = this.form.get('email').value;
     const password = this.form.get('password').value;
 
+    // registration attempt
     this.registrationService.signup(firstName, lastName, matricola, email, password).subscribe(res => {
+      // unlock form
       this.unlock();
+
       if(res) {
+        // set registration successful flag and redirect user to the related page
         this.registrationService.registrationSuccessful();
         this.router.navigate(['/signup/success']);
       } else {
+        // some error occurred
         this.form.setErrors({ error: true });
       }
     });
