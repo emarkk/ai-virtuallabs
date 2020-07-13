@@ -1,20 +1,16 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
 import it.polito.ai.virtuallabs.backend.dtos.HomeworkDTO;
-import it.polito.ai.virtuallabs.backend.services.CourseNotFoundException;
-import it.polito.ai.virtuallabs.backend.services.HomeworkDueDateException;
-import it.polito.ai.virtuallabs.backend.services.HomeworkService;
-import it.polito.ai.virtuallabs.backend.services.NotAllowedException;
-import lombok.AllArgsConstructor;
+import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.Map;
 
 @RestController
@@ -22,6 +18,8 @@ import java.util.Map;
 public class HomeworkController {
     @Autowired
     HomeworkService homeworkService;
+    @Autowired
+    FilesStorageService storageService;
 
     @PostMapping({ "", "/" })
     @ResponseStatus(HttpStatus.CREATED)
@@ -46,5 +44,13 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
         }
 
+    }
+
+    @GetMapping("/resource/{courseCode}/{fileName}")
+    @ResponseBody
+    public ResponseEntity<Resource> getFile(@PathVariable("courseCode") String courseCode, @PathVariable("fileName") String fileName) {
+        Resource file = storageService.load("homeworks/" + courseCode + "/" + fileName);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
 }
