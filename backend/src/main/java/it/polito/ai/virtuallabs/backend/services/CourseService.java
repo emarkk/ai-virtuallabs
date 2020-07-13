@@ -1,9 +1,6 @@
 package it.polito.ai.virtuallabs.backend.services;
 
-import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
-import it.polito.ai.virtuallabs.backend.dtos.ProfessorDTO;
-import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
-import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
+import it.polito.ai.virtuallabs.backend.dtos.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +21,5 @@ public interface CourseService {
     List<Boolean> enrollAll(List<Long> studentsIds, String courseCode);
     void enableCourse(String courseCode);
     void disableCourse(String courseCode);
+    List<HomeworkDTO> getHomeworksData(String courseCode);
 }

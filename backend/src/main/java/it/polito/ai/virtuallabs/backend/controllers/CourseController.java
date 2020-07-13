@@ -1,9 +1,6 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
-import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
-import it.polito.ai.virtuallabs.backend.dtos.ProfessorDTO;
-import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
-import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
+import it.polito.ai.virtuallabs.backend.dtos.*;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -172,6 +169,15 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
         } catch(NotAllowedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        }
+    }
+
+    @GetMapping("/{code}/homeworks")
+    public List<HomeworkDTO> getCourseHomeworkData(@PathVariable("code") String courseCode) throws CourseNotFoundException {
+        try{
+            return courseService.gerHomeworksData(courseCode);
+        } catch (CourseNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course " + courseCode + "Not Found");
         }
     }
 

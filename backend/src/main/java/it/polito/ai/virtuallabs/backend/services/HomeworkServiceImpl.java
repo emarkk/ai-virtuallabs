@@ -58,7 +58,7 @@ public class HomeworkServiceImpl implements HomeworkService {
             Homework homework = Homework.builder()
                     .assigned(new Timestamp(System.currentTimeMillis()))
                     .due(due)
-                    .descriptionFilePath("uploads/homeworks/" + courseCode + "/" + filename)
+                    .descriptionFilePath("/" + courseCode + "/" + filename)
                     .build();
             c.addHomework(homework);
             homeworkRepository.save(homework);

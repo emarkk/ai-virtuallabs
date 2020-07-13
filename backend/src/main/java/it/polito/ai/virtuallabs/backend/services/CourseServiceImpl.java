@@ -1,13 +1,11 @@
 package it.polito.ai.virtuallabs.backend.services;
 
-import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
-import it.polito.ai.virtuallabs.backend.dtos.ProfessorDTO;
-import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
-import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
+import it.polito.ai.virtuallabs.backend.dtos.*;
 import it.polito.ai.virtuallabs.backend.entities.Course;
 import it.polito.ai.virtuallabs.backend.entities.Professor;
 import it.polito.ai.virtuallabs.backend.entities.Student;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
+import it.polito.ai.virtuallabs.backend.repositories.HomeworkRepository;
 import it.polito.ai.virtuallabs.backend.repositories.ProfessorRepository;
 import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
@@ -33,6 +31,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     ProfessorRepository professorRepository;
+
+    @Autowired
+    HomeworkRepository homeworkRepository;
 
     @Autowired
     AuthenticatedEntityMapper authenticatedEntityMapper;
@@ -231,6 +232,15 @@ public class CourseServiceImpl implements CourseService {
             throw new NotAllowedException();
 
         course.setEnabled(false);
+    }
+
+    @Override
+    public List<HomeworkDTO> getHomeworksData(String courseCode) {
+        Course course = this._getCourse(courseCode);
+            return homeworkRepository.findAllByCourse(course)
+                    .stream()
+                    .map(h -> modelMapper.map(h, HomeworkDTO.class))
+                    .collect(Collectors.toList());
     }
 
 }
