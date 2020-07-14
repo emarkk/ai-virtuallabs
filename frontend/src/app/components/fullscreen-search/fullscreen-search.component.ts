@@ -14,7 +14,7 @@ export class FullscreenSearchComponent implements OnInit {
   }
 
   @Output() search = new EventEmitter<string>();
-  @Output() select = new EventEmitter<number>();
+  @Output() selectResult = new EventEmitter<number>();
   @Output() close = new EventEmitter<void>();
 
   @ViewChild(MatInput)
@@ -31,7 +31,7 @@ export class FullscreenSearchComponent implements OnInit {
   }
   matchItemSelected(id: number) {
     this.seachInput.value = '';
-    this.select.emit(id);
+    this.selectResult.emit(id);
   }
   closeButtonClicked() {
     this.seachInput.value = '';
