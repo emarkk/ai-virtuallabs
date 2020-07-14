@@ -11,6 +11,6 @@ public interface ProfessorService {
     Optional<ProfessorDTO> getProfessor(Long professorId);
     List<ProfessorDTO> getAllProfessors();
     List<CourseDTO> getCoursesForProfessor(Long professorId);
-    List<ProfessorDTO> getOrderedSearchResult(String q);
+    List<ProfessorDTO> getOrderedSearchResult(String q, String exclude);
 
 }

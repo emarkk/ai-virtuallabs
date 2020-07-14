@@ -3,6 +3,7 @@ package it.polito.ai.virtuallabs.backend.controllers;
 import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
 import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
+import it.polito.ai.virtuallabs.backend.services.CourseNotFoundException;
 import it.polito.ai.virtuallabs.backend.services.StudentNotFoundException;
 import it.polito.ai.virtuallabs.backend.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,12 @@ public class StudentController {
     }
 
     @GetMapping("/search")
-    public List<StudentDTO> searchStudents(@RequestParam(name = "q") String q){
-        return studentService.getOrderedSearchResult(q);
+    public List<StudentDTO> searchStudents(@RequestParam(name = "q") String q, @RequestParam(name = "excludeCourse", required = false) String exclude) throws CourseNotFoundException {
+        try {
+            return studentService.getOrderedSearchResult(q, exclude);
+        } catch (CourseNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exclude + ": Course Not Found");
+        }
     }
 
     @GetMapping("/{id}/courses")
