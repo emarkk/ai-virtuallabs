@@ -27,6 +27,7 @@ import { AppComponent } from './app.component';
 import { PageComponent } from './components/page/page.component';
 import { ConfirmDialog } from './components/dialogs/confirm/confirm.component';
 import { TileComponent } from './components/tile/tile.component';
+import { ToastComponent } from './components/toast/toast.component';
 import { AsyncButtonComponent } from './components/async-button/async-button.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { DataPlaceholderComponent } from './components/data-placeholder/data-placeholder.component';
@@ -65,6 +66,7 @@ import { StudentCourseDetailComponent } from './student/course-detail/course-det
     PageComponent,
     ConfirmDialog,
     TileComponent,
+    ToastComponent,
     AsyncButtonComponent,
     WelcomeComponent,
     NavigationComponent,

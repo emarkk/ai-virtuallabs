@@ -14,27 +14,8 @@ import { url, httpOptions } from '../utils';
   providedIn: 'root'
 })
 export class CourseService {
-  private _insertionSuccessful: boolean = false;
-  private _updateSuccessful: boolean = false;
   
   constructor(private http: HttpClient) {
-  }
-
-  public hasInsertedSuccessfully(): boolean {
-    const value = this._insertionSuccessful;
-    this._insertionSuccessful = false;
-    return value;
-  }
-  public hasUpdatedSuccessfully(): boolean {
-    const value = this._updateSuccessful;
-    this._updateSuccessful = false;
-    return value;
-  }
-  public insertionSuccessful() {
-    this._insertionSuccessful = true;
-  }
-  public updateSuccessful() {
-    this._updateSuccessful = true;
   }
 
   // get course by code
