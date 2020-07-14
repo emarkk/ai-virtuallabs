@@ -30,7 +30,7 @@ export class ProfessorCourseTeamsComponent implements OnInit {
       this.teams$ = this.courseService.getTeams(this.courseCode);
 
       this.course$.subscribe(course => {
-        this.navigationData = [navHome, navCourses, nav(course.name, '/professor/course/' + course.code), nav('Teams')];
+        this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Teams')];
       });
     });
   }

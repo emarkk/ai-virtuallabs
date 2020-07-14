@@ -1,3 +1,6 @@
+// heavily inspired by
+// https://medium.com/angular-in-depth/creating-a-toast-service-with-angular-cdk-a0d35fd8cc12
+
 import { Component, OnInit } from '@angular/core';
 import { AnimationEvent } from '@angular/animations';
 
@@ -21,7 +24,7 @@ export class ToastComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.intervalId = window.setTimeout(() => this.animationState = 'closing', 3000);
+    this.intervalId = window.setTimeout(() => this.animationState = 'closing', 2000);
   }
 
   ngOnDestroy(): void {

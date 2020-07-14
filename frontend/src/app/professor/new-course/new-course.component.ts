@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { CourseService } from 'src/app/core/services/course.service';
+import { ToastService } from 'src/app/core/services/toast.service';
+
 import { CourseFormComponent } from 'src/app/components/course-form/course-form.component';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
@@ -17,7 +19,7 @@ export class ProfessorNewCourseComponent implements OnInit {
   @ViewChild(CourseFormComponent)
   formComponent: CourseFormComponent;
 
-  constructor(private router: Router, private courseService: CourseService) {
+  constructor(private router: Router, private courseService: CourseService, private toastService: ToastService) {
   }
 
   ngOnInit(): void {
@@ -30,10 +32,10 @@ export class ProfessorNewCourseComponent implements OnInit {
     this.courseService.add(code, name, acronym, minTeamMembers, maxTeamMembers, enabled).subscribe(res => {
       this.formComponent.unlock();
       if(res) {
-        this.courseService.hasInsertedSuccessfully();
-        this.router.navigate(['/professor/courses'], { queryParams: { insertionSuccess: true }});
+        this.router.navigate(['/professor/courses']);
+        this.toastService.show({ type: 'success', text: 'New course created successfully.' });
       } else
-        this.formComponent.form.setErrors({ error: true });
+        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
     });
   }
 

@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit {
     // if user is logged, redirect to role-related homepage
     if(this.authService.isLogged()) {
       const role = this.authService.getUserData().roles[0].split('_')[1].toLowerCase();
-      this.router.navigate(['/' + role]);
+      this.router.navigate([`/${role}`]);
     }
   }
 

@@ -50,10 +50,6 @@ export class CourseFormComponent implements OnInit {
     if(this.form.hasError('maxmin'))
       return 'Maximum members number should be greater than or equal to minimum number.';
   }
-  getFormSubmissionErrorMessage() {
-    if(this.form.hasError('error'))
-      return 'An error occurred.';
-  }
   getCodeErrorMessage() {
     if(this.form.get('code').hasError('required'))
       return 'You must enter the course code';

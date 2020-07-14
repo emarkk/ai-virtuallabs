@@ -3,7 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { Course } from 'src/app/core/models/course.model';
+
 import { CourseService } from 'src/app/core/services/course.service';
+import { ToastService } from 'src/app/core/services/toast.service';
+
 import { CourseFormComponent } from 'src/app/components/course-form/course-form.component';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
@@ -21,7 +24,7 @@ export class ProfessorEditCourseComponent implements OnInit {
   @ViewChild(CourseFormComponent)
   formComponent: CourseFormComponent;
 
-  constructor(private router: Router, private route: ActivatedRoute, private courseService: CourseService) {
+  constructor(private router: Router, private route: ActivatedRoute, private courseService: CourseService, private toastService: ToastService) {
   }
 
   ngOnInit(): void {
@@ -30,7 +33,7 @@ export class ProfessorEditCourseComponent implements OnInit {
       this.course$ = this.courseService.get(this.courseCode);
 
       this.course$.subscribe(course => {
-        this.navigationData = [navHome, navCourses, nav(course.name, '/professor/course/' + course.code), nav('Edit')];
+        this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Edit')];
       });
     });
   }
@@ -41,10 +44,10 @@ export class ProfessorEditCourseComponent implements OnInit {
     this.courseService.update(this.courseCode, name, acronym, minTeamMembers, maxTeamMembers, enabled).subscribe(res => {
       this.formComponent.unlock();
       if(res) {
-        this.courseService.hasUpdatedSuccessfully();
-        this.router.navigate(['/professor/courses'], { queryParams: { updateSuccess: true }});
+        this.router.navigate(['/professor/courses']);
+        this.toastService.show({ type: 'success', text: 'Course information updated successfully.' });
       } else
-        this.formComponent.form.setErrors({ error: true });
+        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
     });
   }
 

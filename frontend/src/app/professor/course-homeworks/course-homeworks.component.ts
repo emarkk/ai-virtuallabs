@@ -27,7 +27,7 @@ export class ProfessorCourseHomeworksComponent implements OnInit {
       this.course$ = this.courseService.get(this.courseCode);
 
       this.course$.subscribe(course => {
-        this.navigationData = [navHome, navCourses, nav(course.name, '/professor/course/' + course.code), nav('Homeworks')];
+        this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Homeworks')];
       });
     });
   }

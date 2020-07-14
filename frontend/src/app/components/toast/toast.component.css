@@ -3,22 +3,26 @@
   top: 5%;
   left: calc(50% - 240px);
   width: 480px;
-  padding: 5px 30px;
+  padding: 0 30px;
   backdrop-filter: blur(6px);
 }
 .container.warning {
   background: rgba(251, 217, 154, 0.8);
   border: 1px solid #dcbd7c;
+  color: #8a6b2a;
 }
 .container.info {
-  background: rgba(231, 255, 250, 0.8);
+  background: rgba(240, 255, 250, 0.8);
   border: 1px solid #c5e0f5;
+  color: #738da3;
 }
 .container.success {
   background: rgba(191, 251, 154, 0.8);
   border: 1px solid #a1dc7c;
+  color: #4f8a2a;
 }
 .container.danger {
   background: rgba(251, 154, 154, 0.8);
   border: 1px solid #dc7c7c;
+  color: #8a2a2a;
 }

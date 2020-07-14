@@ -4,12 +4,12 @@ import { Observable, Subscription, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
+import { Student } from 'src/app/core/models/student.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
 import { StudentService } from 'src/app/core/services/student.service';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
-import { Student } from 'src/app/core/models/student.model';
 
 @Component({
   selector: 'app-professor-course-students',
@@ -23,16 +23,11 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   
   showSearch: boolean = false;
   studentMatches: any[] = [];
-  searchSubject: Subject<string> = new Subject;
+  searchSubject: Subject<string> = new Subject();
   searchSubscription: Subscription;
 
   selectedEnrolledStudents = new Set<number>();
-  students = [
-    new Student(111111, 'Emanuele', 'Marchetta', 's111111@studenti.polito.it', false),
-    new Student(222222, 'Abba', 'Gallo', 's222222@studenti.polito.it', false),
-    new Student(333333, 'Rotto', 'Tremo', 's333333@studenti.polito.it', false),
-    new Student(444444, 'Pessimo', 'Gusto', 's444444@studenti.polito.it', false)
-  ];
+  enrolledStudents$: Observable<Student[]>;
 
   @ViewChild('fileInput')
   fileInput: ElementRef;
@@ -44,9 +39,10 @@ export class ProfessorCourseStudentsComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.courseCode = params.code;
       this.course$ = this.courseService.get(this.courseCode);
+      this.enrolledStudents$ = this.courseService.getStudents(this.courseCode);
 
       this.course$.subscribe(course => {
-        this.navigationData = [navHome, navCourses, nav(course.name, '/professor/course/' + course.code), nav('Students')];
+        this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Students')];
       });
 
       this.searchSubject.pipe(
@@ -55,9 +51,9 @@ export class ProfessorCourseStudentsComponent implements OnInit {
         if(this.searchSubscription)
           this.searchSubscription.unsubscribe();
 
-        if(input.length > 2) {
+        if(input.length > 1) {
           this.searchSubscription = this.studentService.search(input).subscribe(students => {
-            this.studentMatches = students.map(s => Object.assign(s, { username: 's' + s.id }));
+            this.studentMatches = students.map(s => Object.assign(s, { username: `s${s.id}` }));
           });
         } else
           this.studentMatches = [];
@@ -68,13 +64,19 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   searchChanged(input: string) {
     this.searchSubject.next(input);
   }
-  searchResultSelected(id: number) {
+  clearSearch() {
     this.showSearch = false;
     this.studentMatches = [];
   }
+  searchResultSelected(id: number) {
+    this.clearSearch();
+    this.courseService.enroll(this.courseCode, id).subscribe(res => {
+      if(res)
+        this.enrolledStudents$ = this.courseService.getStudents(this.courseCode);
+    })
+  }
   searchCloseButtonClicked() {
-    this.showSearch = false;
-    this.studentMatches = [];
+    this.clearSearch();
   }
 
   selectedStudentsChanged(selected: Set<number>) {
@@ -84,6 +86,6 @@ export class ProfessorCourseStudentsComponent implements OnInit {
     this.fileInput.nativeElement.click();
   }
   unenrollSelectedButtonClicked() {
-    
+
   }
 }
