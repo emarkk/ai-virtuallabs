@@ -1,0 +1,24 @@
+.container {
+  position: fixed;
+  top: 5%;
+  left: calc(50% - 240px);
+  width: 480px;
+  padding: 5px 30px;
+  backdrop-filter: blur(6px);
+}
+.container.warning {
+  background: rgba(251, 217, 154, 0.8);
+  border: 1px solid #dcbd7c;
+}
+.container.info {
+  background: rgba(231, 255, 250, 0.8);
+  border: 1px solid #c5e0f5;
+}
+.container.success {
+  background: rgba(191, 251, 154, 0.8);
+  border: 1px solid #a1dc7c;
+}
+.container.danger {
+  background: rgba(251, 154, 154, 0.8);
+  border: 1px solid #dc7c7c;
+}

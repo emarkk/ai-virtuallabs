@@ -1,0 +1,3 @@
+<div class="container" [class]="data.type" [@fadeAnimation]="{value: animationState, params: { fadeIn: 200, fadeOut: 400 }}" (@fadeAnimation.done)="onFadeFinished($event)">
+  <p>{{ data.text }}</p>
+</div>
