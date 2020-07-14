@@ -15,7 +15,7 @@ RUN ng build --prod
 ### STAGE 2: Run ###
 FROM nginx:1.17.6-alpine
 COPY --from=build /usr/src/app/dist/frontend /usr/share/nginx/html
-
+COPY ./default.conf /etc/nginx/conf.d/default.conf
 ENTRYPOINT ["nginx", "-g","daemon off;"]
 
 EXPOSE 80
