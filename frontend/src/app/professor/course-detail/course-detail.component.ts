@@ -60,7 +60,7 @@ export class ProfessorCourseDetailComponent implements OnInit {
           this.searchSubscription.unsubscribe();
 
         if(input.length > 1) {
-          this.searchSubscription = this.professorService.search(input).subscribe(professors => {
+          this.searchSubscription = this.professorService.search(input, this.courseCode).subscribe(professors => {
             this.professorMatches = professors.map(s => Object.assign(s, { username: `d${s.id}` }));
           });
         } else

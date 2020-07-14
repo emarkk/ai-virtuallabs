@@ -23,9 +23,10 @@ export class ProfessorService {
       catchError(error => of(null))
     );
   }
-  // search professor by query
-  search(query: string): Observable<Professor[]> {
-    return this.http.get<any[]>(url(`professors/search?q=${query}`)).pipe(
+  // search professor by query (if excludeCourse is provided, do not select professors teaching that course)
+  search(query: string, excludeCourse?: string): Observable<Professor[]> {
+    const exclude = excludeCourse ? `&excludeCourse=${excludeCourse}` : '';
+    return this.http.get<any[]>(url(`professors/search?q=${query}${exclude}`)).pipe(
       map(arr => arr.map(x => new Professor(x.id, x.firstName, x.lastName, x.email, x.hasPicture))),
       catchError(error => of(null))
     );

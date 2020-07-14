@@ -23,9 +23,10 @@ export class StudentService {
       catchError(error => of(null))
     );
   }
-  // search student by query
-  search(query: string): Observable<Student[]> {
-    return this.http.get<any[]>(url(`students/search?q=${query}`)).pipe(
+  // search student by query (if excludeCourse is provided, do not select students enrolled in that course)
+  search(query: string, excludeCourse?: string): Observable<Student[]> {
+    const exclude = excludeCourse ? `&excludeCourse=${excludeCourse}` : '';
+    return this.http.get<any[]>(url(`students/search?q=${query}${exclude}`)).pipe(
       map(arr => arr.map(x => new Student(x.id, x.firstName, x.lastName, x.email, x.hasPicture))),
       catchError(error => of(null))
     );

@@ -5,6 +5,7 @@
   width: 480px;
   padding: 0 30px;
   backdrop-filter: blur(6px);
+  border-radius: 4px;
 }
 .container.warning {
   background: rgba(251, 217, 154, 0.8);
