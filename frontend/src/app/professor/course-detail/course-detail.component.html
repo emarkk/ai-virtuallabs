@@ -9,7 +9,7 @@
         </h1>
       </div>
       <div class="status">
-        <app-async-button (click)="statusButtonClicked()" [loading]="updatingStatus" color="basic">
+        <app-async-button (aclick)="statusButtonClicked()" [loading]="updatingStatus" color="basic">
           <span *ngIf="courseEnabled"><mat-icon>visibility</mat-icon> enabled</span>
           <span *ngIf="!courseEnabled"><mat-icon>visibility_off</mat-icon> disabled</span>
         </app-async-button>
@@ -64,7 +64,7 @@
       </div>
     </app-tile>
   </app-page>
-  <app-fullscreen-search [class.hide]="!showSearch" [matches]="professorMatches" (search)="searchChanged($event)" (selectResult)="searchResultSelected($event)" (close)="searchCloseButtonClicked()">
+  <app-fullscreen-search [class.hide]="!showSearch" [focus]="showSearch" [matches]="professorMatches" (search)="searchChanged($event)" (selectResult)="searchResultSelected($event)" (close)="searchCloseButtonClicked()">
   </app-fullscreen-search>
 </div>
 <ng-template #loading>

@@ -74,16 +74,10 @@ export class CourseService {
       catchError(error => of(false))
     );
   }
-  // enable course
-  enable(code: string): Observable<boolean> {
-    return this.http.post(url(`courses/${code}/enable`), null, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
-    );
-  }
-  // disable course
-  disable(code: string): Observable<boolean> {
-    return this.http.post(url(`courses/${code}/disable`), null, httpOptions).pipe(
+  // enable/disable course
+  setEnabled(code: string, enabled: boolean): Observable<boolean> {
+    const action = enabled ? 'enable' : 'disable';
+    return this.http.post(url(`courses/${code}/${action}`), null, httpOptions).pipe(
       map(_ => true),
       catchError(error => of(false))
     );

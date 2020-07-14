@@ -3,7 +3,7 @@
     <div class="search">
       <mat-icon class="search">search</mat-icon>
       <div class="input">
-        <input matInput (input)="searchInputChanged($event.target.value)">
+        <input matInput spellcheck="false" (input)="searchInputChanged($event.target.value)" #searchRef>
       </div>
       <mat-icon class="close" (click)="closeButtonClicked()">clear</mat-icon>
     </div>

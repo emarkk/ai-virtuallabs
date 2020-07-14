@@ -16,7 +16,7 @@ export class AsyncButtonComponent implements OnInit {
     this.buttonColor = value;
   }
 
-  @Output() click = new EventEmitter<MouseEvent>();
+  @Output() aclick = new EventEmitter<MouseEvent>();
 
   constructor() {
   }
@@ -25,7 +25,7 @@ export class AsyncButtonComponent implements OnInit {
   }
 
   buttonClicked(event: MouseEvent) {
-    this.click.emit(event);
+    this.aclick.emit(event);
   }
 
 }

@@ -109,19 +109,13 @@ export class ProfessorCourseDetailComponent implements OnInit {
   }
   statusButtonClicked() {
     this.updatingStatus = true;
-    if(this.courseEnabled) {
-      this.courseService.disable(this.courseCode).subscribe(res => {
-        this.updatingStatus = false;
-        if(res)
-          this.courseEnabled = false;
-      });
-    } else {
-      this.courseService.enable(this.courseCode).subscribe(res => {
-        this.updatingStatus = false;
-        if(res)
-          this.courseEnabled = true;
-      });
-    }
+    this.courseService.setEnabled(this.courseCode, !this.courseEnabled).subscribe(res => {
+      this.updatingStatus = false;
+      if(res)
+        this.courseEnabled = this.courseEnabled ? false : true;
+      else
+        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+    });
   }
   addCollaboratorButtonClicked() {
     this.showSearch = true;
