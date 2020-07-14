@@ -16,21 +16,24 @@ export class ProfessorService {
   constructor(private http: HttpClient) {
   }
 
+  // get professor by id
   get(professorId: number): Observable<Professor> {
-    return this.http.get<any>(url('professors/' + professorId)).pipe(
+    return this.http.get<any>(url(`professors/${professorId}`)).pipe(
       map(x => new Professor(x.id, x.firstName, x.lastName, x.email, x.hasPicture)),
       catchError(error => of(null))
     );
   }
+  // search professor by query
   search(query: string): Observable<Professor[]> {
-    return this.http.get<any[]>(url('professors/search?q=' + query)).pipe(
+    return this.http.get<any[]>(url(`professors/search?q=${query}`)).pipe(
       map(arr => arr.map(x => new Professor(x.id, x.firstName, x.lastName, x.email, x.hasPicture))),
       catchError(error => of(null))
     );
   }
+  // get professor courses
   getCourses(professorId: number): Observable<Course[]> {
-    return this.http.get<Course[]>(url('professors/' + professorId + '/courses')).pipe(
-      map(arr => arr.map(x => new Course(x.code, x.name, x.acronym, x.minTeamMembers, x.maxTeamMembers, x.enabled, '/professor/course/' + x.code))),
+    return this.http.get<Course[]>(url(`professors/${professorId}/courses`)).pipe(
+      map(arr => arr.map(x => new Course(x.code, x.name, x.acronym, x.minTeamMembers, x.maxTeamMembers, x.enabled, `/professor/course/${x.code}`))),
       catchError(error => of(null))
     );
   }
