@@ -2,9 +2,9 @@
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <h1>{{ course.name }} <span class="bar"></span><span>Students</span></h1>
-    <div *ngIf="enrolledStudents$ | async as enrolledStudents">
-      <app-student-table *ngIf="enrolledStudents.length" [students]="enrolledStudents" (select)="selectedStudentsChanged($event)"></app-student-table>
-      <p *ngIf="!enrolledStudents.length" class="empty">No students enrolled in this course.</p>
+    <div>
+      <app-student-table [dataSource]="enrolledStudentsDataSource"></app-student-table>
+      <p *ngIf="enrolledStudentsDataSource.getLength() == 0" class="empty">No students enrolled in this course.</p>
     </div>
     <div class="controls">
       <button mat-flat-button *ngIf="!selectedEnrolledStudents.size" color="brand" (click)="showSearch = true">Enroll student</button>
@@ -13,7 +13,7 @@
     </div>
     <input type="file" ng2FileSelect hidden #fileInput />
   </app-page>
-  <app-fullscreen-search [class.hide]="!showSearch" [matches]="studentMatches" (search)="searchChanged($event)" (selectResult)="searchResultSelected($event)" (close)="searchCloseButtonClicked()">
+  <app-fullscreen-search [class.hide]="!showSearch" [focus]="showSearch" [matches]="studentMatches" (search)="searchChanged($event)" (selectResult)="searchResultSelected($event)" (close)="searchCloseButtonClicked()">
   </app-fullscreen-search>
 </div>
 <ng-template #loading>

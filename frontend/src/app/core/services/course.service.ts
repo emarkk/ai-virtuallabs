@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
@@ -26,9 +26,15 @@ export class CourseService {
     );
   }
   // get course students
-  getStudents(code: string): Observable<Student[]> {
-    return this.http.get<any[]>(url(`courses/${code}/enrolled`)).pipe(
-      map(arr => arr.map(x => new Professor(x.id, x.firstName, x.lastName, x.email, x.hasPicture))),
+  getStudents(code: string, sortField: string = null, sortDirection: string = null, pageIndex: number = 0, pageSize: number = 15): Observable<Student[]> {
+    let params = new HttpParams().set('page', pageIndex.toString()).set('', pageSize.toString());
+    if(sortField)
+      params = params.set('sortBy', sortField);
+    if(sortDirection)
+      params = params.set('sortDirection', sortDirection);
+
+    return this.http.get<any[]>(url(`courses/${code}/enrolled`), { params }).pipe(
+      map(arr => arr.map(x => new Student(x.id, x.firstName, x.lastName, x.email, x.hasPicture))),
       catchError(error => of(null))
     );
   }
@@ -48,7 +54,7 @@ export class CourseService {
   }
   // create new course
   add(code: string, name: string, acronym: string, minTeamMembers: number, maxTeamMembers: number, enabled: boolean): Observable<boolean> {
-    return this.http.post(url(`courses`), { code, name, acronym, minTeamMembers, maxTeamMembers, enabled }, httpOptions).pipe(
+    return this.http.post(url('courses'), { code, name, acronym, minTeamMembers, maxTeamMembers, enabled }, httpOptions).pipe(
       map(_ => true),
       catchError(error => of(false))
     );

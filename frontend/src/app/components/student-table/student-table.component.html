@@ -1,8 +1,8 @@
 <div class="mat-elevation-z1">
-  <table mat-table matSort [dataSource]="studentList">
+  <table mat-table matSort [dataSource]="studentsDataSource">
     <ng-container matColumnDef="_select">
       <th mat-header-cell *matHeaderCellDef>
-        <mat-checkbox (change)="setMasterState($event)" [disabled]="!studentList.length" [checked]="studentsMasterChecked" [indeterminate]="studentsMasterSemichecked"></mat-checkbox>
+        <mat-checkbox (change)="setMasterState($event)" [disabled]="studentsDataSource.getLength() == 0" [checked]="studentsMasterChecked" [indeterminate]="studentsMasterSemichecked"></mat-checkbox>
       </th>
       <td mat-cell *matCellDef="let student">
         <mat-checkbox (change)="setCheckedState(student.id, $event)" [checked]="getCheckedState(student.id)"></mat-checkbox>
@@ -31,5 +31,5 @@
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
     <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
   </table>
-  <mat-paginator [length]="studentList.length" [pageSize]="15" [pageSizeOptions]="[15, 30, 50, 100]" showFirstLastButtons></mat-paginator>
+  <mat-paginator [length]="studentsDataSource.getLength()" [pageSize]="15" [pageSizeOptions]="[15, 30, 50, 100]" showFirstLastButtons></mat-paginator>
 </div>

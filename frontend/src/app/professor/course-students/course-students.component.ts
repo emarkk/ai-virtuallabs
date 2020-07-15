@@ -4,10 +4,11 @@ import { Observable, Subscription, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
-import { Student } from 'src/app/core/models/student.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
 import { StudentService } from 'src/app/core/services/student.service';
+
+import { EnrolledStudentsDataSource } from 'src/app/core/datasources/enrolled-students.datasource';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
 
@@ -27,7 +28,7 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   searchSubscription: Subscription;
 
   selectedEnrolledStudents = new Set<number>();
-  enrolledStudents$: Observable<Student[]>;
+  enrolledStudentsDataSource: EnrolledStudentsDataSource;
 
   @ViewChild('fileInput')
   fileInput: ElementRef;
@@ -36,10 +37,12 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.enrolledStudentsDataSource = new EnrolledStudentsDataSource(this.courseService);
+
     this.route.params.subscribe(params => {
       this.courseCode = params.code;
       this.course$ = this.courseService.get(this.courseCode);
-      this.enrolledStudents$ = this.courseService.getStudents(this.courseCode);
+      this.enrolledStudentsDataSource.loadMetadata(this.courseCode);
 
       this.course$.subscribe(course => {
         this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Students')];
@@ -71,8 +74,6 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   searchResultSelected(id: number) {
     this.clearSearch();
     this.courseService.enroll(this.courseCode, id).subscribe(res => {
-      if(res)
-        this.enrolledStudents$ = this.courseService.getStudents(this.courseCode);
     })
   }
   searchCloseButtonClicked() {

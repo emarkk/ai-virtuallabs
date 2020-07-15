@@ -30,7 +30,7 @@ export class RegistrationService {
 
   // register user
   public signup(firstName: String, lastName: String, matricola: String, email: String, password: String): Observable<boolean> {
-    return this.http.post(url(`signup`), { firstName, lastName, id: parseInt(matricola.substring(1)), email, password }, httpOptions).pipe(
+    return this.http.post(url('signup'), { firstName, lastName, id: parseInt(matricola.substring(1)), email, password }, httpOptions).pipe(
       map(_ => true),
       catchError(error => of(false))
     );

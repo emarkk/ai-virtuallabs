@@ -1,5 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { Observable, merge, BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
+import { Student } from 'src/app/core/models/student.model';
+
+import { StudentsDataSource } from 'src/app/core/datasources/students.datasource';
 
 @Component({
   selector: 'app-student-table',
@@ -7,16 +15,23 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
   styleUrls: ['./student-table.component.css']
 })
 export class StudentTableComponent implements OnInit {
-  studentList: any = null;
+  studentsDataSource: StudentsDataSource = null;
 
   checkedSet = new Set<number>();
   studentsMasterChecked: boolean = false;
   studentsMasterSemichecked: boolean = false;
+  allDatasetSelected: boolean = false;
 
   columnsToDisplay = ['_select', 'id', 'picture', 'firstName', 'lastName', 'teamName'];
 
-  @Input() set students(value: any) {
-    this.studentList = value;
+  @ViewChild(MatPaginator)
+  paginator: MatPaginator;
+
+  @ViewChild(MatSort)
+  sort: MatSort;
+
+  @Input() set dataSource(value: StudentsDataSource) {
+    this.studentsDataSource = value;
   }
 
   @Output() select = new EventEmitter<Set<number>>();
@@ -25,10 +40,24 @@ export class StudentTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.studentsDataSource.loadStudents();
   }
 
-  setMasterState(event: MatCheckboxChange) {
+  ngAfterViewInit() {
+    this.sort.sortChange.subscribe(() => {
+      this.checkedSet = new Set();
+      this.paginator.pageIndex = 0;
+    });
 
+    merge(this.sort.sortChange, this.paginator.page).pipe(
+      tap(() => this.loadStudentsPage())
+    ).subscribe();
+  }
+
+  loadStudentsPage() {
+    this.studentsDataSource.loadStudents(this.sort.active, this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
+  }
+  setMasterState() {
   }
   getCheckedState(studentId: number) {
     return this.checkedSet.has(studentId);
