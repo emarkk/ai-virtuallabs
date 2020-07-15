@@ -26,10 +26,10 @@ export class CourseService {
     );
   }
   // get course students
-  getStudents(code: string, sortField: string = null, sortDirection: string = null, pageIndex: number = 0, pageSize: number = 15): Observable<Student[]> {
-    let params = new HttpParams().set('page', pageIndex.toString()).set('', pageSize.toString());
-    if(sortField)
-      params = params.set('sortBy', sortField);
+  getStudents(code: string, sortBy: string = null, sortDirection: string = null, pageIndex: number = 0, pageSize: number = 15): Observable<Student[]> {
+    let params = new HttpParams().set('page', pageIndex.toString()).set('pageSize', pageSize.toString());
+    if(sortBy)
+      params = params.set('sortBy', sortBy);
     if(sortDirection)
       params = params.set('sortDirection', sortDirection);
 

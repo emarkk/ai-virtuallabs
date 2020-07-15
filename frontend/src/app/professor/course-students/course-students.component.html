@@ -3,7 +3,7 @@
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <h1>{{ course.name }} <span class="bar"></span><span>Students</span></h1>
     <div>
-      <app-student-table [dataSource]="enrolledStudentsDataSource"></app-student-table>
+      <app-student-table [dataSource]="enrolledStudentsDataSource" (select)="selectedStudentsChanged($event)"></app-student-table>
       <p *ngIf="enrolledStudentsDataSource.getLength() == 0" class="empty">No students enrolled in this course.</p>
     </div>
     <div class="controls">

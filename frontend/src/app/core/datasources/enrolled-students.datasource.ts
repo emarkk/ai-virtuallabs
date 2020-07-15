@@ -32,8 +32,8 @@ export class EnrolledStudentsDataSource implements StudentsDataSource {
       };
     }
 
-    loadStudents(sortField: string = null, sortDirection: string = null, pageIndex: number = 0, pageSize: number = 15) {
-      this.courseService.getStudents(this.metadata.courseCode, sortField, sortDirection, pageIndex, pageSize).subscribe(students =>
+    loadStudents(sortBy: string = null, sortDirection: string = null, pageIndex: number = 0, pageSize: number = 15) {
+      this.courseService.getStudents(this.metadata.courseCode, sortBy, sortDirection, pageIndex, pageSize).subscribe(students =>
         this.studentsSubject.next(students)
       );
     }

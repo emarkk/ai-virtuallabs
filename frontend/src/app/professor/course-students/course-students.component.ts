@@ -7,6 +7,7 @@ import { Course } from 'src/app/core/models/course.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
 import { StudentService } from 'src/app/core/services/student.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 import { EnrolledStudentsDataSource } from 'src/app/core/datasources/enrolled-students.datasource';
 
@@ -33,7 +34,7 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   @ViewChild('fileInput')
   fileInput: ElementRef;
 
-  constructor(private route: ActivatedRoute, private courseService: CourseService, private studentService: StudentService) {
+  constructor(private route: ActivatedRoute, private courseService: CourseService, private studentService: StudentService, private toastService: ToastService) {
   }
 
   ngOnInit(): void {
@@ -74,6 +75,10 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   searchResultSelected(id: number) {
     this.clearSearch();
     this.courseService.enroll(this.courseCode, id).subscribe(res => {
+      if(res) {
+        this.toastService.show({ type: 'success', text: 'Student enrolled successfully.' });
+      } else
+        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
     })
   }
   searchCloseButtonClicked() {
