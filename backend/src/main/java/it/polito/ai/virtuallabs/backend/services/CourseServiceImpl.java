@@ -212,6 +212,30 @@ public class CourseServiceImpl implements CourseService {
         return studentsIds.stream().map(i -> addStudentToCourse(i, courseCode)).collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @Override
+    public List<Boolean> unenrollAll(List<Long> studentsIds, String courseCode) {
+
+        Course course = _getCourse(courseCode);
+
+        if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+        if(!course.getEnabled())
+            throw new CourseNotEnabledException();
+
+        return studentsIds.stream()
+                .map(s -> {
+                    Student stud = _getStudent(s);
+                    if(!stud.getCourses().contains(course)) {
+                        return false;
+                    }
+                    course.removeStudent(stud);
+                    return true;
+                })
+                .collect(Collectors.toList());
+    }
+
     @Override
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     public void enableCourse(String courseCode) {

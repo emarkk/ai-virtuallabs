@@ -19,6 +19,7 @@ public interface CourseService {
     List<StudentDTO> getStudentsNotInTeams(String courseCode);
     boolean addStudentToCourse(Long studentId, String courseCode);
     List<Boolean> enrollAll(List<Long> studentsIds, String courseCode);
+    List<Boolean> unenrollAll(List<Long> studentsIds, String courseCode);
     void enableCourse(String courseCode);
     void disableCourse(String courseCode);
     List<HomeworkDTO> getHomeworksData(String courseCode);

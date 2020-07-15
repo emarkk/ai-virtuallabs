@@ -57,6 +57,11 @@ public class Course {
         s.getCourses().add(this);
     }
 
+    public void removeStudent(Student s) {
+        this.students.remove(s);
+        s.getCourses().remove(this);
+    }
+
     public void addProfessor(Professor p) {
         this.professors.add(p);
         p.getCourses().add(this);
