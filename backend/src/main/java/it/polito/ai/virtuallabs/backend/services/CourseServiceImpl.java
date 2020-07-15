@@ -11,6 +11,10 @@ import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -142,12 +146,33 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<StudentDTO> getEnrolledStudents(String courseCode) {
-        return this._getCourse(courseCode).getStudents()
-                .stream()
+    public List<StudentDTO> getEnrolledStudents(String courseCode, String sortField, String sortDirection, int page, int pageSize) {
+        Course course = _getCourse(courseCode);
+        try {
+            Student.class.getDeclaredField(sortField);
+        } catch (NoSuchFieldException e) {
+            throw new StudentClassFieldNotFoundException();
+        }
+        if(page<0 || pageSize<0) {
+            throw new InvalidPageException();
+        }
+        Page<Student> studentPage = studentRepository.findAllByCoursesIsContaining(
+                PageRequest.of(page, pageSize, Sort.by(
+                        sortDirection.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField
+                )),
+                course);
+        return studentPage.stream()
                 .map(s -> modelMapper.map(s, StudentDTO.class))
                 .collect(Collectors.toList());
     }
+
+//    @Override
+//    public List<StudentDTO> getEnrolledStudents(String courseCode) {
+//        return this._getCourse(courseCode).getStudents()
+//                .stream()
+//                .map(s -> modelMapper.map(s, StudentDTO.class))
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     public List<ProfessorDTO> getProfessors(String courseCode) {
