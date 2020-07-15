@@ -215,7 +215,7 @@ public class CourseServiceImpl implements CourseService {
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
     public List<Boolean> unenrollAll(List<Long> studentsIds, String courseCode) {
-
+        //Vari controlli su esistenza e validità del corso. Controllo su ownership del Professor
         Course course = _getCourse(courseCode);
 
         if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
@@ -223,7 +223,7 @@ public class CourseServiceImpl implements CourseService {
 
         if(!course.getEnabled())
             throw new CourseNotEnabledException();
-
+        //Rimuovo ogni Student iscritto al corso, se esiste
         return studentsIds.stream()
                 .map(s -> {
                     Student stud = _getStudent(s);
