@@ -36,16 +36,16 @@ public class CourseController {
     @GetMapping("/{code}/enrolled")
     public List<StudentDTO> getEnrolledStudents(
             @PathVariable("code") String courseCode,
-            @RequestParam(name = "sortField", required = false, defaultValue = "id") String sortField,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
             @RequestParam(name = "sortDirection", required = false, defaultValue = "asc") String sortDirection,
             @RequestParam(name = "page", required = false, defaultValue = "0") String page,
             @RequestParam(name = "pageSize", required = false, defaultValue = "15") String pageSize) throws CourseNotFoundException, StudentClassFieldNotFoundException, InvalidPageException{
         try {
-            return courseService.getEnrolledStudents(courseCode, sortField, sortDirection, Integer.parseInt(page), Integer.parseInt(pageSize));
+            return courseService.getEnrolledStudents(courseCode, sortBy, sortDirection, Integer.parseInt(page), Integer.parseInt(pageSize));
         } catch(CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
         } catch (StudentClassFieldNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, sortField + ": Does Not Exist");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, sortBy + ": Does Not Exist");
         } catch (InvalidPageException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "page or pageSize Field Not Valid");
         }
