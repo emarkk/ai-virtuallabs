@@ -156,6 +156,19 @@ public class CourseController {
         }
     }
 
+    @PostMapping("/{code}/unenroll/all")
+    public void unenrollAll(@PathVariable(name = "code") String courseCode) throws CourseNotFoundException, CourseNotEnabledException, NotAllowedException{
+        try{
+            courseService.unenrollAllStudents(courseCode);
+        } catch (CourseNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, courseCode + ": Course Not Found");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Not Enables");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized Action");
+        }
+    }
+
     @PostMapping("/{code}/professors")
     public void addProfessor(@PathVariable("code") String courseCode, @RequestBody Map<String, String> input) {
         if(!input.containsKey("id"))

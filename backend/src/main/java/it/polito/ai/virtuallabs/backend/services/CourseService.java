@@ -23,4 +23,5 @@ public interface CourseService {
     void enableCourse(String courseCode);
     void disableCourse(String courseCode);
     List<HomeworkDTO> getHomeworksData(String courseCode);
+    void unenrollAllStudents(String courseCode);
 }
