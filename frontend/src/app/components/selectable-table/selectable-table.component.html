@@ -1,0 +1,26 @@
+<div class="mat-elevation-z1">
+  <table mat-table matSort [dataSource]="tableDataSource">
+    <ng-container matColumnDef="_select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="setMasterState($event.checked)" [disabled]="tableDataSource.size == 0" [checked]="masterChecked" [indeterminate]="masterSemichecked"></mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (change)="setCheckedState(row.id.toString(), $event.checked)" [checked]="getCheckedState(row.id.toString())"></mat-checkbox>
+      </td>
+    </ng-container>
+    <ng-container *ngFor="let column of tableColumns" [matColumnDef]="column.name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!column.sortable">{{ column.label }}</th>
+      <td mat-cell *matCellDef="let row" [innerHTML]="column.template ? column.template(row) : row[column.name]"></td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <ng-container matColumnDef="_selectInfo">
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="6" class="select-info">
+        <span *ngIf="!allDatasetSelected">All {{ tableDataSource.currentPage.length }} elements on this page are selected. <a (click)="selectAll()">Select all {{ tableDataSource.size }} elements</a></span>
+        <span *ngIf="allDatasetSelected">All {{ tableDataSource.size }} elements have been selected. <a (click)="cancelSelection()">Cancel selection</a></span>
+      </th>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['_selectInfo']" [class.hidden]="!masterChecked || tableDataSource.currentPage.length == tableDataSource.size"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="selectable-table-row"></tr>
+  </table>
+  <mat-paginator [length]="tableDataSource.size" [pageSize]="15" [pageSizeOptions]="[3, 15, 30, 50, 100]" showFirstLastButtons></mat-paginator>
+</div>

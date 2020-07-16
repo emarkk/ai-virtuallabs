@@ -3,17 +3,22 @@
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <h1>{{ course.name }} <span class="bar"></span><span>Students</span></h1>
     <div>
-      <app-student-table [dataSource]="enrolledStudentsDataSource" (select)="selectedStudentsChanged($event)"></app-student-table>
-      <p *ngIf="enrolledStudentsDataSource.getLength() == 0" class="empty">No students enrolled in this course.</p>
+      <app-selectable-table [dataSource]="enrolledStudentsDataSource" (select)="selectedStudentsChanged($event)" [columns]="enrolledStudentColumns"></app-selectable-table>
+      <p *ngIf="enrolledStudentsDataSource.size == 0" class="empty">No students enrolled in this course.</p>
     </div>
     <div class="controls">
-      <button mat-flat-button *ngIf="!selectedEnrolledStudents.size" color="brand" (click)="showSearch = true">Enroll student</button>
-      <button mat-flat-button *ngIf="!selectedEnrolledStudents.size" color="primary" (click)="csvButtonClicked()">Enroll from CSV</button>
-      <button mat-flat-button *ngIf="selectedEnrolledStudents.size" color="danger" (click)="unenrollSelectedButtonClicked()">Unenroll selected ({{ selectedEnrolledStudents.size }})</button>
+      <ng-container *ngIf="selectedEnrolledStudents != 'all'">
+        <button mat-flat-button *ngIf="!selectedEnrolledStudents.size" color="brand" (click)="showSearch = true">Enroll student</button>
+        <button mat-flat-button *ngIf="!selectedEnrolledStudents.size" color="primary" (click)="csvButtonClicked()">Enroll from CSV</button>
+        <button mat-flat-button *ngIf="selectedEnrolledStudents.size" color="danger" (click)="unenrollSelectedButtonClicked()">Unenroll selected ({{ selectedEnrolledStudents.size }})</button>
+      </ng-container>
+      <ng-container *ngIf="selectedEnrolledStudents == 'all'">
+        <button mat-flat-button color="danger" (click)="unenrollSelectedButtonClicked()">Unenroll all ({{ enrolledStudentsDataSource.size }})</button>
+      </ng-container>
     </div>
     <input type="file" ng2FileSelect hidden #fileInput />
   </app-page>
-  <app-fullscreen-search [class.hide]="!showSearch" [focus]="showSearch" [matches]="studentMatches" (search)="searchChanged($event)" (selectResult)="searchResultSelected($event)" (close)="searchCloseButtonClicked()">
+  <app-fullscreen-search [class.hidden]="!showSearch" [focus]="showSearch" [matches]="studentMatches" (search)="searchChanged($event)" (selectResult)="searchResultSelected($event)" (close)="searchCloseButtonClicked()">
   </app-fullscreen-search>
 </div>
 <ng-template #loading>

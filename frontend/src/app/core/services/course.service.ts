@@ -95,4 +95,18 @@ export class CourseService {
       catchError(error => of(false))
     );
   }
+  // unenroll subset of students from course
+  unenroll(code: string, studentIds: number[]): Observable<boolean> {
+    return this.http.post(url(`courses/${code}/unenroll`), studentIds, httpOptions).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
+  // unenroll all students from course
+  unenrollAll(code: string): Observable<boolean> {
+    return this.http.post(url(`courses/${code}/unenroll/all`), null, httpOptions).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
 }

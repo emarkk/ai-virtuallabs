@@ -18,6 +18,7 @@ body {
   font-family: "Catamaran", sans-serif !important;
 }
 a {
+  cursor: pointer;
   color: #ff6647;
 }
 .copyright {
@@ -34,7 +35,7 @@ a {
 .fill {
   flex: 1 1 auto;
 }
-.hide {
+.hidden {
   display: none;
 }
 .disable-click {
@@ -111,6 +112,11 @@ form mat-form-field, form input {
 .controls {
   margin-top: 3em;
   text-align: center;
+}
+.selectable-table-row td .profile-pic {
+  margin-top: 5px;
+  width: 25px;
+  height: 25px;
 }
 .profile-pic {
   display: inline-block;

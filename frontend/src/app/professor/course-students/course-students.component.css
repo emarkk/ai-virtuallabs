@@ -8,6 +8,11 @@ p.empty {
   font-style: italic;
   letter-spacing: 1px;
 }
+td .profile-pic {
+  margin-top: 2px;
+  width: 26px;
+  height: 26px;
+}
 .controls button:not(:first-child) {
   margin-left: 30px;
 }

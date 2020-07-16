@@ -32,13 +32,11 @@ import { AsyncButtonComponent } from './components/async-button/async-button.com
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { DataPlaceholderComponent } from './components/data-placeholder/data-placeholder.component';
 import { FullscreenSearchComponent } from './components/fullscreen-search/fullscreen-search.component';
+import { SelectableTableComponent } from './components/selectable-table/selectable-table.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { CourseItemComponent } from './components/course-item/course-item.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
 import { CourseFormComponent } from './components/course-form/course-form.component';
-import { StudentItemComponent } from './components/student-item/student-item.component';
-import { StudentListComponent } from './components/student-list/student-list.component';
-import { StudentTableComponent } from './components/student-table/student-table.component';
 
 import { ContainerComponent } from './container/container.component';
 import { SignInComponent } from './auth/signin/signin.component';
@@ -72,12 +70,10 @@ import { StudentCourseDetailComponent } from './student/course-detail/course-det
     NavigationComponent,
     DataPlaceholderComponent,
     FullscreenSearchComponent,
+    SelectableTableComponent,
     CourseItemComponent,
     CourseListComponent,
     CourseFormComponent,
-    StudentItemComponent,
-    StudentListComponent,
-    StudentTableComponent,
     ContainerComponent,
     SignInComponent,
     SignUpComponent,
