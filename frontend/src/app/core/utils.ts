@@ -7,3 +7,9 @@ export const httpOptions = {
     'Content-Type':  'application/json',
   })
 };
+
+export const fileHttpOptions = type => ({
+  headers: new HttpHeaders({
+    'Content-Type': type,
+  })
+});

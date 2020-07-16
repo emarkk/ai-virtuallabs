@@ -16,7 +16,7 @@
         <button mat-flat-button color="danger" (click)="unenrollSelectedButtonClicked()">Unenroll all ({{ enrolledStudentsDataSource.size }})</button>
       </ng-container>
     </div>
-    <input type="file" ng2FileSelect hidden #fileInput />
+    <input type="file" ng2FileSelect hidden accept=".csv" (change)="csvFileSelected($event.target.files[0])" #fileInput />
   </app-page>
   <app-fullscreen-search [class.hidden]="!showSearch" [focus]="showSearch" [matches]="studentMatches" (search)="searchChanged($event)" (selectResult)="searchResultSelected($event)" (close)="searchCloseButtonClicked()">
   </app-fullscreen-search>

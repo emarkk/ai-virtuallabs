@@ -107,6 +107,15 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   csvButtonClicked() {
     this.fileInput.nativeElement.click();
   }
+  csvFileSelected(file: File) {
+    this.courseService.enrollFromCSV(this.courseCode, file).subscribe(res => {
+      if(res) {
+        this.studentsTable.refresh();
+        this.toastService.show({ type: 'success', text: 'CSV file imported successfully.' });
+      } else
+        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+    });
+  }
   unenrollAll() {
     this.dialog.open(ConfirmDialog, {
       data: {
