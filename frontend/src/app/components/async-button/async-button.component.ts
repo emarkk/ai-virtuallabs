@@ -6,6 +6,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./async-button.component.css']
 })
 export class AsyncButtonComponent implements OnInit {
+  // when true, loader is shown inside button and button is not clickable
   showLoader: boolean = false;
   buttonColor: string = 'primary';
 
@@ -25,6 +26,7 @@ export class AsyncButtonComponent implements OnInit {
   }
 
   buttonClicked(event: MouseEvent) {
+    // emit button click
     this.aclick.emit(event);
   }
 

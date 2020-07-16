@@ -12,9 +12,12 @@ import { newCourseFormValidator } from '../../core/validators/course.validator';
   styleUrls: ['./course-form.component.css']
 })
 export class CourseFormComponent implements OnInit {
+  // link to go to when cancel button is clicked
   cancelButtonLink: string;
 
+  // whether it is possible to edit the form or not
   locked: boolean = false;
+  // form fields for course create/edit
   form = new FormGroup({
     code: new FormControl({ value: '', disabled: false }, [Validators.required]),
     name: new FormControl({ value: '', disabled: false }, [Validators.required]),
@@ -24,6 +27,7 @@ export class CourseFormComponent implements OnInit {
     enabled: new FormControl({ value: '', disabled: false }, [Validators.required])
   }, newCourseFormValidator);
 
+  // used with course edit, to show current course information in the form
   @Input() set data(value: Course) {
     this.form.get('code').disable();
     this.form.get('code').setValue(value.code);
@@ -38,6 +42,7 @@ export class CourseFormComponent implements OnInit {
     this.cancelButtonLink = value;
   }
 
+  // when save button is clicked, emits course information
   @Output() update = new EventEmitter<object>();
 
   constructor() {
@@ -81,9 +86,11 @@ export class CourseFormComponent implements OnInit {
     this.form.enable();
   }
   saveButtonClicked() {
+    // if form is invalid or locked, ignore
     if(this.form.invalid || this.locked)
       return;
     
+    // collect form data
     const code = this.form.get('code').value;
     const name = this.form.get('name').value;
     const acronym = this.form.get('acronym').value;
@@ -91,6 +98,7 @@ export class CourseFormComponent implements OnInit {
     const maxTeamMembers = this.form.get('maxTeamMembers').value;
     const enabled = this.form.get('enabled').value;
 
+    // emit course information to parent
     this.update.emit({ data: { code, name, acronym, minTeamMembers, maxTeamMembers, enabled } });
   }
 }

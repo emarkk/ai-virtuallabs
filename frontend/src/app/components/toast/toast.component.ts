@@ -40,7 +40,7 @@ export class ToastComponent implements OnInit {
     const isFadeOut = (toState as ToastAnimationState) === 'closing';
     const itFinished = this.animationState === 'closing';
 
-    if (isFadeOut && itFinished) {
+    if(isFadeOut && itFinished) {
       this.close();
     }
   }
