@@ -13,7 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -166,14 +165,6 @@ public class CourseServiceImpl implements CourseService {
                 .collect(Collectors.toList());
     }
 
-//    @Override
-//    public List<StudentDTO> getEnrolledStudents(String courseCode) {
-//        return this._getCourse(courseCode).getStudents()
-//                .stream()
-//                .map(s -> modelMapper.map(s, StudentDTO.class))
-//                .collect(Collectors.toList());
-//    }
-
     @Override
     public List<ProfessorDTO> getProfessors(String courseCode) {
         return this._getCourse(courseCode).getProfessors()
@@ -290,6 +281,20 @@ public class CourseServiceImpl implements CourseService {
                     .stream()
                     .map(h -> modelMapper.map(h, HomeworkDTO.class))
                     .collect(Collectors.toList());
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    public void unenrollAllStudents(String courseCode) {
+        Course course = _getCourse(courseCode);
+
+        if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+        if(!course.getEnabled())
+            throw new CourseNotEnabledException();
+
+        course.removeAllStudents();
     }
 
 }
