@@ -1,5 +1,5 @@
 <div class="course-list">
-  <div *ngFor="let course of courseList">
+  <div *ngFor="let course of courseList" class="course">
     <app-course-item [data]="course"></app-course-item>
   </div>
   <p *ngIf="courseList && !courseList.length" class="empty">No courses to show.</p>

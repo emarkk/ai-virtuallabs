@@ -1,0 +1,46 @@
+<div class="container" *ngIf="course$ | async as course; else loading">
+  <app-page>
+    <app-navigation [navigationData]="navigationData"></app-navigation>
+    <div class="head">
+      <div class="title">
+        <h1>
+          {{ course.code + ' - ' + course.name }}&nbsp;
+        </h1>
+      </div>
+    </div>
+    <table class="info main">
+      <tr>
+        <td>Professors</td>
+        <td>
+          <div class="professor-list" *ngIf="professors$ | async as professors">
+            <div *ngFor="let professor of professors" class="professor">
+              <div class="professor-info">
+                <div class="profile-pic"><img [src]="professor.picturePath || 'assets/img/user.png'" /></div>
+                <div><span><b>{{ professor.lastName.toUpperCase() }}</b></span><span> {{ professor.firstName }}</span></div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <app-tile title="Your team" [titleLink]="'/student/course/' + course.code + '/teams'" icon="account_tree">
+      <table class="info">
+        <tr>
+          <td>Team size constraints</td>
+          <td><i>min&emsp;</i><b>{{ course.minTeamMembers }}</b><span class="sep"></span><i>max&emsp;</i><b>{{ course.maxTeamMembers }}</b></td>
+        </tr>
+        <tr>
+          <td>Teamed students</td>
+          <td><b>???</b></td>
+        </tr>
+        <tr>
+          <td>Unteamed students</td>
+          <td><b>???</b></td>
+        </tr>
+      </table>
+    </app-tile>
+  </app-page>
+</div>
+<ng-template #loading>
+  <app-data-placeholder></app-data-placeholder>
+</ng-template>
