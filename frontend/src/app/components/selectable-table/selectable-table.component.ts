@@ -82,6 +82,7 @@ export class SelectableTableComponent implements OnInit {
   cancelSelection() {
     this.checkedSet = new Set();
     this.masterChecked = false;
+    this.masterSemichecked = false;
     this.allDatasetSelected = false;
     this.select.emit(this.checkedSet);
   }

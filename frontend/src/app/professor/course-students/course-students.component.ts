@@ -53,12 +53,10 @@ export class ProfessorCourseStudentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.enrolledStudentsDataSource = new EnrolledStudentsDataSource(this.courseService);
-
     this.route.params.subscribe(params => {
       this.courseCode = params.code;
       this.course$ = this.courseService.get(this.courseCode);
-      this.enrolledStudentsDataSource.loadMetadata(this.courseCode);
+      this.enrolledStudentsDataSource = new EnrolledStudentsDataSource(this.courseService, this.courseCode);
 
       this.course$.subscribe(course => {
         this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Students')];
