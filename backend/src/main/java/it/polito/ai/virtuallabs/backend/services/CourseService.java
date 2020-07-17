@@ -12,7 +12,7 @@ public interface CourseService {
     void updateCourse(String courseCode, CourseDTO course);
     void removeCourse(String courseCode);
     boolean inviteProfessor(String courseCode, Long professorId);
-    List<StudentDTO> getEnrolledStudents(String courseCode, String sortField, String sortDirection, int page, int pageSize);
+    PageDTO<StudentDTO> getEnrolledStudents(String courseCode, String sortField, String sortDirection, int page, int pageSize);
     List<ProfessorDTO> getProfessors(String courseCode);
     List<TeamDTO> getTeams(String courseCode);
     List<StudentDTO> getStudentsInTeams(String courseCode);

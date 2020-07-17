@@ -34,7 +34,7 @@ public class CourseController {
     }
 
     @GetMapping("/{code}/enrolled")
-    public List<StudentDTO> getEnrolledStudents(
+    public PageDTO<StudentDTO> getEnrolledStudents(
             @PathVariable("code") String courseCode,
             @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
             @RequestParam(name = "sortDirection", required = false, defaultValue = "asc") String sortDirection,

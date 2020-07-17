@@ -145,24 +145,27 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<StudentDTO> getEnrolledStudents(String courseCode, String sortField, String sortDirection, int page, int pageSize) {
+    public PageDTO<StudentDTO> getEnrolledStudents(String courseCode, String sortField, String sortDirection, int page, int pageSize) {
         Course course = _getCourse(courseCode);
         try {
             Student.class.getDeclaredField(sortField);
         } catch (NoSuchFieldException e) {
             throw new StudentClassFieldNotFoundException();
         }
-        if(page<0 || pageSize<0) {
+
+        if(page < 0 || pageSize < 0)
             throw new InvalidPageException();
-        }
+
         Page<Student> studentPage = studentRepository.findAllByCoursesIsContaining(
                 PageRequest.of(page, pageSize, Sort.by(
                         sortDirection.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField
                 )),
                 course);
-        return studentPage.stream()
+        List<StudentDTO> students = studentPage.stream()
                 .map(s -> modelMapper.map(s, StudentDTO.class))
                 .collect(Collectors.toList());
+
+        return new PageDTO<>(course.getStudents().size(), students);
     }
 
     @Override
