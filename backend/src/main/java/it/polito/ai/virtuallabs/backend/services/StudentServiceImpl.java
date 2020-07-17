@@ -70,12 +70,29 @@ public class StudentServiceImpl implements StudentService {
 
     @SuppressWarnings("deprecation")
     @Override
-    public List<StudentDTO> getOrderedSearchResult(String q, String exclude) {
+    public List<StudentDTO> getOrderedSearchResult(String q, String exclude, String include) {
         List<Student> retrievedStudents;
-        if(exclude != null) {
+        if(exclude != null && include == null) {
+            //Ricerca con esclusione corso
             Course c = _getCourse(exclude);
+            if(!c.getEnabled())
+                throw new CourseNotEnabledException();
             retrievedStudents = studentRepository.getByResumedInfosContainingAndCoursesIsNotContaining(q, c);
+        } else if(exclude == null && include != null) {
+            Course c = _getCourse(include);
+            if(!c.getEnabled())
+                throw new CourseNotEnabledException();
+            retrievedStudents = studentRepository.getByResumedInfosContainingAndCoursesIsContaining(q, c);
+        } else if(exclude != null && include != null) {
+            Course c1 = _getCourse(exclude);
+            Course c2 = _getCourse(include);
+            if(!c1.getEnabled())
+                throw new CourseNotEnabledException();
+            if(!c2.getEnabled())
+                throw new CourseNotEnabledException();
+            retrievedStudents = studentRepository.getByResumedInfosContainingAndCoursesIsNotContainingAndCoursesIsContaining(q, c1, c2);
         } else {
+            //Ricerca senza filtri
             retrievedStudents = studentRepository.getByResumedInfosContaining(q);
         }
         return retrievedStudents.stream()

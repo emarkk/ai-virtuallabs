@@ -3,6 +3,7 @@ package it.polito.ai.virtuallabs.backend.controllers;
 import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
 import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
+import it.polito.ai.virtuallabs.backend.services.CourseNotEnabledException;
 import it.polito.ai.virtuallabs.backend.services.CourseNotFoundException;
 import it.polito.ai.virtuallabs.backend.services.StudentNotFoundException;
 import it.polito.ai.virtuallabs.backend.services.StudentService;
@@ -38,11 +39,13 @@ public class StudentController {
     }
 
     @GetMapping("/search")
-    public List<StudentDTO> searchStudents(@RequestParam(name = "q") String q, @RequestParam(name = "excludeCourse", required = false) String exclude) throws CourseNotFoundException {
+    public List<StudentDTO> searchStudents(@RequestParam(name = "q") String q, @RequestParam(name = "excludeCourse", required = false) String exclude, @RequestParam(name = "includeCourse", required = false) String include) throws CourseNotFoundException, CourseNotEnabledException {
         try {
-            return studentService.getOrderedSearchResult(q, exclude);
+            return studentService.getOrderedSearchResult(q, exclude, include);
         } catch (CourseNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exclude + ": Course Not Found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course Not Found");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Course Not Enabled");
         }
     }
 
