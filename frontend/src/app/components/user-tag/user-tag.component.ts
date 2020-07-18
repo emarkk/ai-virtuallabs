@@ -8,6 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class UserTagComponent implements OnInit {
   name: string;
   boldName: string;
+  info: string;
   picturePath: string;
 
   @Input() set firstName(value: string) {
@@ -15,6 +16,9 @@ export class UserTagComponent implements OnInit {
   }
   @Input() set lastName(value: string) {
     this.boldName = value;
+  }
+  @Input() set id(value: string) {
+    this.info = value;
   }
   @Input() set picture(value: string) {
     this.picturePath = value;

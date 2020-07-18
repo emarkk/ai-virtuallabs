@@ -1,4 +1,7 @@
 <div class="container">
   <div class="profile-pic"><img [src]="picturePath || 'assets/img/user.png'" /></div>
-  <div class="name"><span>{{ name }} </span><span><b>{{ boldName }}</b></span></div>
+  <div class="name">
+    <span>{{ name }} </span><span><b>{{ boldName }}</b></span>
+    <span *ngIf="info"> ({{ info }})</span>
+  </div>
 </div>

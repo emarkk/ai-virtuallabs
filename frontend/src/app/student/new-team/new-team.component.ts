@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { MatChipList } from '@angular/material/chips';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -9,6 +10,8 @@ import { Student } from 'src/app/core/models/student.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
 import { StudentService, StudentSearchFilters } from 'src/app/core/services/student.service';
+import { TeamService } from 'src/app/core/services/team.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 import { numberValidator } from 'src/app/core/validators/core.validator';
 
@@ -22,6 +25,8 @@ import { navHome, navCourses, nav } from '../student.navdata';
 export class StudentNewTeamComponent implements OnInit {
   courseCode: string;
   courseName: string;
+  minMembers: number;
+  maxMembers: number;
   course$: Observable<Course>;
   navigationData: Array<any>|null = null;
   
@@ -36,10 +41,14 @@ export class StudentNewTeamComponent implements OnInit {
   searchSubject: Subject<string> = new Subject();
   searchSubscription: Subscription;
   
+  @ViewChild('chipList')
+  chipList: MatChipList;
+  
   @ViewChild('studentInput')
   studentInputRef: ElementRef;
 
-  constructor(private route: ActivatedRoute, private courseService: CourseService, private studentService: StudentService) {
+  constructor(private route: ActivatedRoute, private router: Router, private courseService: CourseService, private studentService: StudentService,
+      private teamService: TeamService, private toastService: ToastService) {
   }
 
   ngOnInit(): void {
@@ -49,6 +58,8 @@ export class StudentNewTeamComponent implements OnInit {
 
       this.course$.subscribe(course => {
         this.courseName = course.name;
+        this.minMembers = course.minTeamMembers;
+        this.maxMembers = course.maxTeamMembers;
         this.navigationData = [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('Teams', `/student/course/${course.code}/teams`), nav('New')];
       });
 
@@ -58,8 +69,12 @@ export class StudentNewTeamComponent implements OnInit {
         if(this.searchSubscription)
           this.searchSubscription.unsubscribe();
 
-        if(input.length > 1) {
-          this.searchSubscription = this.studentService.search(input, new StudentSearchFilters({ course: this.courseCode, excludeIds: this.members.map(m => m.id).join(), teamed: false })).subscribe(students => {
+        if(input.length > 0) {
+          this.searchSubscription = this.studentService.search(input, new StudentSearchFilters({
+              course: this.courseCode,
+              excludeIds: this.members.map(m => m.id).join(),
+              teamed: false
+            })).subscribe(students => {
             this.studentMatches = students.map(s => Object.assign(s, { username: `s${s.id}` }));
           });
         } else
@@ -71,13 +86,19 @@ export class StudentNewTeamComponent implements OnInit {
   searchInputChanged(input: string) {
     this.searchSubject.next(input);
   }
+  checkTeamMembersNumber() {
+    const members = this.members.length + 1;
+    this.chipList.errorState = members < this.minMembers || members > this.maxMembers;
+  }
   studentSelected(student: Student) {
     this.studentMatches = [];
     this.members = this.members.concat(student);
     this.studentInputRef.nativeElement.value = '';
+    this.checkTeamMembersNumber();
   }
   studentDeselected(student: Student) {
     this.members = this.members.filter(s => s.id != student.id);
+    this.checkTeamMembersNumber();
   }
 
   getFormErrorMessage() {
@@ -95,6 +116,32 @@ export class StudentNewTeamComponent implements OnInit {
       return 'Please enter a number here';
     return this.form.get('timeout').hasError('min') || this.form.get('timeout').hasError('max') ? 'Proposal timeout must be in the range 1-30' : '';
   }
+  lock() {
+    this.locked = true;
+    this.form.disable();
+  }
+  unlock() {
+    this.locked = false;
+    this.form.enable();
+  }
   createButtonClicked() {
+    this.checkTeamMembersNumber();
+
+    if(this.form.invalid || this.chipList.errorState || this.locked)
+      return;
+
+    const name = this.form.get('name').value;
+    const timeout = this.form.get('timeout').value;
+    const membersIds = this.members.map(m => m.id);
+
+    this.lock();
+    this.teamService.propose(name, timeout, membersIds, this.courseCode).subscribe(res => {
+      this.unlock();
+      if(res) {
+        this.router.navigate([`/student/course/${this.courseCode}`]);
+        this.toastService.show({ type: 'success', text: 'Team proposal submitted successfully.' });
+      } else
+        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+    });
   }
 }

@@ -68,7 +68,7 @@ export class ProfessorCourseStudentsComponent implements OnInit {
         if(this.searchSubscription)
           this.searchSubscription.unsubscribe();
 
-        if(input.length > 1) {
+        if(input.length > 0) {
           this.searchSubscription = this.studentService.search(input, new StudentSearchFilters({ excludeCourse: this.courseCode })).subscribe(students => {
             this.studentMatches = students.map(s => Object.assign(s, { username: `s${s.id}` }));
           });
