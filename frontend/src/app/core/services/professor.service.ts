@@ -8,6 +8,17 @@ import { Professor } from '../models/professor.model';
 
 import { url } from '../utils';
 
+export class ProfessorSearchFilters {
+  excludeCourse: string;
+
+  constructor(filters: any) {
+    this.excludeCourse = filters.excludeCourse;
+  }
+  toParams(params: HttpParams): HttpParams {
+    return Object.getOwnPropertyNames(this).reduce((p, i) => this[i] !== undefined ? p.set(i, this[i]) : p, params);
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,12 +34,9 @@ export class ProfessorService {
       catchError(error => of(null))
     );
   }
-  // search professor by query (if excludeCourse is provided, do not select professors teaching that course)
-  search(query: string, excludeCourse?: string): Observable<Professor[]> {
-    let params = new HttpParams().set('q', query);
-    if(excludeCourse)
-      params = params.set('excludeCourse', excludeCourse);
-
+  // search professor by query and filters
+  search(query: string, filters: ProfessorSearchFilters): Observable<Professor[]> {
+    let params = filters.toParams(new HttpParams().set('q', query));
     return this.http.get<any[]>(url('professors/search'), { params }).pipe(
       map(arr => arr.map(x => new Professor(x.id, x.firstName, x.lastName, x.email, x.hasPicture))),
       catchError(error => of(null))

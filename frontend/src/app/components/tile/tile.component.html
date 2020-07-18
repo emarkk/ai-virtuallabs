@@ -1,13 +1,15 @@
 <div class="tile" [class.no-pad]="tileNoPadding">
-  <h2 *ngIf="tileTitle && !tileTitleLink" class="title">
-    <mat-icon *ngIf="tileIcon">{{ tileIcon }}</mat-icon>
-    {{ tileTitle }}
-  </h2>
-  <a *ngIf="tileTitle && tileTitleLink" [routerLink]="tileTitleLink">
-    <h2 class="title">
+  <div class="tile-title">
+    <h2 *ngIf="tileTitle && !tileTitleLink" class="title">
       <mat-icon *ngIf="tileIcon">{{ tileIcon }}</mat-icon>
       {{ tileTitle }}
     </h2>
-  </a>
+    <a *ngIf="tileTitle && tileTitleLink" [routerLink]="tileTitleLink">
+      <h2 class="title">
+        <mat-icon *ngIf="tileIcon">{{ tileIcon }}</mat-icon>
+        {{ tileTitle }}
+      </h2>
+    </a>
+  </div>
   <ng-content></ng-content>
 </div>

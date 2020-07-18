@@ -22,6 +22,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatChipsModule } from '@angular/material/chips';
 
 import { AppComponent } from './app.component';
 import { PageComponent } from './components/page/page.component';
@@ -29,6 +30,7 @@ import { ConfirmDialog } from './components/dialogs/confirm/confirm.component';
 import { TileComponent } from './components/tile/tile.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { AsyncButtonComponent } from './components/async-button/async-button.component';
+import { UserTagComponent } from './components/user-tag/user-tag.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { DataPlaceholderComponent } from './components/data-placeholder/data-placeholder.component';
 import { FullscreenSearchComponent } from './components/fullscreen-search/fullscreen-search.component';
@@ -57,6 +59,7 @@ import { StudentContainerComponent } from './student/container/container.compone
 import { StudentHomeComponent } from './student/home/home.component';
 import { StudentCoursesComponent } from './student/courses/courses.component';
 import { StudentCourseDetailComponent } from './student/course-detail/course-detail.component';
+import { StudentNewTeamComponent } from './student/new-team/new-team.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +69,7 @@ import { StudentCourseDetailComponent } from './student/course-detail/course-det
     TileComponent,
     ToastComponent,
     AsyncButtonComponent,
+    UserTagComponent,
     WelcomeComponent,
     NavigationComponent,
     DataPlaceholderComponent,
@@ -92,7 +96,8 @@ import { StudentCourseDetailComponent } from './student/course-detail/course-det
     StudentContainerComponent,
     StudentHomeComponent,
     StudentCoursesComponent,
-    StudentCourseDetailComponent
+    StudentCourseDetailComponent,
+    StudentNewTeamComponent
   ],
   imports: [
     BrowserModule,
@@ -117,7 +122,8 @@ import { StudentCourseDetailComponent } from './student/course-detail/course-det
     MatPaginatorModule,
     MatDialogModule,
     MatProgressSpinnerModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatChipsModule
   ],
   providers: [
     {

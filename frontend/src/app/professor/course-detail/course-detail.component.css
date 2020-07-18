@@ -34,20 +34,6 @@ table.info td {
 table.info td:first-child {
   width: 25%;
 }
-.professor-list {
-  display: flex;
-  align-items: center;
-}
-.professor {
-  display: inline-block;
-  margin-right: 45px;
-}
-.professor-info {
-  display: flex;
-}
-.professor-info div {
-  display: inline-block;
-}
 .sep {
   display: inline-block;
   width: 40px;

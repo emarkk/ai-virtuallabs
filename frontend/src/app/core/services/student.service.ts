@@ -8,6 +8,23 @@ import { Student } from '../models/student.model';
 
 import { url } from '../utils';
 
+export class StudentSearchFilters {
+  course: string;
+  excludeCourse: string;
+  excludeIds: string;
+  teamed: boolean;
+
+  constructor(filters: any) {
+    this.course = filters.course;
+    this.excludeCourse = filters.excludeCourse;
+    this.excludeIds = filters.excludeIds;
+    this.teamed = filters.teamed;
+  }
+  toParams(params: HttpParams): HttpParams {
+    return Object.getOwnPropertyNames(this).reduce((p, i) => this[i] !== undefined ? p.set(i, this[i]) : p, params);
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,12 +40,9 @@ export class StudentService {
       catchError(error => of(null))
     );
   }
-  // search student by query (if excludeCourse is provided, do not select students enrolled in that course)
-  search(query: string, excludeCourse?: string): Observable<Student[]> {
-    let params = new HttpParams().set('q', query);
-    if(excludeCourse)
-      params = params.set('excludeCourse', excludeCourse);
-      
+  // search student by query and filters
+  search(query: string, filters: StudentSearchFilters): Observable<Student[]> {
+    let params = filters.toParams(new HttpParams().set('q', query));
     return this.http.get<any[]>(url('students/search'), { params }).pipe(
       map(arr => arr.map(x => new Student(x.id, x.firstName, x.lastName, x.email, x.hasPicture))),
       catchError(error => of(null))

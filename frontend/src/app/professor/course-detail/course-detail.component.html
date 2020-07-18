@@ -21,10 +21,7 @@
         <td>
           <div class="professor-list" *ngIf="professors$ | async as professors">
             <div *ngFor="let professor of professors" class="professor">
-              <div class="professor-info">
-                <div class="profile-pic"><img [src]="professor.picturePath || 'assets/img/user.png'" /></div>
-                <div><span><b>{{ professor.lastName.toUpperCase() }}</b></span><span> {{ professor.firstName }}</span></div>
-              </div>
+              <app-user-tag [firstName]="professor.firstName" [lastName]="professor.lastName.toUpperCase()" [picture]="professor.picturePath"></app-user-tag>
             </div>
             <button mat-flat-button color="primary" (click)="addCollaboratorButtonClicked()">Add collaborator</button>
           </div>

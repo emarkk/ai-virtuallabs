@@ -83,6 +83,17 @@ mat-form-field {
 form mat-form-field, form input {
   width: 100%;
 }
+form .input-container {
+  margin-bottom: 60px;
+}
+form .actions {
+  float: right;
+  display: flex;
+  align-items: end;
+}
+form .actions .mat-flat-button {
+  margin: 0 10px;
+}
 .bar {
   position: relative;
   top: 5px;
@@ -119,6 +130,7 @@ form mat-form-field, form input {
   height: 25px;
 }
 .profile-pic {
+  position: relative;
   display: inline-block;
   width: 20px;
   height: 20px;
@@ -126,6 +138,9 @@ form mat-form-field, form input {
   border-radius: 50%;
 }
 .profile-pic img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -135,4 +150,12 @@ form mat-form-field, form input {
 }
 .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
   background: #ff6647;
+}
+.professor-list {
+  display: flex;
+  align-items: center;
+}
+.professor {
+  display: inline-block;
+  margin-right: 45px;
 }

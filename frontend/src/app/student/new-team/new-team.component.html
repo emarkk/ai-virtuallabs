@@ -1,0 +1,47 @@
+<div class="container" *ngIf="course$ | async as course; else loading">
+    <app-page>
+      <app-navigation [navigationData]="navigationData"></app-navigation>
+      <h1>New team</h1>
+      <p>Enter the required team information in the form below. By submitting a proposal, you automatically join the newborn team.</p>
+      <div class="form">
+        <form [formGroup]="form">
+          <mat-error>{{ getFormErrorMessage() }}</mat-error>
+          <div class="input-container">
+            <mat-form-field class="fraction half first" appearance="legacy">
+              <mat-label>Team name</mat-label>
+              <input matInput placeholder="Toon Squad" formControlName="name" required>
+              <mat-error>{{ getNameErrorMessage() }}</mat-error>
+            </mat-form-field>
+            <mat-form-field class="fraction half" appearance="legacy">
+              <mat-label>Proposal timeout (in days)</mat-label>
+              <input matInput placeholder="10" formControlName="timeout" required>
+              <mat-error>{{ getTimeoutErrorMessage() }}</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="legacy">
+              <mat-chip-list #chipList>
+                <mat-chip *ngFor="let member of members" selectable="false" removable="true" (removed)="studentDeselected(member)">
+                  <app-user-tag [firstName]="member.firstName" [lastName]="member.lastName.toUpperCase()" [picture]="member.picturePath"></app-user-tag>
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input matInput placeholder="Members" (input)="searchInputChanged($event.target.value)" [matChipInputFor]="chipList" [matAutocomplete]="auto" #studentInput required>
+              </mat-chip-list>
+              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="studentSelected($event.option.value)">
+                <mat-option *ngFor="let match of studentMatches" [value]="match">
+                  <div>
+                    <app-user-tag [firstName]="match.firstName" [lastName]="match.lastName.toUpperCase()" [picture]="match.picturePath"></app-user-tag>
+                  </div>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="actions">
+            <button mat-flat-button [routerLink]="'/student/course/' + course.code">Cancel</button>
+            <app-async-button (aclick)="createButtonClicked()" [loading]="locked">Create</app-async-button>
+          </div>
+        </form>
+      </div>
+    </app-page>
+  </div>
+  <ng-template #loading>
+    <app-data-placeholder></app-data-placeholder>
+  </ng-template>

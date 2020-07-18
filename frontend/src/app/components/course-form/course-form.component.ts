@@ -70,12 +70,16 @@ export class CourseFormComponent implements OnInit {
   getMinTeamMembersErrorMessage() {
     if(this.form.get('minTeamMembers').hasError('required'))
       return 'You must enter the minimum number of team members';
-    return this.form.get('minTeamMembers').hasError('number') ? 'Please enter a number here' : '';
+    if(this.form.get('minTeamMembers').hasError('number'))
+      return 'Please enter a number here';
+    return this.form.get('minTeamMembers').hasError('min') ? 'At least one team member is required' : '';
   }
   getMaxTeamMembersErrorMessage() {
     if(this.form.get('maxTeamMembers').hasError('required'))
       return 'You must enter the maximum number of team members';
-    return this.form.get('maxTeamMembers').hasError('number') ? 'Please enter a number here' : '';
+    if(this.form.get('maxTeamMembers').hasError('number'))
+      return 'Please enter a number here';
+    return this.form.get('maxTeamMembers').hasError('min') ? 'At least one team member is required' : '';
   }
   lock() {
     this.locked = true;

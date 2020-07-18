@@ -5,6 +5,7 @@ import { StudentContainerComponent } from './container/container.component';
 import { StudentHomeComponent } from './home/home.component';
 import { StudentCoursesComponent } from './courses/courses.component';
 import { StudentCourseDetailComponent } from './course-detail/course-detail.component';
+import { StudentNewTeamComponent } from './new-team/new-team.component';
 
 export const studentRouting = [
   {
@@ -29,6 +30,10 @@ export const studentRouting = [
       {
         path: 'course/:code',
         component: StudentCourseDetailComponent,
+      },
+      {
+        path: 'course/:code/team/new',
+        component: StudentNewTeamComponent,
       }
     ]
   }

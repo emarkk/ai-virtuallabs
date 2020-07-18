@@ -1,26 +1,3 @@
-.head {
-  display: flex;
-  align-items: center;
-  margin-top: -1em;
-}
-.title {
-  flex: 1;
-}
-.title mat-icon {
-  cursor: pointer;
-  margin-left: 10px;
-  color: #ff6647;
-  font-size: 0.7em;
-  line-height: 1.65em;
-  outline: none;
-}
-.status {
-  height: 36px;
-}
-.status mat-icon {
-  padding-top: 3px;
-  font-size: 1.1em;
-}
 table.info {
   width: 100%;
   font-size: 0.9em;
@@ -34,24 +11,6 @@ table.info td {
 table.info td:first-child {
   width: 25%;
 }
-.professor-list {
-  display: flex;
-  align-items: center;
-}
-.professor {
-  display: inline-block;
-  margin-right: 45px;
-}
-.professor-info {
-  display: flex;
-}
-.professor-info div {
-  display: inline-block;
-}
-.sep {
-  display: inline-block;
-  width: 40px;
-}
-.actions button {
-  margin: 0 15px;
+.invitations {
+  margin-top: 2.2em;
 }

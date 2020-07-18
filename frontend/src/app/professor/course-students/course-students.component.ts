@@ -7,7 +7,7 @@ import { debounceTime } from 'rxjs/operators';
 import { Course } from 'src/app/core/models/course.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
-import { StudentService } from 'src/app/core/services/student.service';
+import { StudentService, StudentSearchFilters } from 'src/app/core/services/student.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 
 import { EnrolledStudentsDataSource } from 'src/app/core/datasources/enrolled-students.datasource';
@@ -63,13 +63,13 @@ export class ProfessorCourseStudentsComponent implements OnInit {
       });
 
       this.searchSubject.pipe(
-        debounceTime(400),
+        debounceTime(250),
       ).subscribe(input => {
         if(this.searchSubscription)
           this.searchSubscription.unsubscribe();
 
         if(input.length > 1) {
-          this.searchSubscription = this.studentService.search(input, this.courseCode).subscribe(students => {
+          this.searchSubscription = this.studentService.search(input, new StudentSearchFilters({ excludeCourse: this.courseCode })).subscribe(students => {
             this.studentMatches = students.map(s => Object.assign(s, { username: `s${s.id}` }));
           });
         } else

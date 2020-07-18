@@ -11,7 +11,7 @@ import { CourseService } from 'src/app/core/services/course.service';
 import { ConfirmDialog } from 'src/app/components/dialogs/confirm/confirm.component';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
-import { ProfessorService } from 'src/app/core/services/professor.service';
+import { ProfessorService, ProfessorSearchFilters } from 'src/app/core/services/professor.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
@@ -54,13 +54,13 @@ export class ProfessorCourseDetailComponent implements OnInit {
       });
       
       this.searchSubject.pipe(
-        debounceTime(400),
+        debounceTime(250),
       ).subscribe(input => {
         if(this.searchSubscription)
           this.searchSubscription.unsubscribe();
 
         if(input.length > 1) {
-          this.searchSubscription = this.professorService.search(input, this.courseCode).subscribe(professors => {
+          this.searchSubscription = this.professorService.search(input, new ProfessorSearchFilters({ excludeCourse: this.courseCode })).subscribe(professors => {
             this.professorMatches = professors.map(s => Object.assign(s, { username: `d${s.id}` }));
           });
         } else

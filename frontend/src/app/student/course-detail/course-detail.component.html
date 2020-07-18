@@ -14,30 +14,17 @@
         <td>
           <div class="professor-list" *ngIf="professors$ | async as professors">
             <div *ngFor="let professor of professors" class="professor">
-              <div class="professor-info">
-                <div class="profile-pic"><img [src]="professor.picturePath || 'assets/img/user.png'" /></div>
-                <div><span><b>{{ professor.lastName.toUpperCase() }}</b></span><span> {{ professor.firstName }}</span></div>
-              </div>
+              <app-user-tag [firstName]="professor.firstName" [lastName]="professor.lastName.toUpperCase()" [picture]="professor.picturePath"></app-user-tag>
             </div>
           </div>
         </td>
       </tr>
     </table>
     <app-tile title="Your team" [titleLink]="'/student/course/' + course.code + '/teams'" icon="account_tree">
-      <table class="info">
-        <tr>
-          <td>Team size constraints</td>
-          <td><i>min&emsp;</i><b>{{ course.minTeamMembers }}</b><span class="sep"></span><i>max&emsp;</i><b>{{ course.maxTeamMembers }}</b></td>
-        </tr>
-        <tr>
-          <td>Teamed students</td>
-          <td><b>???</b></td>
-        </tr>
-        <tr>
-          <td>Unteamed students</td>
-          <td><b>???</b></td>
-        </tr>
-      </table>
+      You haven't joined any team yet. Have a look at the invitations below, or consider <a [routerLink]="'/student/course/' + course.code + '/team/new'">submitting a team proposal</a>.
+      <div class="invitations">
+        <h3>Invitations</h3>
+      </div>
     </app-tile>
   </app-page>
 </div>

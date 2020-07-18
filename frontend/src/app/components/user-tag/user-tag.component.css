@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  align-items: center;
+}
+.profile-pic {
+  margin-right: 8px;
+}
+.name {
+  height: 20px;
+  line-height: 23px;
+}
