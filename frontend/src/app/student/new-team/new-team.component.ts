@@ -8,6 +8,7 @@ import { debounceTime } from 'rxjs/operators';
 import { Course } from 'src/app/core/models/course.model';
 import { Student } from 'src/app/core/models/student.model';
 
+import { AuthService } from 'src/app/core/services/auth.service';
 import { CourseService } from 'src/app/core/services/course.service';
 import { StudentService, StudentSearchFilters } from 'src/app/core/services/student.service';
 import { TeamService } from 'src/app/core/services/team.service';
@@ -47,8 +48,8 @@ export class StudentNewTeamComponent implements OnInit {
   @ViewChild('studentInput')
   studentInputRef: ElementRef;
 
-  constructor(private route: ActivatedRoute, private router: Router, private courseService: CourseService, private studentService: StudentService,
-      private teamService: TeamService, private toastService: ToastService) {
+  constructor(private route: ActivatedRoute, private router: Router, private authService: AuthService, private courseService: CourseService,
+      private studentService: StudentService, private teamService: TeamService, private toastService: ToastService) {
   }
 
   ngOnInit(): void {
@@ -132,7 +133,7 @@ export class StudentNewTeamComponent implements OnInit {
 
     const name = this.form.get('name').value;
     const timeout = this.form.get('timeout').value;
-    const membersIds = this.members.map(m => m.id);
+    const membersIds = this.members.map(m => m.id).concat(this.authService.getUserData().id);
 
     this.lock();
     this.teamService.propose(name, timeout, membersIds, this.courseCode).subscribe(res => {
