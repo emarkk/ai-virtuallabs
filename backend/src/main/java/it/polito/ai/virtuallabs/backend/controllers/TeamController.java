@@ -43,15 +43,16 @@ public class TeamController {
     public void proposeTeam(@RequestBody Map<String, Object> input) {
         String courseCode = "";
 
-        if(!input.containsKey("courseCode") || !input.containsKey("teamName") || !input.containsKey("members"))
+        if(!input.containsKey("courseCode") || !input.containsKey("name") || !input.containsKey("membersIds") || !input.containsKey("timeout"))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
 
         try {
             courseCode = (String) input.get("courseCode");
-            String teamName = (String) input.get("teamName");
-            List<String> members = (List<String>) input.get("members");
+            String teamName = (String) input.get("name");
+            List<Long> members = (List<Long>) input.get("membersIds");
+            Integer timeout = (Integer) input.get("timeout");
 
-            TeamDTO team = teamService.proposeTeam(courseCode, teamName, members);
+            TeamDTO team = teamService.proposeTeam(courseCode, teamName, members, timeout);
         } catch(CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
         } catch(StudentNotFoundException e) {

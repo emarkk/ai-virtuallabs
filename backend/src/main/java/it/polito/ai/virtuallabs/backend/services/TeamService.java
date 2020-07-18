@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface TeamService {
     Optional<TeamDTO> getTeam(Long teamId);
     List<StudentDTO> getMembers(Long teamId);
-    TeamDTO proposeTeam(String courseName, String teamName, List<String> memberIds);
+    TeamDTO proposeTeam(String courseName, String teamName, List<Long> memberIds, Integer timeout);
     void activateTeam(Long teamId);
     void evictTeam(Long teamId);
 }
