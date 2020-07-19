@@ -105,6 +105,7 @@ public class StudentServiceImpl implements StudentService {
                 })
                 .sorted(Comparator.comparingInt(e -> (int) e.get("distance")))
                 .filter(e -> _teamFilter(e, teamed))
+                .filter(e -> _idsFilter(e, ids))
                 .limit(3)
                 .map(e -> modelMapper.map(e.get("elem"), StudentDTO.class))
                 .collect(Collectors.toList());
@@ -122,9 +123,17 @@ public class StudentServiceImpl implements StudentService {
     private Boolean _teamFilter(HashMap<String, Object> e, Boolean teamed) {
         //Filtro team
         if(teamed != null) {
-            Student s = (Student) e.get("elem");
-            boolean teamStatus = !s.getTeams().isEmpty();
+            boolean teamStatus = !((Student) e.get("elem")).getTeams().isEmpty();
             return teamStatus == teamed;
+        }
+        return true;
+    }
+
+    private Boolean _idsFilter(HashMap<String, Object> e, List<Long> ids) {
+        //Filtro per id studenti - Scarto elemento se contenuto nella lista
+        if(ids != null) {
+            long s = ((Student) e.get("elem")).getId();
+            return !ids.contains(s);
         }
         return true;
     }
