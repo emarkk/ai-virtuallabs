@@ -13,5 +13,5 @@ public interface StudentService {
     List<CourseDTO> getCoursesForStudent(Long studentId);
     List<TeamDTO> getTeamsForStudent(Long studentId);
 
-    List<StudentDTO> getOrderedSearchResult(String q, String exclude, String include);
+    List<StudentDTO> getOrderedSearchResult(String q, String exclude, String include, List<Long> ids, Boolean teamed);
 }

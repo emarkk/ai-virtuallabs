@@ -47,9 +47,10 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamDTO proposeTeam(String courseCode, String teamName, List<String> memberIds) {
+    public TeamDTO proposeTeam(String courseName, String teamName, List<Long> memberIds, Integer timeout) {
         return null;
     }
+
 
     @Override
     public void activateTeam(Long teamId) {

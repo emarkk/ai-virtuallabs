@@ -70,7 +70,7 @@ public class StudentServiceImpl implements StudentService {
 
     @SuppressWarnings("deprecation")
     @Override
-    public List<StudentDTO> getOrderedSearchResult(String q, String exclude, String include) {
+    public List<StudentDTO> getOrderedSearchResult(String q, String exclude, String include, List<Long> ids, Boolean teamed) {
         List<Student> retrievedStudents;
         if(exclude != null && include == null) {
             //Ricerca con esclusione corso
@@ -97,12 +97,22 @@ public class StudentServiceImpl implements StudentService {
         }
         return retrievedStudents.stream()
                 .map(s -> {
+                    //Per ogni elemento calcolo la distanza di Levenshtein
                     HashMap<String, Object> elem = new HashMap<>();
                     elem.put("elem", s);
                     elem.put("distance", StringUtils.getLevenshteinDistance(s.getResumedInfos(), q));
                     return elem;
                 })
                 .sorted(Comparator.comparingInt(e -> (int) e.get("distance")))
+                .filter(e -> {
+                    //Filtro team
+                    if(teamed != null) {
+                        Student s = (Student) e.get("elem");
+                        boolean teamStatus = !s.getTeams().isEmpty();
+                        return teamStatus == teamed;
+                    }
+                    return true;
+                })
                 .limit(3)
                 .map(e -> modelMapper.map(e.get("elem"), StudentDTO.class))
                 .collect(Collectors.toList());
