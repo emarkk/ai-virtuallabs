@@ -104,15 +104,7 @@ public class StudentServiceImpl implements StudentService {
                     return elem;
                 })
                 .sorted(Comparator.comparingInt(e -> (int) e.get("distance")))
-                .filter(e -> {
-                    //Filtro team
-                    if(teamed != null) {
-                        Student s = (Student) e.get("elem");
-                        boolean teamStatus = !s.getTeams().isEmpty();
-                        return teamStatus == teamed;
-                    }
-                    return true;
-                })
+                .filter(e -> _teamFilter(e, teamed))
                 .limit(3)
                 .map(e -> modelMapper.map(e.get("elem"), StudentDTO.class))
                 .collect(Collectors.toList());
@@ -125,5 +117,15 @@ public class StudentServiceImpl implements StudentService {
             throw new CourseNotFoundException();
 
         return courseOptional.get();
+    }
+
+    private Boolean _teamFilter(HashMap<String, Object> e, Boolean teamed) {
+        //Filtro team
+        if(teamed != null) {
+            Student s = (Student) e.get("elem");
+            boolean teamStatus = !s.getTeams().isEmpty();
+            return teamStatus == teamed;
+        }
+        return true;
     }
 }
