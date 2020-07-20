@@ -89,7 +89,7 @@ public class TeamServiceImpl implements TeamService {
             throw new CourseNotEnabledException();
         if(!authenticated.getCourses().contains(course))
             throw new StudentNotEnrolledException();
-        if(teamRepository.findByName(teamProposalDTO.getName()) != null) {
+        if(teamRepository.findByNameAndCourse(teamProposalDTO.getName(), course) != null) {
             throw new DuplicateTeamNameException();
         }
         int size = (int) teamProposalDTO.getMembersIds().stream().distinct().count();
