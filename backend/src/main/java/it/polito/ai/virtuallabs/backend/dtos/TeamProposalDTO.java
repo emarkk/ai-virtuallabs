@@ -10,6 +10,6 @@ import java.util.List;
 public class TeamProposalDTO {
     private String courseCode;
     private String name;
-    private int timeout;
+    private Integer timeout;
     private List<Long> membersIds;
 }

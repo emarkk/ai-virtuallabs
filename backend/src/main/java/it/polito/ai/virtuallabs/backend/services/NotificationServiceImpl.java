@@ -40,7 +40,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendMessage(String address, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(address);
+        message.setTo("virtuallabs.notfier@gmail.com");
         message.setSubject(subject);
         message.setText(body);
         javaMailSender.send(message);

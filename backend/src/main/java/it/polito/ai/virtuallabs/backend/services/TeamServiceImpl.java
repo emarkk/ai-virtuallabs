@@ -6,10 +6,10 @@ import it.polito.ai.virtuallabs.backend.dtos.TeamProposalDTO;
 import it.polito.ai.virtuallabs.backend.entities.Course;
 import it.polito.ai.virtuallabs.backend.entities.Student;
 import it.polito.ai.virtuallabs.backend.entities.Team;
-import it.polito.ai.virtuallabs.backend.entities.TeamInvitation;
+import it.polito.ai.virtuallabs.backend.entities.TeamStudent;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
-import it.polito.ai.virtuallabs.backend.repositories.TeamInvitationRepository;
+import it.polito.ai.virtuallabs.backend.repositories.TeamStudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.TeamRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import org.modelmapper.ModelMapper;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,7 +34,7 @@ public class TeamServiceImpl implements TeamService {
     StudentRepository studentRepository;
 
     @Autowired
-    TeamInvitationRepository teamInvitationRepository;
+    TeamStudentRepository teamStudentRepository;
 
     @Autowired
     CourseRepository courseRepository;
@@ -72,9 +71,9 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<StudentDTO> getMembers(Long teamId) {
-        return this._getTeam(teamId).getMembers()
+        return this._getTeam(teamId).getTeamStudents()
                 .stream()
-                .map(m -> modelMapper.map(m, StudentDTO.class))
+                .map(ts -> modelMapper.map(ts.getStudent(), StudentDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -110,6 +109,8 @@ public class TeamServiceImpl implements TeamService {
         team.setName(teamProposalDTO.getName());
         team.setStatus(0);
         team.setCourse(course);
+        team.setInvitationsExpiration(new Timestamp(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * teamProposalDTO.getTimeout()));
+
 
         teamProposalDTO.getMembersIds().forEach(id -> {
             Optional<Student> student = studentRepository.findById(id);
@@ -119,22 +120,22 @@ public class TeamServiceImpl implements TeamService {
             if(!student.get().getCourses().contains(course)) {
                 throw new StudentNotEnrolledException();
             }
-            if(teamRepository.getTeamByCourseAndMembersAndStatus(course, student.get(), 1) != null) {
+
+            //Check da sistemare - vedi query in teamRepository
+            if(!teamRepository.findTeamsByCourseAndStatus(course.getCode(), student.get().getId(), 1).isEmpty()) {
                 throw new StudentAlreadyInTeamException();
             }
 
-            team.addMember(student.get());
-
             teamRepository.save(team);
 
-            TeamInvitation teamInvitation = TeamInvitation.builder()
-                    .team(team)
-                    .expirationDate(new Timestamp(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * teamProposalDTO.getTimeout()))
-                    .addresseeStudent(student.get())
-                    .status(student.get().getId().equals(authenticated.getId()) ? "creator" : "pending")
+            TeamStudent teamStudent = TeamStudent.builder()
+                    .status(student.get().getId().equals(authenticated.getId()) ? TeamStudent.Status.creator : TeamStudent.Status.pending)
                     .build();
 
-            teamInvitationRepository.save(teamInvitation);
+            teamStudent.setTeam(team);
+            teamStudent.setStudent(student.get());
+
+            teamStudentRepository.save(teamStudent);
 
         });
 

@@ -30,10 +30,7 @@ public class Student extends AuthenticatedEntity {
     @JoinTable(name = "student_course", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "course_code"))
     private List<Course> courses = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "members")
-    private List<Team> teams = new ArrayList<>();
-
-    @OneToMany(mappedBy = "addresseeStudent")
-    private List<TeamInvitation> teamInvitations = new ArrayList<>();
+    @OneToMany(mappedBy = "student")
+    private List<TeamStudent> teamStudents = new ArrayList<>();
 
 }

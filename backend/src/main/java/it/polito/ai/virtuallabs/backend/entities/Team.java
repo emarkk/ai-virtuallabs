@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,17 +25,17 @@ public class Team {
 
     private Integer status;
 
+    private Timestamp invitationsExpiration;
+
+
     @ManyToOne
     @JoinColumn(name = "course_code")
     private Course course;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "student_team", joinColumns = @JoinColumn(name = "team_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
-    private List<Student> members = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "team")
-    private List<TeamInvitation> teamInvitations = new ArrayList<>();
+    private List<TeamStudent> teamStudents = new ArrayList<>();
 
 
 
@@ -43,14 +44,5 @@ public class Team {
         c.getTeams().add(this);
     }
 
-    public void addMember(Student s) {
-        this.members.add(s);
-        s.getTeams().add(this);
-    }
-
-    public void addTeamInvitation(TeamInvitation teamInvitation) {
-        this.teamInvitations.add(teamInvitation);
-        teamInvitation.setTeam(this);
-    }
 
 }

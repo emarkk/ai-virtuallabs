@@ -62,9 +62,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<TeamDTO> getTeamsForStudent(Long studentId) {
-        return this._getStudent(studentId).getTeams()
+        return this._getStudent(studentId).getTeamStudents()
                 .stream()
-                .map(c -> modelMapper.map(c, TeamDTO.class))
+                .map(c -> modelMapper.map(c.getTeam(), TeamDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -123,7 +123,7 @@ public class StudentServiceImpl implements StudentService {
     private Boolean _teamFilter(HashMap<String, Object> e, Boolean teamed) {
         //Filtro team
         if(teamed != null) {
-            boolean teamStatus = !((Student) e.get("elem")).getTeams().isEmpty();
+            boolean teamStatus = !((Student) e.get("elem")).getTeamStudents().isEmpty();
             return teamStatus == teamed;
         }
         return true;
