@@ -1,9 +1,6 @@
 package it.polito.ai.virtuallabs.backend.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -35,5 +32,8 @@ public class Student extends AuthenticatedEntity {
 
     @ManyToMany(mappedBy = "members")
     private List<Team> teams = new ArrayList<>();
+
+    @OneToMany(mappedBy = "addresseeStudent")
+    private List<TeamInvitation> teamInvitations = new ArrayList<>();
 
 }

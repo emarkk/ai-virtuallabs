@@ -32,6 +32,12 @@ public class Team {
     @JoinTable(name = "student_team", joinColumns = @JoinColumn(name = "team_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
     private List<Student> members = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "team")
+    private List<TeamInvitation> teamInvitations = new ArrayList<>();
+
+
+
     public void setCourse(Course c) {
         this.course = c;
         c.getTeams().add(this);
@@ -40,6 +46,11 @@ public class Team {
     public void addMember(Student s) {
         this.members.add(s);
         s.getTeams().add(this);
+    }
+
+    public void addTeamInvitation(TeamInvitation teamInvitation) {
+        this.teamInvitations.add(teamInvitation);
+        teamInvitation.setTeam(this);
     }
 
 }

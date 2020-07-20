@@ -1,10 +1,13 @@
 package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.dtos.CredentialsDTO;
+import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
+import it.polito.ai.virtuallabs.backend.dtos.TeamProposalDTO;
 import it.polito.ai.virtuallabs.backend.entities.User;
 import it.polito.ai.virtuallabs.backend.repositories.ProfessorRepository;
 import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.UserRepository;
+import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -45,7 +48,6 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void notifyNewUser(CredentialsDTO credentialsDTO, String token) {
-
         sendMessage(credentialsDTO.getEmail(),
                 "This is your Virtuallabs Account",
                 "Hi " + credentialsDTO.getFirstName() + ",\na new Virtuallabs account named has been created for you.\n"
@@ -53,6 +55,20 @@ public class NotificationServiceImpl implements NotificationService {
                         + "If you didn't request this subscription you can ignore this email.\n"
                 );
 
+    }
+
+    @Override
+    public void notifyNewGroupProposal(TeamProposalDTO teamProposalDTO) {
+        teamProposalDTO.getMembersIds().forEach(s -> {
+            String email = "s" + s + "@studenti.polito.it";
+            sendMessage(
+                    email,
+                    "Invitation to new group " + teamProposalDTO.getName(),
+                    "Hi " + email + "," +
+                            "\n you received a new invitation to join a group.\n" +
+                            "Please visit your account for additional details."
+            );
+        });
     }
 
     @Scheduled(initialDelay = 1000, fixedRate = 1000 * 60 * 60 * 24)
