@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
     Team findByName(String courseName);
-    Team getTeamByCourseAndMembers(Course course, Student student);
+    Team getTeamByCourseAndMembersAndStatus(Course course, Student student, Integer status);
 }

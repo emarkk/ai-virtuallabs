@@ -119,7 +119,7 @@ public class TeamServiceImpl implements TeamService {
             if(!student.get().getCourses().contains(course)) {
                 throw new StudentNotEnrolledException();
             }
-            if(teamRepository.getTeamByCourseAndMembers(course, student.get()) != null) {
+            if(teamRepository.getTeamByCourseAndMembersAndStatus(course, student.get(), 1) != null) {
                 throw new StudentAlreadyInTeamException();
             }
 
