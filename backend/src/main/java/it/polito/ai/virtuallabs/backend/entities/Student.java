@@ -31,6 +31,6 @@ public class Student extends AuthenticatedEntity {
     private List<Course> courses = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
-    private List<TeamStudent> teamStudents = new ArrayList<>();
+    private List<TeamStudent> teams = new ArrayList<>();
 
 }

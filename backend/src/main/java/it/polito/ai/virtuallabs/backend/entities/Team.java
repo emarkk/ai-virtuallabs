@@ -17,32 +17,35 @@ import java.util.List;
 @AllArgsConstructor
 public class Team {
 
+    public enum FormationStatus {
+        PROVISIONAL,
+        COMPLETE,
+        ABORTED,
+        EXPIRED
+    }
+
     @Id
     @GeneratedValue
     private Long id;
 
     private String name;
 
-    private Integer status;
+    @Enumerated(EnumType.STRING)
+    private FormationStatus formationStatus;
 
     private Timestamp invitationsExpiration;
-
 
     @ManyToOne
     @JoinColumn(name = "course_code")
     private Course course;
 
-
     @Builder.Default
     @OneToMany(mappedBy = "team")
-    private List<TeamStudent> teamStudents = new ArrayList<>();
-
-
+    private List<TeamStudent> members = new ArrayList<>();
 
     public void setCourse(Course c) {
         this.course = c;
         c.getTeams().add(this);
     }
-
 
 }

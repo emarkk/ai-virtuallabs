@@ -1,5 +1,6 @@
 package it.polito.ai.virtuallabs.backend.dtos;
 
+import it.polito.ai.virtuallabs.backend.entities.Team;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,6 @@ public class TeamDTO {
 
     private String name;
 
-    private Integer status;
+    private Team.FormationStatus status;
 
 }

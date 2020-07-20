@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,6 +64,15 @@ public class TeamServiceImpl implements TeamService {
         return courseOptional.get();
     }
 
+    private Student _getStudent(Long studentId) {
+        Optional<Student> studentOptional = studentRepository.findById(studentId);
+
+        if(studentOptional.isEmpty())
+            throw new StudentNotFoundException();
+
+        return studentOptional.get();
+    }
+
     @Override
     public Optional<TeamDTO> getTeam(Long teamId) {
         Optional<Team> teamOpt = teamRepository.findById(teamId);
@@ -71,90 +81,66 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<StudentDTO> getMembers(Long teamId) {
-        return this._getTeam(teamId).getTeamStudents()
+        /*return this._getTeam(teamId).getTeamStudents()
                 .stream()
                 .map(ts -> modelMapper.map(ts.getStudent(), StudentDTO.class))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+        return null;
     }
 
     @Override
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     public TeamDTO proposeTeam(TeamProposalDTO teamProposalDTO) {
-
+        Course course = _getCourse(teamProposalDTO.getCourseCode());
         Student authenticated = (Student) authenticatedEntityMapper.get();
 
-        Course course = _getCourse(teamProposalDTO.getCourseCode());
         if(!course.getEnabled())
             throw new CourseNotEnabledException();
         if(!authenticated.getCourses().contains(course))
             throw new StudentNotEnrolledException();
-        if(teamRepository.findByNameAndCourse(teamProposalDTO.getName(), course) != null) {
+        if(course.getTeams().stream().anyMatch(t -> t.getName().equals(teamProposalDTO.getName())))
             throw new DuplicateTeamNameException();
-        }
-        int size = (int) teamProposalDTO.getMembersIds().stream().distinct().count();
-        if( size > course.getMaxTeamMembers() || size < course.getMinTeamMembers()) {
-            throw new IllegalTeamSizeException();
-        }
-
-        if(size < teamProposalDTO.getMembersIds().size()) {
+        if(new HashSet<>(teamProposalDTO.getMembersIds()).size() < teamProposalDTO.getMembersIds().size())
             throw new DuplicateParticipantException();
-        }
-
-        if(!teamProposalDTO.getMembersIds().contains(authenticated.getId())) {
+        if(!teamProposalDTO.getMembersIds().contains(authenticated.getId()))
             throw new IllegalTeamProposalException();
-        }
 
-        Team team = new Team();
+        List<Student> students = teamProposalDTO.getMembersIds()
+                .stream()
+                .map(this::_getStudent)
+                .collect(Collectors.toList());
 
-        team.setName(teamProposalDTO.getName());
-        team.setStatus(0);
-        team.setCourse(course);
-        team.setInvitationsExpiration(new Timestamp(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * teamProposalDTO.getTimeout()));
+        if(students.stream().anyMatch(s -> !s.getCourses().contains(course)))
+            throw new StudentNotEnrolledException();
+        if(students.size() < course.getMinTeamMembers() || students.size() > course.getMaxTeamMembers())
+            throw new IllegalTeamSizeException();
+        if(students.stream().anyMatch(s ->
+                s.getTeams().stream().anyMatch(ts -> ts.getTeam().getFormationStatus() == Team.FormationStatus.COMPLETE)))
+            throw new StudentAlreadyInTeamException();
 
+        Team team = Team.builder()
+                .name(teamProposalDTO.getName())
+                .formationStatus(students.size() > 1 ? Team.FormationStatus.PROVISIONAL : Team.FormationStatus.COMPLETE)
+                .invitationsExpiration(new Timestamp(System.currentTimeMillis() + 24*60*60*1000 * teamProposalDTO.getTimeout()))
+                .course(course)
+                .build();
+        teamRepository.save(team);
 
-        teamProposalDTO.getMembersIds().forEach(id -> {
-            Optional<Student> student = studentRepository.findById(id);
-            if(student.isEmpty()) {
-                throw new StudentNotFoundException();
-            }
-            if(!student.get().getCourses().contains(course)) {
-                throw new StudentNotEnrolledException();
-            }
-
-            //Check da sistemare - vedi query in teamRepository
-            if(!teamRepository.findTeamsByCourseAndStatus(course.getCode(), student.get().getId(), 1).isEmpty()) {
-                throw new StudentAlreadyInTeamException();
-            }
-
-            teamRepository.save(team);
-
-            TeamStudent teamStudent = TeamStudent.builder()
-                    .status(student.get().getId().equals(authenticated.getId()) ? TeamStudent.Status.creator : TeamStudent.Status.pending)
-                    .build();
-
-            teamStudent.setTeam(team);
-            teamStudent.setStudent(student.get());
-
-            teamStudentRepository.save(teamStudent);
-
-        });
-
+        List<TeamStudent> members = students.stream().map(s -> new TeamStudent(s, team, s.equals(authenticated)
+                    ? TeamStudent.InvitationStatus.CREATOR
+                    : TeamStudent.InvitationStatus.PENDING
+        )).collect(Collectors.toList());
+        members.forEach(m -> teamStudentRepository.save(m));
 
         return modelMapper.map(team, TeamDTO.class);
     }
 
-
     @Override
     public void activateTeam(Long teamId) {
-        Team team = this._getTeam(teamId);
-        team.setStatus(1);
-        teamRepository.save(team);
     }
 
     @Override
     public void evictTeam(Long teamId) {
-        Team team = this._getTeam(teamId);
-        teamRepository.delete(team);
     }
 
 }

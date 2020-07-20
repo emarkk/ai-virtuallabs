@@ -47,7 +47,7 @@ public class TeamController {
     public void proposeTeam(@RequestBody TeamProposalDTO teamProposalDTO) {
         try {
             TeamDTO team = teamService.proposeTeam(teamProposalDTO);
-            notificationService.notifyNewGroupProposal(teamProposalDTO);
+            //notificationService.notifyNewGroupProposal(teamProposalDTO);
         } catch(CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + teamProposalDTO.getCourseCode() + "' not found");
         } catch(StudentNotFoundException e) {

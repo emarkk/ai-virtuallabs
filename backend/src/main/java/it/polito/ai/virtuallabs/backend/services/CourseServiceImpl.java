@@ -185,28 +185,6 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<StudentDTO> getStudentsInTeams(String courseCode) {
-        if(!courseRepository.existsById(courseCode))
-            throw new CourseNotFoundException();
-
-        return courseRepository.getStudentsInTeams(courseCode)
-                .stream()
-                .map(s -> modelMapper.map(s, StudentDTO.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<StudentDTO> getStudentsNotInTeams(String courseCode) {
-        if(!courseRepository.existsById(courseCode))
-            throw new CourseNotFoundException();
-
-        return courseRepository.getStudentsNotInTeams(courseCode)
-                .stream()
-                .map(s -> modelMapper.map(s, StudentDTO.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     public boolean addStudentToCourse(Long studentId, String courseCode) {
         Student student = this._getStudent(studentId);

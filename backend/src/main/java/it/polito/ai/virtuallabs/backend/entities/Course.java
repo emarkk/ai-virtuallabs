@@ -47,11 +47,6 @@ public class Course {
         h.setCourse(this);
     }
 
-    public void addTeam(Team h) {
-        this.teams.add(h);
-        h.setCourse(this);
-    }
-
     public void addStudent(Student s) {
         this.students.add(s);
         s.getCourses().add(this);

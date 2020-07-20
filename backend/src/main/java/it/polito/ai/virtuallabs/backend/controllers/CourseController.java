@@ -69,24 +69,6 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/{code}/enrolled/teamed")
-    public List<StudentDTO> getStudentsInTeams(@PathVariable("code") String courseCode) {
-        try {
-            return courseService.getStudentsInTeams(courseCode);
-        } catch(CourseNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
-        }
-    }
-
-    @GetMapping("/{code}/enrolled/unteamed")
-    public List<StudentDTO> getStudentsNotInTeams(@PathVariable("code") String courseCode) {
-        try {
-            return courseService.getStudentsNotInTeams(courseCode);
-        } catch(CourseNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
-        }
-    }
-
     @PostMapping({ "", "/" })
     @ResponseStatus(HttpStatus.CREATED)
     public CourseDTO addOne(@RequestBody CourseDTO courseDTO) {
