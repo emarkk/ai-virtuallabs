@@ -2,6 +2,7 @@ package it.polito.ai.virtuallabs.backend.controllers;
 
 import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
+import it.polito.ai.virtuallabs.backend.dtos.TeamMemberStatusDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamProposalDTO;
 import it.polito.ai.virtuallabs.backend.entities.TeamStudent;
 import it.polito.ai.virtuallabs.backend.services.*;
@@ -44,7 +45,7 @@ public class TeamController {
     }
 
     @GetMapping("/{id}/members/status")
-    public Map<StudentDTO, TeamStudent.InvitationStatus> getMembersStatus(@PathVariable("id") Long id) {
+    public List<TeamMemberStatusDTO> getMembersStatus(@PathVariable("id") Long id) {
         try {
             return teamService.getMembersStatus(id);
         } catch(TeamNotFoundException e) {
