@@ -73,6 +73,8 @@ public class StudentController {
             return studentService.getTeamsForStudent(id);
         } catch(StudentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student '" + id + "' not found");
+        } catch(CourseNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
         }
     }
 
