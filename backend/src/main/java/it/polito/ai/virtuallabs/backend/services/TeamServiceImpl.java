@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -81,11 +82,20 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<StudentDTO> getMembers(Long teamId) {
-        /*return this._getTeam(teamId).getTeamStudents()
+        return this._getTeam(teamId).getMembers()
                 .stream()
                 .map(ts -> modelMapper.map(ts.getStudent(), StudentDTO.class))
-                .collect(Collectors.toList());*/
-        return null;
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<StudentDTO, TeamStudent.InvitationStatus> getMembersStatus(Long teamId) {
+        return this._getTeam(teamId).getMembers()
+                .stream()
+                .collect(Collectors.toMap(
+                        ts -> modelMapper.map(ts.getStudent(), StudentDTO.class),
+                        TeamStudent::getInvitationStatus
+                ));
     }
 
     @Override

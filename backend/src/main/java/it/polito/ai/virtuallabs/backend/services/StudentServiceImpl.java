@@ -76,7 +76,17 @@ public class StudentServiceImpl implements StudentService {
     public List<TeamDTO> getTeamsForStudent(Long studentId) {
         return this._getStudent(studentId).getTeams()
                 .stream()
-                .map(t -> modelMapper.map(t, TeamDTO.class))
+                .map(ts -> modelMapper.map(ts.getTeam(), TeamDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TeamDTO> getTeamsForStudent(Long studentId, String courseCode) {
+        Course course = this._getCourse(courseCode);
+        return this._getStudent(studentId).getTeams()
+                .stream()
+                .filter(ts -> ts.getTeam().getCourse().equals(course))
+                .map(ts -> modelMapper.map(ts.getTeam(), TeamDTO.class))
                 .collect(Collectors.toList());
     }
 

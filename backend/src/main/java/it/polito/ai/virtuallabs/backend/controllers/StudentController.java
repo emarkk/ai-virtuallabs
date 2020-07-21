@@ -65,8 +65,11 @@ public class StudentController {
     }
 
     @GetMapping("/{id}/teams")
-    public List<TeamDTO> getTeams(@PathVariable("id") Long id) {
+    public List<TeamDTO> getTeams(@PathVariable("id") Long id, @RequestParam(name = "course", required = false) String courseCode) {
         try {
+            if(courseCode != null)
+                return studentService.getTeamsForStudent(id, courseCode);
+
             return studentService.getTeamsForStudent(id);
         } catch(StudentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student '" + id + "' not found");

@@ -8,8 +8,13 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class TeamProposalDTO {
+
     private String courseCode;
+
     private String name;
+
     private Integer timeout;
+
     private List<Long> membersIds;
+    
 }
