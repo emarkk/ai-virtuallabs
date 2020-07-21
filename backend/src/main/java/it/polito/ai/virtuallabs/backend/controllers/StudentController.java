@@ -41,12 +41,13 @@ public class StudentController {
     @GetMapping("/search")
     public List<StudentDTO> searchStudents(
             @RequestParam(name = "q") String q,
-            @RequestParam(name = "excludeCourse", required = false) String exclude,
-            @RequestParam(name = "includeCourse", required = false) String include,
-            @RequestParam(name = "excludeIds", required = false) List<Long> ids,
-            @RequestParam(name = "teamed", required = false) Boolean teamed) throws CourseNotFoundException, CourseNotEnabledException {
+            @RequestParam(name = "course", required = false) String course,
+            @RequestParam(name = "teamed", required = false) Boolean teamed,
+            @RequestParam(name = "excludeCourse", required = false) String excludeCourse,
+            @RequestParam(name = "excludeIds", required = false) List<Long> excludeIds)
+            throws CourseNotFoundException, CourseNotEnabledException {
         try {
-            return studentService.getOrderedSearchResult(q, exclude, include, ids, teamed);
+            return studentService.search(q, course, teamed, excludeCourse, excludeIds);
         } catch (CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course Not Found");
         } catch (CourseNotEnabledException e) {

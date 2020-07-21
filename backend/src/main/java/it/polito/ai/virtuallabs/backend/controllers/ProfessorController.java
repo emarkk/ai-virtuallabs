@@ -37,11 +37,14 @@ public class ProfessorController {
     }
 
     @GetMapping("/search")
-    public List<ProfessorDTO> searchProfessors(@RequestParam(name = "q") String q, @RequestParam(name = "excludeCourse", required = false) String exclude) throws CourseNotFoundException {
+    public List<ProfessorDTO> searchProfessors(
+            @RequestParam(name = "q") String q,
+            @RequestParam(name = "excludeCourse", required = false) String excludeCourse)
+            throws CourseNotFoundException {
         try {
-            return professorService.getOrderedSearchResult(q, exclude);
+            return professorService.search(q, excludeCourse);
         } catch (CourseNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exclude + ": Course Not Found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + excludeCourse + "' not found");
         }
     }
 

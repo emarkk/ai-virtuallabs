@@ -58,14 +58,13 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .roles(List.of(role))
                 .build();
         userRepository.save(user);
-        String resumedInfo = (username + " " + credentialsDTO.getFirstName() + " " + credentialsDTO.getLastName()).toLowerCase();
+
         if(role.equals("ROLE_STUDENT")) {
             Student student = Student.builder()
                     .id(credentialsDTO.getId())
                     .email(credentialsDTO.getEmail())
                     .firstName(credentialsDTO.getFirstName())
                     .lastName(credentialsDTO.getLastName())
-                    .resumedInfos(resumedInfo)
                     .build();
             studentRepository.save(student);
         } else {
@@ -74,7 +73,6 @@ public class RegistrationServiceImpl implements RegistrationService {
                     .email(credentialsDTO.getEmail())
                     .firstName(credentialsDTO.getFirstName())
                     .lastName(credentialsDTO.getLastName())
-                    .resumedInfos(resumedInfo)
                     .build();
             professorRepository.save(professor);
         }

@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface ProfessorService {
     Optional<ProfessorDTO> getProfessor(Long professorId);
     List<ProfessorDTO> getAllProfessors();
+    List<ProfessorDTO> search(String q, String excludeCourse);
     List<CourseDTO> getCoursesForProfessor(Long professorId);
-    List<ProfessorDTO> getOrderedSearchResult(String q, String exclude);
 
 }

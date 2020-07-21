@@ -7,9 +7,12 @@ import it.polito.ai.virtuallabs.backend.entities.Course;
 import it.polito.ai.virtuallabs.backend.entities.Student;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
+import it.polito.ai.virtuallabs.backend.repositories.specifications.StudentSpecifications;
+import it.polito.ai.virtuallabs.backend.utils.UserSearchEngine;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +41,15 @@ public class StudentServiceImpl implements StudentService {
         return studentOptional.get();
     }
 
+    private Course _getCourse(String courseCode) {
+        Optional<Course> courseOptional = courseRepository.findById(courseCode);
+
+        if(courseOptional.isEmpty())
+            throw new CourseNotFoundException();
+
+        return courseOptional.get();
+    }
+
     @Override
     public Optional<StudentDTO> getStudent(Long studentId) {
         Optional<Student> studentOptional = studentRepository.findById(studentId);
@@ -64,73 +76,31 @@ public class StudentServiceImpl implements StudentService {
     public List<TeamDTO> getTeamsForStudent(Long studentId) {
         return this._getStudent(studentId).getTeams()
                 .stream()
-                .map(ts -> modelMapper.map(ts.getTeam(), TeamDTO.class))
+                .map(t -> modelMapper.map(t, TeamDTO.class))
                 .collect(Collectors.toList());
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public List<StudentDTO> getOrderedSearchResult(String q, String exclude, String include, List<Long> ids, Boolean teamed) {
-        List<Student> retrievedStudents;
-        if(exclude != null && include == null) {
-            //Ricerca con esclusione corso
-            Course c = _getCourse(exclude);
-            if(!c.getEnabled())
-                throw new CourseNotEnabledException();
-            retrievedStudents = studentRepository.getByResumedInfosContainingAndCoursesIsNotContaining(q, c);
-        } else if(exclude == null && include != null) {
-            Course c = _getCourse(include);
-            if(!c.getEnabled())
-                throw new CourseNotEnabledException();
-            retrievedStudents = studentRepository.getByResumedInfosContainingAndCoursesIsContaining(q, c);
-        } else if(exclude != null && include != null) {
-            Course c1 = _getCourse(exclude);
-            Course c2 = _getCourse(include);
-            if(!c1.getEnabled())
-                throw new CourseNotEnabledException();
-            if(!c2.getEnabled())
-                throw new CourseNotEnabledException();
-            retrievedStudents = studentRepository.getByResumedInfosContainingAndCoursesIsNotContainingAndCoursesIsContaining(q, c1, c2);
-        } else {
-            //Ricerca senza filtri
-            retrievedStudents = studentRepository.getByResumedInfosContaining(q);
+    public List<StudentDTO> search(String q, String course, Boolean teamed, String excludeCourse, List<Long> excludeIds) {
+        Specification<Student> filters = Specification.where(null);
+
+        if(course != null) {
+            Course c = _getCourse(course);
+            filters = filters.and(StudentSpecifications.enrolledInCourse(c));
+            if(teamed != null)
+                filters = filters.and(StudentSpecifications.teamedForCourse(c, teamed));
         }
-        return retrievedStudents.stream()
-                .map(s -> {
-                    //Per ogni elemento calcolo la distanza di Levenshtein
-                    HashMap<String, Object> elem = new HashMap<>();
-                    elem.put("elem", s);
-                    elem.put("distance", StringUtils.getLevenshteinDistance(s.getResumedInfos(), q));
-                    return elem;
-                })
-                .sorted(Comparator.comparingInt(e -> (int) e.get("distance")))
-                .filter(e -> _teamFilter(e, teamed))
-                .filter(e -> _idsFilter(e, ids))
+        if(excludeCourse != null)
+            filters = filters.and(StudentSpecifications.notEnrolledInCourse(_getCourse(excludeCourse)));
+        if(excludeIds != null)
+            filters = filters.and(StudentSpecifications.excludeIds(excludeIds));
+
+        return studentRepository.findAll(filters)
+                .stream()
+                .map(s -> new AbstractMap.SimpleEntry<>(s, UserSearchEngine.getSimilarity(q, "s" + s.getId(), s.getFirstName(), s.getLastName())))
+                .sorted(Comparator.comparingDouble(AbstractMap.SimpleEntry<Student, Double>::getValue).reversed())
                 .limit(3)
-                .map(e -> modelMapper.map(e.get("elem"), StudentDTO.class))
+                .map(e -> modelMapper.map(e.getKey(), StudentDTO.class))
                 .collect(Collectors.toList());
-    }
-
-    private Course _getCourse(String courseCode) {
-        Optional<Course> courseOptional = courseRepository.findById(courseCode);
-
-        if(courseOptional.isEmpty())
-            throw new CourseNotFoundException();
-
-        return courseOptional.get();
-    }
-
-    private Boolean _teamFilter(HashMap<String, Object> e, Boolean teamed) {
-        //Filtro team
-        return true;
-    }
-
-    private Boolean _idsFilter(HashMap<String, Object> e, List<Long> ids) {
-        //Filtro per id studenti - Scarto elemento se contenuto nella lista
-        if(ids != null) {
-            long s = ((Student) e.get("elem")).getId();
-            return !ids.contains(s);
-        }
-        return true;
     }
 }

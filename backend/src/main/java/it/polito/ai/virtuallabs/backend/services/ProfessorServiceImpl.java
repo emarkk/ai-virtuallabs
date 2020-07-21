@@ -2,22 +2,19 @@ package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
 import it.polito.ai.virtuallabs.backend.dtos.ProfessorDTO;
-import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.entities.Course;
 import it.polito.ai.virtuallabs.backend.entities.Professor;
-import it.polito.ai.virtuallabs.backend.entities.Student;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.ProfessorRepository;
-import org.apache.commons.lang3.StringUtils;
+import it.polito.ai.virtuallabs.backend.repositories.specifications.ProfessorSpecifications;
+import it.polito.ai.virtuallabs.backend.utils.UserSearchEngine;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,26 +61,19 @@ public class ProfessorServiceImpl implements ProfessorService {
                 .collect(Collectors.toList());
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public List<ProfessorDTO> getOrderedSearchResult(String q, String exclude) {
-        List<Professor> retrievedProfessors;
-        if(exclude != null) {
-            Course c = _getCourse(exclude);
-            retrievedProfessors = professorRepository.getByResumedInfosContainingAndCoursesIsNotContaining(q, c);
-        } else {
-            retrievedProfessors = professorRepository.getByResumedInfosContaining(q);
-        }
-        return retrievedProfessors.stream()
-                .map(s -> {
-                    HashMap<String, Object> elem = new HashMap<>();
-                    elem.put("elem", s);
-                    elem.put("distance", StringUtils.getLevenshteinDistance(s.getResumedInfos(), q));
-                    return elem;
-                })
-                .sorted(Comparator.comparingInt(e -> (int) e.get("distance")))
+    public List<ProfessorDTO> search(String q, String excludeCourse) {
+        Specification<Professor> filters = Specification.where(null);
+
+        if(excludeCourse != null)
+            filters = filters.and(ProfessorSpecifications.notTeachingCourse(_getCourse(excludeCourse)));
+
+        return professorRepository.findAll(filters)
+                .stream()
+                .map(p -> new AbstractMap.SimpleEntry<>(p, UserSearchEngine.getSimilarity(q, "d" + p.getId(), p.getFirstName(), p.getLastName())))
+                .sorted(Comparator.comparingDouble(AbstractMap.SimpleEntry<Professor, Double>::getValue).reversed())
                 .limit(3)
-                .map(e -> modelMapper.map(e.get("elem"), ProfessorDTO.class))
+                .map(p -> modelMapper.map(p, ProfessorDTO.class))
                 .collect(Collectors.toList());
     }
 

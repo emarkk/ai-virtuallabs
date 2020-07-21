@@ -24,8 +24,6 @@ public class Professor extends AuthenticatedEntity {
 
     private boolean hasPicture;
 
-    private String resumedInfos;
-
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}) //Aggiunto EAGER
     @JoinTable(name = "professor_course", joinColumns = @JoinColumn(name = "professor_id"), inverseJoinColumns = @JoinColumn(name = "course_code"))
     private List<Course> courses = new ArrayList<>();

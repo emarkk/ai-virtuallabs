@@ -38,8 +38,7 @@ public class MockDataService {
 
     public void addProfessor(Long id, String email, String password, String firstName, String lastName) {
         String username = "d" + id;
-        String resumed = username + " " + firstName.toLowerCase() + " " + lastName.toLowerCase();
-        Professor professor = new Professor(id, email, firstName, lastName, false, resumed, new ArrayList<>());
+        Professor professor = new Professor(id, email, firstName, lastName, false, new ArrayList<>());
         User user = new User(id, username, email, passwordEncoder.encode(password), true, new Timestamp(System.currentTimeMillis()), null, List.of("ROLE_PROFESSOR"));
         userRepository.save(user);
         professorRepository.save(professor);
@@ -57,8 +56,7 @@ public class MockDataService {
 
     public void addStudent(Long id, String email, String password, String firstName, String lastName) {
         String username = "s" + id;
-        String resumed = username + " " + firstName.toLowerCase() + " " + lastName.toLowerCase();
-        Student student = new Student(id, email, firstName, lastName, false, resumed, new ArrayList<>(), new ArrayList<>());
+        Student student = new Student(id, email, firstName, lastName, false, new ArrayList<>(), new ArrayList<>());
         User user = new User(id, username, email, passwordEncoder.encode(password), true, new Timestamp(System.currentTimeMillis()), null, List.of("ROLE_STUDENT"));
         userRepository.save(user);
         studentRepository.save(student);
