@@ -39,6 +39,8 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 import { CourseItemComponent } from './components/course-item/course-item.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
 import { CourseFormComponent } from './components/course-form/course-form.component';
+import { TeamInvitationItemComponent } from './components/team-invitation-item/team-invitation-item.component';
+import { TeamInvitationListComponent } from './components/team-invitation-list/team-invitation-list.component';
 
 import { ContainerComponent } from './container/container.component';
 import { SignInComponent } from './auth/signin/signin.component';
@@ -78,6 +80,8 @@ import { StudentNewTeamComponent } from './student/new-team/new-team.component';
     CourseItemComponent,
     CourseListComponent,
     CourseFormComponent,
+    TeamInvitationItemComponent,
+    TeamInvitationListComponent,
     ContainerComponent,
     SignInComponent,
     SignUpComponent,

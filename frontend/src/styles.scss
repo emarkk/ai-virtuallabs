@@ -42,6 +42,12 @@ a {
   pointer-events: none;
   cursor: default;
 }
+p.list-empty {
+  color: #777;
+  text-align: center;
+  font-style: italic;
+  letter-spacing: 1px;
+}
 .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background, .mat-checkbox-checked.mat-accent .mat-checkbox-background {
   background-color: #ff6647;
 }

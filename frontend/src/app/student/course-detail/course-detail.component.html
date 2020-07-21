@@ -20,10 +20,11 @@
         </td>
       </tr>
     </table>
-    <app-tile title="Your team" [titleLink]="'/student/course/' + course.code + '/teams'" icon="account_tree">
+    <app-tile title="Your team" icon="account_tree">
       You haven't joined any team yet. Have a look at the invitations below, or consider <a [routerLink]="'/student/course/' + course.code + '/team/new'">submitting a team proposal</a>.
       <div class="invitations">
         <h3>Invitations</h3>
+        <app-team-invitation-list [invitations]="teamInvitations"></app-team-invitation-list>
       </div>
     </app-tile>
   </app-page>

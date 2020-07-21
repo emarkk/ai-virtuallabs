@@ -46,13 +46,6 @@ export class CourseService {
       catchError(error => of(null))
     );
   }
-  // get course teams
-  getTeams(code: string): Observable<Team[]> {
-    return this.http.get<Team[]>(url(`courses/${code}/teams`)).pipe(
-      map(arr => arr.map(x => new Team(x.id, x.name, x.status))),
-      catchError(error => of(null))
-    );
-  }
   // create new course
   add(code: string, name: string, acronym: string, minTeamMembers: number, maxTeamMembers: number, enabled: boolean): Observable<boolean> {
     return this.http.post(url('courses'), { code, name, acronym, minTeamMembers, maxTeamMembers, enabled }, httpOptions).pipe(

@@ -27,7 +27,6 @@ export class ProfessorCourseTeamsComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.courseCode = params.code;
       this.course$ = this.courseService.get(this.courseCode);
-      this.teams$ = this.courseService.getTeams(this.courseCode);
 
       this.course$.subscribe(course => {
         this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Teams')];

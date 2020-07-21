@@ -4,7 +4,7 @@ export const url = path => `http://localhost:3000/api/${path}`;
 
 export const httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type':  'application/json',
+    'Content-Type': 'application/json',
   })
 };
 

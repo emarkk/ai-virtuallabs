@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Observable, of, combineLatest, forkJoin } from 'rxjs';
+import { map, catchError, mergeMap, concatMap, reduce, flatMap } from 'rxjs/operators';
 
 import { Course } from '../models/course.model';
 import { Student } from '../models/student.model';
+import { Team, TeamInvitationStatus, TeamStatus } from '../models/team.model';
 
 import { url } from '../utils';
 
@@ -53,6 +54,26 @@ export class StudentService {
     return this.http.get<Course[]>(url(`students/${studentId}/courses`)).pipe(
       map(arr => arr.map(x => new Course(x.code, x.name, x.acronym, x.minTeamMembers, x.maxTeamMembers, x.enabled, `/student/course/${x.code}`))),
       catchError(error => of(null))
+    );
+  }
+  // get student teams for a specific course
+  getTeamsForCourse(studentId: number, courseCode: string): Observable<Team[]> {
+    return this.http.get<any[]>(url(`students/${studentId}/teams?course=${courseCode}`)).pipe(
+      concatMap(teams => teams),
+      flatMap((team: any) => forkJoin(
+        of(new Team(team.id, team.name, team.status, null)),
+        this.http.get<any[]>(url(`teams/${team.id}/members/status`)))
+      ),
+      map((info: [Team, any]) => {
+        info[0].members = new Map();
+        for(let member of info[1]) {
+          const { id, firstName, lastName, email, hasPicture } = member.student;
+          const student = new Student(id, firstName, lastName, email, hasPicture);
+          info[0].members.set(student, member.status);
+        }
+        return info[0];
+      }),
+      reduce((a, t) => a.concat(t), [])
     );
   }
 }

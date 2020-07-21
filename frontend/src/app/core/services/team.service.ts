@@ -13,6 +13,7 @@ export class TeamService {
   constructor(private http: HttpClient) {
   }
 
+  // propose a new team
   propose(name: string, timeout: number, membersIds: number[], courseCode: string): Observable<boolean> {
     return this.http.post(url('teams'), { name, timeout, membersIds, courseCode }, httpOptions).pipe(
       map(_ => true),
