@@ -12,6 +12,7 @@ import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.TeamStudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.TeamRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
+import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,49 +31,25 @@ import java.util.stream.Collectors;
 public class TeamServiceImpl implements TeamService {
 
     @Autowired
-    TeamRepository teamRepository;
+    private TeamRepository teamRepository;
 
     @Autowired
-    StudentRepository studentRepository;
+    private StudentRepository studentRepository;
 
     @Autowired
-    TeamStudentRepository teamStudentRepository;
+    private TeamStudentRepository teamStudentRepository;
 
     @Autowired
-    CourseRepository courseRepository;
+    private CourseRepository courseRepository;
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Autowired
-    AuthenticatedEntityMapper authenticatedEntityMapper;
+    private AuthenticatedEntityMapper authenticatedEntityMapper;
 
-    private Team _getTeam(Long teamId) {
-        Optional<Team> teamOptional = teamRepository.findById(teamId);
-
-        if(teamOptional.isEmpty())
-            throw new TeamNotFoundException();
-
-        return teamOptional.get();
-    }
-
-    private Course _getCourse(String courseCode) {
-        Optional<Course> courseOptional = courseRepository.findById(courseCode);
-
-        if(courseOptional.isEmpty())
-            throw new CourseNotFoundException();
-
-        return courseOptional.get();
-    }
-
-    private Student _getStudent(Long studentId) {
-        Optional<Student> studentOptional = studentRepository.findById(studentId);
-
-        if(studentOptional.isEmpty())
-            throw new StudentNotFoundException();
-
-        return studentOptional.get();
-    }
+    @Autowired
+    private GetterProxy getter;
 
     @Override
     public Optional<TeamDTO> getTeam(Long teamId) {
@@ -82,7 +59,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<StudentDTO> getMembers(Long teamId) {
-        return this._getTeam(teamId).getMembers()
+        return getter.team(teamId).getMembers()
                 .stream()
                 .map(ts -> modelMapper.map(ts.getStudent(), StudentDTO.class))
                 .collect(Collectors.toList());
@@ -90,7 +67,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public Map<StudentDTO, TeamStudent.InvitationStatus> getMembersStatus(Long teamId) {
-        return this._getTeam(teamId).getMembers()
+        return getter.team(teamId).getMembers()
                 .stream()
                 .collect(Collectors.toMap(
                         ts -> modelMapper.map(ts.getStudent(), StudentDTO.class),
@@ -101,7 +78,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     public TeamDTO proposeTeam(TeamProposalDTO teamProposalDTO) {
-        Course course = _getCourse(teamProposalDTO.getCourseCode());
+        Course course = getter.course(teamProposalDTO.getCourseCode());
         Student authenticated = (Student) authenticatedEntityMapper.get();
 
         if(!course.getEnabled())
@@ -117,7 +94,7 @@ public class TeamServiceImpl implements TeamService {
 
         List<Student> students = teamProposalDTO.getMembersIds()
                 .stream()
-                .map(this::_getStudent)
+                .map(getter::student)
                 .collect(Collectors.toList());
 
         if(students.stream().anyMatch(s -> !s.getCourses().contains(course)))

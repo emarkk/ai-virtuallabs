@@ -2,11 +2,10 @@ package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
 import it.polito.ai.virtuallabs.backend.dtos.ProfessorDTO;
-import it.polito.ai.virtuallabs.backend.entities.Course;
 import it.polito.ai.virtuallabs.backend.entities.Professor;
-import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.ProfessorRepository;
 import it.polito.ai.virtuallabs.backend.repositories.specifications.ProfessorSpecifications;
+import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import it.polito.ai.virtuallabs.backend.utils.UserSearchEngine;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +24,10 @@ public class ProfessorServiceImpl implements ProfessorService {
     private ProfessorRepository professorRepository;
 
     @Autowired
-    private CourseRepository courseRepository;
-
-    @Autowired
     private ModelMapper modelMapper;
 
-    private Professor _getProfessor(Long professorId) {
-        Optional<Professor> professorOptional = professorRepository.findById(professorId);
-
-        if(professorOptional.isEmpty())
-            throw new ProfessorNotFoundException();
-
-        return professorOptional.get();
-    }
+    @Autowired
+    private GetterProxy getter;
 
     @Override
     public Optional<ProfessorDTO> getProfessor(Long professorId) {
@@ -55,7 +45,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 
     @Override
     public List<CourseDTO> getCoursesForProfessor(Long professorId) {
-        return this._getProfessor(professorId).getCourses()
+        return getter.professor(professorId).getCourses()
                 .stream()
                 .map(c -> modelMapper.map(c, CourseDTO.class))
                 .collect(Collectors.toList());
@@ -66,7 +56,7 @@ public class ProfessorServiceImpl implements ProfessorService {
         Specification<Professor> filters = Specification.where(null);
 
         if(excludeCourse != null)
-            filters = filters.and(ProfessorSpecifications.notTeachingCourse(_getCourse(excludeCourse)));
+            filters = filters.and(ProfessorSpecifications.notTeachingCourse(getter.course(excludeCourse)));
 
         return professorRepository.findAll(filters)
                 .stream()
@@ -75,14 +65,5 @@ public class ProfessorServiceImpl implements ProfessorService {
                 .limit(3)
                 .map(p -> modelMapper.map(p, ProfessorDTO.class))
                 .collect(Collectors.toList());
-    }
-
-    private Course _getCourse(String courseCode) {
-        Optional<Course> courseOptional = courseRepository.findById(courseCode);
-
-        if(courseOptional.isEmpty())
-            throw new CourseNotFoundException();
-
-        return courseOptional.get();
     }
 }

@@ -34,7 +34,6 @@ public class FilesStorageServiceImpl implements FilesStorageService {
         }
     }
 
-
     @Override
     public void save(MultipartFile file) {
         try {

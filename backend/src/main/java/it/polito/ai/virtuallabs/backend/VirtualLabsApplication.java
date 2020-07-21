@@ -1,14 +1,13 @@
 package it.polito.ai.virtuallabs.backend;
 
 import it.polito.ai.virtuallabs.backend.services.MockDataService;
+import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,6 +29,11 @@ public class VirtualLabsApplication {
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    GetterProxy getter() {
+        return new GetterProxy();
     }
 
     @Bean

@@ -54,7 +54,6 @@ public class NotificationServiceImpl implements NotificationService {
                         + "Please, click on the link here below in order to validate your account: http://localhost:3000/api/signup/confirm/" + token + "\n"
                         + "If you didn't request this subscription you can ignore this email.\n"
                 );
-
     }
 
     @Override
