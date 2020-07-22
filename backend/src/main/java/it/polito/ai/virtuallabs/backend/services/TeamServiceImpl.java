@@ -143,12 +143,26 @@ public class TeamServiceImpl implements TeamService {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
-    public void activateTeam(Long teamId) {
-    }
+    public void rejectTeam(Long teamId) {
+        Team team = getter.team(teamId);
+        Student authenticated = (Student) authenticatedEntityMapper.get();
 
-    @Override
-    public void evictTeam(Long teamId) {
+        Optional<TeamStudent> optionalTeamStudent = team.getMembers().stream().filter(ts -> ts.getStudent().equals(authenticated)).findFirst();
+        if(optionalTeamStudent.isEmpty()) {
+            throw new StudentNotInTeamException();
+        }
+        TeamStudent ts = optionalTeamStudent.get();
+        if(ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.ACCEPTED) || ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.CREATOR)) {
+            throw new IllegalTeamAcceptationException();
+        }
+        ts.setInvitationStatus(TeamStudent.InvitationStatus.REJECTED);
+        teamStudentRepository.save(ts);
+
+        //Setto il team come ABORTED
+        team.setFormationStatus(Team.FormationStatus.ABORTED);
+        teamRepository.save(team);
     }
 
 

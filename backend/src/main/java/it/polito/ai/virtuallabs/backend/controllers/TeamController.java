@@ -98,4 +98,19 @@ public class TeamController {
         }
     }
 
+    @PostMapping("/{id}/reject")
+    public void rejectTeam(@PathVariable(name = "id") Long teamId) {
+        try {
+            teamService.rejectTeam(teamId);
+        } catch (TeamNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found");
+        } catch (StudentNotInTeamException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not enrolled in team");
+        } catch (IllegalTeamAcceptationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Illegal team acceptation request");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        }
+    }
+
 }
