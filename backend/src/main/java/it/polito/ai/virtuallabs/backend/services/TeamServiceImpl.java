@@ -4,10 +4,7 @@ import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamMemberStatusDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamProposalDTO;
-import it.polito.ai.virtuallabs.backend.entities.Course;
-import it.polito.ai.virtuallabs.backend.entities.Student;
-import it.polito.ai.virtuallabs.backend.entities.Team;
-import it.polito.ai.virtuallabs.backend.entities.TeamStudent;
+import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.TeamStudentRepository;
@@ -16,6 +13,7 @@ import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,6 +100,7 @@ public class TeamServiceImpl implements TeamService {
                 .name(teamProposalDTO.getName())
                 .formationStatus(students.size() > 1 ? Team.FormationStatus.PROVISIONAL : Team.FormationStatus.COMPLETE)
                 .invitationsExpiration(new Timestamp(System.currentTimeMillis() + 24*60*60*1000 * teamProposalDTO.getTimeout()))
+                .lastAction(new Timestamp(System.currentTimeMillis()))
                 .course(course)
                 .build();
         teamRepository.save(team);
@@ -121,12 +120,24 @@ public class TeamServiceImpl implements TeamService {
         Team team = getter.team(teamId);
         Student authenticated = (Student) authenticatedEntityMapper.get();
 
+        if(team.getFormationStatus().equals(Team.FormationStatus.ABORTED) || team.getFormationStatus().equals(Team.FormationStatus.EXPIRED)) {
+            throw new IllegalTeamAcceptationException();
+        }
+
+        if(authenticated.getTeams().stream()
+                .filter(ts -> ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.ACCEPTED))
+                .map(TeamStudent::getTeam)
+                .anyMatch(t -> t.getFormationStatus().equals(Team.FormationStatus.COMPLETE) ||
+                        t.getFormationStatus().equals(Team.FormationStatus.PROVISIONAL))) {
+            throw new IllegalTeamAcceptationException();
+        }
+
         Optional<TeamStudent> optionalTeamStudent = team.getMembers().stream().filter(ts -> ts.getStudent().equals(authenticated)).findFirst();
         if(optionalTeamStudent.isEmpty()) {
             throw new StudentNotInTeamException();
         }
         TeamStudent ts = optionalTeamStudent.get();
-        if(ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.REJECTED) || ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.CREATOR)) {
+        if(!ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING)) {
             throw new IllegalTeamAcceptationException();
         }
         ts.setInvitationStatus(TeamStudent.InvitationStatus.ACCEPTED);
@@ -138,6 +149,7 @@ public class TeamServiceImpl implements TeamService {
         if (updatedInvitations.stream().noneMatch(up -> up.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING)
                 || up.getInvitationStatus().equals(TeamStudent.InvitationStatus.REJECTED))) {
             team.setFormationStatus(Team.FormationStatus.COMPLETE);
+            team.setLastAction(new Timestamp(System.currentTimeMillis()));
             teamRepository.save(team);
         }
 
@@ -149,12 +161,16 @@ public class TeamServiceImpl implements TeamService {
         Team team = getter.team(teamId);
         Student authenticated = (Student) authenticatedEntityMapper.get();
 
+        if(team.getFormationStatus().equals(Team.FormationStatus.ABORTED) || team.getFormationStatus().equals(Team.FormationStatus.EXPIRED)) {
+            throw new IllegalTeamAcceptationException();
+        }
+
         Optional<TeamStudent> optionalTeamStudent = team.getMembers().stream().filter(ts -> ts.getStudent().equals(authenticated)).findFirst();
         if(optionalTeamStudent.isEmpty()) {
             throw new StudentNotInTeamException();
         }
         TeamStudent ts = optionalTeamStudent.get();
-        if(ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.ACCEPTED) || ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.CREATOR)) {
+        if(!ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING)) {
             throw new IllegalTeamAcceptationException();
         }
         ts.setInvitationStatus(TeamStudent.InvitationStatus.REJECTED);
@@ -162,8 +178,37 @@ public class TeamServiceImpl implements TeamService {
 
         //Setto il team come ABORTED
         team.setFormationStatus(Team.FormationStatus.ABORTED);
+        team.setLastAction(new Timestamp(System.currentTimeMillis()));
         teamRepository.save(team);
     }
 
 
+    @Scheduled(initialDelay = 2000, fixedRate = 1000 * 60 * 60 * 24)
+    public void scheduledExpiredUserClean() {
+
+        long nowMilliseconds = System.currentTimeMillis();
+        Timestamp oneWeekAgo = new Timestamp( nowMilliseconds - 1000 * 60 * 60 * 24 * 7);
+        Timestamp now = new Timestamp(nowMilliseconds);
+
+        //Passo da PROVISIONAL ad EXPIRED se scaduti da meno di 7 giorni
+        List<Team> teams = teamRepository
+                .findAllByFormationStatusIsAndInvitationsExpirationIsBetween(
+                        Team.FormationStatus.PROVISIONAL, oneWeekAgo, now);
+        teams.forEach(et -> {
+            et.setFormationStatus(Team.FormationStatus.EXPIRED);
+            teamRepository.save(et);
+        });
+
+        //Cancello i team EXPIRED da più di 7 giorni
+        teams = teamRepository
+                .findAllByFormationStatusIsAndInvitationsExpirationIsBefore(
+                        Team.FormationStatus.EXPIRED, oneWeekAgo);
+        teams.forEach(t -> teamStudentRepository.deleteAll(t.getMembers()));
+        teamRepository.deleteAll(teams);
+
+        //Cancello i team ABORTED con lastAction a più di 7 giorni fa
+        teams = teamRepository.findAllByFormationStatusIsAndLastActionIsBefore(
+                Team.FormationStatus.ABORTED, oneWeekAgo);
+        teams.forEach(t -> teamStudentRepository.deleteAll(t.getMembers()));
+        teamRepository.deleteAll(teams);    }
 }

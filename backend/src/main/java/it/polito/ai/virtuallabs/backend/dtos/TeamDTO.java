@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,5 +17,9 @@ public class TeamDTO {
     private String name;
 
     private Team.FormationStatus status;
+
+    private Timestamp invitationsExpiration;
+
+    private Timestamp lastAction;
 
 }

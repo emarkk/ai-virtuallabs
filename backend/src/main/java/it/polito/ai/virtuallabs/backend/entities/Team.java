@@ -35,6 +35,8 @@ public class Team {
 
     private Timestamp invitationsExpiration;
 
+    private Timestamp lastAction;
+
     @ManyToOne
     @JoinColumn(name = "course_code")
     private Course course;
