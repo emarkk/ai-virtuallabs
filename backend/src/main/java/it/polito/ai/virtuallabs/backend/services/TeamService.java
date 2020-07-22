@@ -16,6 +16,7 @@ public interface TeamService {
     List<StudentDTO> getMembers(Long teamId);
     List<TeamMemberStatusDTO> getMembersStatus(Long teamId);
     TeamDTO proposeTeam(TeamProposalDTO teamProposalDTO);
+    void acceptTeam(Long teamId);
     void activateTeam(Long teamId);
     void evictTeam(Long teamId);
 }

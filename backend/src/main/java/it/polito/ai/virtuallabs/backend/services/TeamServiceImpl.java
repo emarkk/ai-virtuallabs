@@ -35,13 +35,7 @@ public class TeamServiceImpl implements TeamService {
     private TeamRepository teamRepository;
 
     @Autowired
-    private StudentRepository studentRepository;
-
-    @Autowired
     private TeamStudentRepository teamStudentRepository;
-
-    @Autowired
-    private CourseRepository courseRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -121,6 +115,34 @@ public class TeamServiceImpl implements TeamService {
         return modelMapper.map(team, TeamDTO.class);
     }
 
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @Override
+    public void acceptTeam(Long teamId) {
+        Team team = getter.team(teamId);
+        Student authenticated = (Student) authenticatedEntityMapper.get();
+
+        Optional<TeamStudent> optionalTeamStudent = team.getMembers().stream().filter(ts -> ts.getStudent().equals(authenticated)).findFirst();
+        if(optionalTeamStudent.isEmpty()) {
+            throw new StudentNotInTeamException();
+        }
+        TeamStudent ts = optionalTeamStudent.get();
+        if(ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.REJECTED) || ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.CREATOR)) {
+            throw new IllegalTeamAcceptationException();
+        }
+        ts.setInvitationStatus(TeamStudent.InvitationStatus.ACCEPTED);
+        teamStudentRepository.save(ts);
+
+        List<TeamStudent> updatedInvitations = teamStudentRepository.findAllByTeamId(teamId);
+
+        //Se non ci sono inviti rejected o pending abilito il team
+        if (updatedInvitations.stream().noneMatch(up -> up.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING)
+                || up.getInvitationStatus().equals(TeamStudent.InvitationStatus.REJECTED))) {
+            team.setFormationStatus(Team.FormationStatus.COMPLETE);
+            teamRepository.save(team);
+        }
+
+    }
+
     @Override
     public void activateTeam(Long teamId) {
     }
@@ -128,5 +150,6 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void evictTeam(Long teamId) {
     }
+
 
 }
