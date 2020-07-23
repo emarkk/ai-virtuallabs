@@ -20,8 +20,8 @@ export class ProfessorHomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.me$ = this.professorService.get(this.authService.getUserData().id);
-    this.courses$ = this.professorService.getCourses(this.authService.getUserData().id);
+    this.me$ = this.professorService.get(this.authService.getId());
+    this.courses$ = this.professorService.getCourses(this.authService.getId());
   }
 
 }

@@ -20,8 +20,8 @@ export class StudentHomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.me$ = this.studentService.get(this.authService.getUserData().id);
-    this.courses$ = this.studentService.getCourses(this.authService.getUserData().id);
+    this.me$ = this.studentService.get(this.authService.getId());
+    this.courses$ = this.studentService.getCourses(this.authService.getId());
   }
 
 }

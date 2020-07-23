@@ -73,7 +73,7 @@ export class StudentNewTeamComponent implements OnInit {
         if(input.length > 0) {
           this.searchSubscription = this.studentService.search(input, new StudentSearchFilters({
             course: this.courseCode,
-            excludeIds: this.members.map(m => m.id).concat(this.authService.getUserData().id),
+            excludeIds: this.members.map(m => m.id).concat(this.authService.getId()),
             teamed: false
           })).subscribe(students => {
             this.studentMatches = students.map(s => Object.assign(s, { username: `s${s.id}` }));
@@ -133,7 +133,7 @@ export class StudentNewTeamComponent implements OnInit {
 
     const name = this.form.get('name').value;
     const timeout = this.form.get('timeout').value;
-    const membersIds = this.members.map(m => m.id).concat(this.authService.getUserData().id);
+    const membersIds = this.members.map(m => m.id).concat(this.authService.getId());
 
     this.lock();
     this.teamService.propose(name, timeout, membersIds, this.courseCode).subscribe(res => {

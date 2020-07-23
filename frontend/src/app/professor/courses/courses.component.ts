@@ -20,7 +20,7 @@ export class ProfessorCoursesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.courses$ = this.professorService.getCourses(this.authService.getUserData().id);
+    this.courses$ = this.professorService.getCourses(this.authService.getId());
   }
 
 }

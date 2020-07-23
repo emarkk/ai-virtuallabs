@@ -59,20 +59,24 @@ export class StudentService {
   // get student teams for a specific course
   getTeamsForCourse(studentId: number, courseCode: string): Observable<Team[]> {
     return this.http.get<any[]>(url(`students/${studentId}/teams?course=${courseCode}`)).pipe(
+      // flatten Observable<Team[]> to Observable<Team>
       concatMap(teams => teams),
+      // get team members status
       flatMap((team: any) => forkJoin(
-        of(new Team(team.id, team.name, team.status, null)),
+        of(new Team(team.id, team.name, team.status as TeamStatus, null, new Date(team.invitationsExpiration), new Date(team.lastAction))),
         this.http.get<any[]>(url(`teams/${team.id}/members/status`)))
       ),
+      // reconstruct Team object with members Map
       map((info: [Team, any]) => {
-        info[0].members = new Map();
+        info[0].members = [];
         for(let member of info[1]) {
           const { id, firstName, lastName, email, hasPicture } = member.student;
           const student = new Student(id, firstName, lastName, email, hasPicture);
-          info[0].members.set(student, member.status);
+          info[0].members.push({ student , status: member.status as TeamInvitationStatus });
         }
         return info[0];
       }),
+      // go back to Observable<Team[]>
       reduce((a, t) => a.concat(t), [])
     );
   }

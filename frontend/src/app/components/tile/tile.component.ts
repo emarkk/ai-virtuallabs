@@ -14,10 +14,10 @@ export class TileComponent implements OnInit {
   @Input() set icon(name: string) {
     this.tileIcon = name;
   }
-  @Input() set title(value: string) {
+  @Input() set text(value: string) {
     this.tileTitle = value;
   }
-  @Input() set titleLink(value: string) {
+  @Input() set textLink(value: string) {
     this.tileTitleLink = value;
   }
   @Input() set noPad(value: boolean) {

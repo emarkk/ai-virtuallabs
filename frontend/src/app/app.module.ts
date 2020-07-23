@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { TeamCreatorPipe, TeamGuestsPipe } from './core/pipes/team.pipes';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -101,7 +102,9 @@ import { StudentNewTeamComponent } from './student/new-team/new-team.component';
     StudentHomeComponent,
     StudentCoursesComponent,
     StudentCourseDetailComponent,
-    StudentNewTeamComponent
+    StudentNewTeamComponent,
+    TeamCreatorPipe,
+    TeamGuestsPipe
   ],
   imports: [
     BrowserModule,

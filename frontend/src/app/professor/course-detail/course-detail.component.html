@@ -28,7 +28,7 @@
         </td>
       </tr>
     </table>
-    <app-tile title="Students" [titleLink]="'/professor/course/' + course.code + '/students'" icon="supervisor_account">
+    <app-tile text="Students" [textLink]="'/professor/course/' + course.code + '/students'" icon="supervisor_account">
       <table class="info">
         <tr>
           <td>Students enrolled</td>
@@ -36,7 +36,7 @@
         </tr>
       </table>
     </app-tile>
-    <app-tile title="Teams" [titleLink]="'/professor/course/' + course.code + '/teams'" icon="account_tree">
+    <app-tile text="Teams" [textLink]="'/professor/course/' + course.code + '/teams'" icon="account_tree">
       <table class="info">
         <tr>
           <td>Team size constraints</td>
@@ -52,9 +52,9 @@
         </tr>
       </table>
     </app-tile>
-    <app-tile title="Homeworks" [titleLink]="'/professor/course/' + course.code + '/homeworks'" icon="perm_media">
+    <app-tile text="Homeworks" [textLink]="'/professor/course/' + course.code + '/homeworks'" icon="perm_media">
     </app-tile>
-    <app-tile title="Actions" icon="amp_stories">
+    <app-tile text="Actions" icon="amp_stories">
       <div class="actions">
         <button mat-flat-button color="primary" [routerLink]="'/professor/course/' + course.code + '/edit'">Edit course</button>
         <button mat-flat-button color="danger" (click)="deleteButtonClicked()">Delete course</button>

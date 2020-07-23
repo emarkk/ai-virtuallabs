@@ -21,7 +21,7 @@ export class StudentCoursesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.courses$ = this.studentService.getCourses(this.authService.getUserData().id);
+    this.courses$ = this.studentService.getCourses(this.authService.getId());
   }
 
 }

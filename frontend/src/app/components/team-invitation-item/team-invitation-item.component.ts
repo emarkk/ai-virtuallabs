@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Team } from 'src/app/core/models/team.model';
+import { timeString } from 'src/app/core/utils';
 
 @Component({
   selector: 'app-team-invitation-item',
@@ -8,11 +9,22 @@ import { Team } from 'src/app/core/models/team.model';
   styleUrls: ['./team-invitation-item.component.css']
 })
 export class TeamInvitationItemComponent implements OnInit {
-  invitation: Team
+  invitation: Team;
+  expiration: string;
+  expirationUpdateHandle: number;
 
   @Input() set data(value: Team) {
     this.invitation = value;
+    this.expiration = '...';
+
+    clearInterval(this.expirationUpdateHandle);
+    this.expirationUpdateHandle = window.setInterval(() => {
+      this.expiration = timeString(this.invitation.invitationsExpiration.getTime() - new Date().getTime());
+    }, 1000);
   }
+
+  @Output() accept = new EventEmitter<void>();
+  @Output() decline = new EventEmitter<void>();
 
   constructor() {
   }
@@ -20,4 +32,10 @@ export class TeamInvitationItemComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  acceptClicked() {
+    this.accept.emit();
+  }
+  declineClicked() {
+    this.decline.emit();
+  }
 }

@@ -1,7 +1,7 @@
 <div class="container" *ngIf="me$ | async as me; else loading">
   <app-page>
     <app-welcome [name]="me.firstName + ' ' + me.lastName.toUpperCase()" [picture]="me.picturePath"></app-welcome>
-    <app-tile title="Courses" titleLink="/professor/courses" icon="library_books" noPad>
+    <app-tile text="Courses" textLink="/professor/courses" icon="library_books" noPad>
       <app-course-list [courses]="courses$ | async"></app-course-list>
     </app-tile>
   </app-page>

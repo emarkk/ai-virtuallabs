@@ -21,6 +21,10 @@ export class AuthService {
     // token must exist and must not be expired
     return !!token && Date.now() < expiration;
   }
+  // get user id
+  getId() {
+    return this.getUserData().id;
+  }
   // extract user info from JWT token
   getUserData() {
     const { token, expiration } = this.getToken();
