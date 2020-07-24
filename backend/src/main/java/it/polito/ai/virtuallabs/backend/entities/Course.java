@@ -42,6 +42,11 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<Homework> homeworks = new ArrayList<>();
 
+    @Builder.Default
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "vmModel_id", referencedColumnName = "id")
+    private VmModel vmModel;
+
     public void addHomework(Homework h) {
         this.homeworks.add(h);
         h.setCourse(this);
@@ -80,6 +85,11 @@ public class Course {
     public void removeAllHomeworks() {
         this.homeworks.forEach(h -> h.setCourse(null));
         this.homeworks.clear();
+    }
+
+    public void setVmModel(VmModel vmModel) {
+        this.vmModel = vmModel;
+        vmModel.setCourse(this);
     }
     
 }
