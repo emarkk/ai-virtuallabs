@@ -5,6 +5,7 @@ import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -120,6 +121,27 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student '" + studentId + "' not found");
         } catch(NotAllowedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        }
+    }
+
+    @PostMapping("/{code}/enroll/csv")
+    public List<Boolean> enrollAllViaCsv(@PathVariable("code") String courseCode, @RequestParam("csvFile") MultipartFile csvFile) {
+        try {
+            String mimeType = mimeType = csvFile.getContentType();
+            if (!mimeType.equals("text/csv")) {
+                throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "File provided is not of type \"text/csv\".");
+            }
+            return courseService.enrollAllViaCsv(csvFile, courseCode);
+        } catch(CourseNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
+        } catch(CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course '" + courseCode + "' is not enabled");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        } catch (CsvFileErrorException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error while parsing Csv file");
+        } catch(StudentNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found");
         }
     }
 

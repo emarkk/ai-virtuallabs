@@ -1,5 +1,7 @@
 package it.polito.ai.virtuallabs.backend.services;
 
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import it.polito.ai.virtuallabs.backend.dtos.*;
 import it.polito.ai.virtuallabs.backend.entities.Course;
 import it.polito.ai.virtuallabs.backend.entities.Professor;
@@ -18,7 +20,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -181,6 +188,38 @@ public class CourseServiceImpl implements CourseService {
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     public List<Boolean> enrollAll(List<Long> studentsIds, String courseCode) {
         return studentsIds.stream().map(i -> addStudentToCourse(i, courseCode)).collect(Collectors.toList());
+    }
+
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @Override
+    public List<Boolean> enrollAllViaCsv(MultipartFile csvFile, String courseCode) {
+        Course course = getter.course(courseCode);
+
+        if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+        if(!course.getEnabled())
+            throw new CourseNotEnabledException();
+
+        try {
+            BufferedReader csvReader = new BufferedReader(new InputStreamReader(csvFile.getInputStream()));
+            List<Boolean> result = csvReader.lines()
+                    .map(line -> {
+                        Long studentId = Long.parseLong(line);
+                        Student student = getter.student(studentId);
+                        if(student.getCourses().contains(course))
+                            return false;
+                        course.addStudent(student);
+                        return true;
+                    })
+                    .collect(Collectors.toList());
+            csvReader.close();
+            return result;
+        } catch (IOException | NumberFormatException e) {
+            throw new CsvFileErrorException();
+        }
+
+
     }
 
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
