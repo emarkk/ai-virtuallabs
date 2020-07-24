@@ -128,8 +128,8 @@ public class CourseController {
     public List<Boolean> enrollAllViaCsv(@PathVariable("code") String courseCode, @RequestParam("csvFile") MultipartFile csvFile) {
         try {
             String mimeType = mimeType = csvFile.getContentType();
-            if (!mimeType.equals("text/csv")) {
-                throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "File provided is not of type \"text/csv\".");
+            if(!mimeType.equals("text/csv") && !mimeType.equals("application/vnd.ms-excel")) {
+                throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Provided file has unsupported format.");
             }
             return courseService.enrollAllViaCsv(csvFile, courseCode);
         } catch(CourseNotFoundException e) {
