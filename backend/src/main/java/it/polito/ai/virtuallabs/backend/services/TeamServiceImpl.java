@@ -5,8 +5,6 @@ import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamMemberStatusDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamProposalDTO;
 import it.polito.ai.virtuallabs.backend.entities.*;
-import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
-import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.TeamStudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.TeamRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
@@ -21,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -120,59 +117,54 @@ public class TeamServiceImpl implements TeamService {
         Team team = getter.team(teamId);
         Student authenticated = (Student) authenticatedEntityMapper.get();
 
-        if(team.getFormationStatus().equals(Team.FormationStatus.ABORTED) || team.getFormationStatus().equals(Team.FormationStatus.EXPIRED)) {
-            throw new IllegalTeamAcceptationException();
-        }
+        if(!team.getFormationStatus().equals(Team.FormationStatus.PROVISIONAL))
+            throw new IllegalTeamInvitationReplyException();
 
-        if(authenticated.getTeams().stream()
+        if(authenticated.getTeams()
+                .stream()
                 .filter(ts -> ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.ACCEPTED))
                 .map(TeamStudent::getTeam)
                 .anyMatch(t -> t.getFormationStatus().equals(Team.FormationStatus.COMPLETE) ||
                         t.getFormationStatus().equals(Team.FormationStatus.PROVISIONAL))) {
-            throw new IllegalTeamAcceptationException();
+            throw new IllegalTeamInvitationReplyException();
         }
 
         Optional<TeamStudent> optionalTeamStudent = team.getMembers().stream().filter(ts -> ts.getStudent().equals(authenticated)).findFirst();
-        if(optionalTeamStudent.isEmpty()) {
+        if(optionalTeamStudent.isEmpty())
             throw new StudentNotInTeamException();
-        }
+
         TeamStudent ts = optionalTeamStudent.get();
-        if(!ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING)) {
-            throw new IllegalTeamAcceptationException();
-        }
+        if(!ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING))
+            throw new IllegalTeamInvitationReplyException();
+
         ts.setInvitationStatus(TeamStudent.InvitationStatus.ACCEPTED);
         teamStudentRepository.save(ts);
 
-        List<TeamStudent> updatedInvitations = teamStudentRepository.findAllByTeamId(teamId);
-
         //Se non ci sono inviti rejected o pending abilito il team
-        if (updatedInvitations.stream().noneMatch(up -> up.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING)
-                || up.getInvitationStatus().equals(TeamStudent.InvitationStatus.REJECTED))) {
+        if(team.getMembers().stream().noneMatch(m -> m.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING))) {
             team.setFormationStatus(Team.FormationStatus.COMPLETE);
             team.setLastAction(new Timestamp(System.currentTimeMillis()));
             teamRepository.save(team);
         }
-
     }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
-    public void rejectTeam(Long teamId) {
+    public void declineTeam(Long teamId) {
         Team team = getter.team(teamId);
         Student authenticated = (Student) authenticatedEntityMapper.get();
 
-        if(team.getFormationStatus().equals(Team.FormationStatus.ABORTED) || team.getFormationStatus().equals(Team.FormationStatus.EXPIRED)) {
-            throw new IllegalTeamAcceptationException();
-        }
+        if(!team.getFormationStatus().equals(Team.FormationStatus.PROVISIONAL))
+            throw new IllegalTeamInvitationReplyException();
 
         Optional<TeamStudent> optionalTeamStudent = team.getMembers().stream().filter(ts -> ts.getStudent().equals(authenticated)).findFirst();
-        if(optionalTeamStudent.isEmpty()) {
+        if(optionalTeamStudent.isEmpty())
             throw new StudentNotInTeamException();
-        }
+
         TeamStudent ts = optionalTeamStudent.get();
-        if(!ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING)) {
-            throw new IllegalTeamAcceptationException();
-        }
+        if(!ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING))
+            throw new IllegalTeamInvitationReplyException();
+
         ts.setInvitationStatus(TeamStudent.InvitationStatus.REJECTED);
         teamStudentRepository.save(ts);
 
@@ -182,10 +174,8 @@ public class TeamServiceImpl implements TeamService {
         teamRepository.save(team);
     }
 
-
     @Scheduled(initialDelay = 2000, fixedRate = 1000 * 60 * 60 * 24)
     public void scheduledExpiredUserClean() {
-
         long nowMilliseconds = System.currentTimeMillis();
         Timestamp oneWeekAgo = new Timestamp( nowMilliseconds - 1000 * 60 * 60 * 24 * 7);
         Timestamp now = new Timestamp(nowMilliseconds);

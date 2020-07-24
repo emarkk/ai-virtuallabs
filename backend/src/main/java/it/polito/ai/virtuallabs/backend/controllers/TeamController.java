@@ -91,23 +91,23 @@ public class TeamController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found");
         } catch (StudentNotInTeamException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not enrolled in team");
-        } catch (IllegalTeamAcceptationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Illegal team acceptation request");
+        } catch (IllegalTeamInvitationReplyException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Illegal team invitation accept request");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         }
     }
 
-    @PostMapping("/{id}/reject")
-    public void rejectTeam(@PathVariable(name = "id") Long teamId) {
+    @PostMapping("/{id}/decline")
+    public void declineTeam(@PathVariable(name = "id") Long teamId) {
         try {
-            teamService.rejectTeam(teamId);
+            teamService.declineTeam(teamId);
         } catch (TeamNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found");
         } catch (StudentNotInTeamException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not enrolled in team");
-        } catch (IllegalTeamAcceptationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Illegal team acceptation request");
+        } catch (IllegalTeamInvitationReplyException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Illegal team invitation decline request");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         }
