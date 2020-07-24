@@ -38,7 +38,7 @@ table.info td:first-child {
   padding-top: 3px;
   font-size: 1em;
 }
-mat-icon.accepted {
+mat-icon.icon-creator, mat-icon.icon-accepted {
   color: #34b7f1;
 }
 .provisional {

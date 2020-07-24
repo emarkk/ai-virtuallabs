@@ -25,6 +25,8 @@ import { timeString } from 'src/app/core/utils';
   styleUrls: ['./course-detail.component.css']
 })
 export class StudentCourseDetailComponent implements OnInit {
+  InvitationStatus = TeamInvitationStatus;
+  
   courseCode: string;
   courseName: string;
   courseEnabled: boolean;
