@@ -1,10 +1,7 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
-import it.polito.ai.virtuallabs.backend.services.CourseNotFoundException;
-import it.polito.ai.virtuallabs.backend.services.NotAllowedException;
-import it.polito.ai.virtuallabs.backend.services.VmModelAlreadyExistsException;
-import it.polito.ai.virtuallabs.backend.services.VmService;
+import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,20 +16,31 @@ public class VmController {
     @Autowired
     VmService vmService;
 
-    @PostMapping({ "", "/" })
+    @PostMapping("/models")
     @ResponseStatus(HttpStatus.CREATED)
     public VmModelDTO addVmModel(@RequestBody Map<String, String> input) {
-        if(!input.containsKey("courseCode") || !input.containsKey("vmModelName") || !input.containsKey("vmModelConfiguration")) {
+        if(!input.containsKey("courseCode") || !input.containsKey("name") || !input.containsKey("configuration")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         }
         try{
-            return vmService.addVmModel(input.get("courseCode"), input.get("vmModelName"), input.get("vmModelConfiguration"));
+            return vmService.addVmModel(input.get("courseCode"), input.get("name"), input.get("configuration"));
         } catch (CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, input.get("courseCode") + ": Course Not Found");
         } catch(NotAllowedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         } catch (VmModelAlreadyExistsException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course " + input.get("courseCode") + "already has a Vm Model");
+        }
+    }
+
+    @PutMapping("/models/{id}")
+    public VmModelDTO updateVmModel(@PathVariable(name = "id") Long vmModelId, @RequestBody VmModelDTO vmModelDTO) {
+        try{
+            return vmService.updateVmModel(vmModelId, vmModelDTO);
+        }  catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        } catch (VmModelNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm Model with id: " + vmModelId + " not found");
         }
     }
 

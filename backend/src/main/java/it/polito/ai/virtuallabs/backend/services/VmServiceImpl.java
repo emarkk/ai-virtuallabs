@@ -56,4 +56,20 @@ public class VmServiceImpl implements VmService {
 
         return modelMapper.map(vmModel, VmModelDTO.class);
     }
+
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @Override
+    public VmModelDTO updateVmModel(Long vmModelId, VmModelDTO vmModelDTO) {
+
+        VmModel vmModel = getter.vmModel(vmModelId);
+
+        if(!vmModel.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+        vmModel.setName(vmModelDTO.getName());
+        vmModel.setConfiguration(vmModelDTO.getConfiguration());
+        vmModelRepository.save(vmModel);
+
+        return modelMapper.map(vmModel, VmModelDTO.class);
+    }
 }
