@@ -62,6 +62,7 @@ import { StudentContainerComponent } from './student/container/container.compone
 import { StudentHomeComponent } from './student/home/home.component';
 import { StudentCoursesComponent } from './student/courses/courses.component';
 import { StudentCourseDetailComponent } from './student/course-detail/course-detail.component';
+import { StudentCourseTeamDetailComponent } from './student/course-detail/team-detail/team-detail.component';
 import { StudentNewTeamComponent } from './student/new-team/new-team.component';
 
 @NgModule({
@@ -102,6 +103,7 @@ import { StudentNewTeamComponent } from './student/new-team/new-team.component';
     StudentHomeComponent,
     StudentCoursesComponent,
     StudentCourseDetailComponent,
+    StudentCourseTeamDetailComponent,
     StudentNewTeamComponent,
     TeamCreatorPipe,
     TeamGuestsPipe

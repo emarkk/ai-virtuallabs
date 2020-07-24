@@ -20,51 +20,7 @@
         </td>
       </tr>
     </table>
-    <app-tile text="Your team" icon="account_tree" *ngIf="teams$ | async as teams">
-      <div *ngIf="team" class="team">
-        <div class="team-name">
-          <h3>{{ team.name }}</h3>
-        </div>
-        <div class="team-members">
-          <div *ngFor="let member of team.members" class="team-member">
-            <app-user-tag [firstName]="member.student.firstName" [lastName]="member.student.lastName.toUpperCase()" [picture]="member.student.picturePath"></app-user-tag>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="!team">
-        <div *ngIf="acceptedTeam">
-          <div class="team">
-            <div class="team-name">
-              <h3>{{ acceptedTeam.name }}</h3>
-              <span class="provisional">provisional</span>
-            </div>
-            <div class="team-members">
-              <div *ngFor="let member of acceptedTeam.members" class="team-member">
-                <mat-icon *ngIf="member.status == InvitationStatus.CREATOR" class="icon-creator">verified</mat-icon>
-                <mat-icon *ngIf="member.status == InvitationStatus.ACCEPTED" class="icon-accepted">done_all</mat-icon>
-                <mat-icon *ngIf="member.status == InvitationStatus.PENDING" class="icon-pending">schedule</mat-icon>
-                <app-user-tag [firstName]="member.student.firstName" [lastName]="member.student.lastName.toUpperCase()" [picture]="member.student.picturePath"></app-user-tag>
-              </div>
-            </div>
-            <div class="team-expiration">
-              <span>proposal expires in</span>
-              <span class="expiration-time">{{ proposalExpiration }}</span>
-            </div>
-          </div>
-        </div>
-        <div *ngIf="!acceptedTeam">
-          You haven't joined any team yet. Have a look at the invitations below, or consider <a [routerLink]="'/student/course/' + course.code + '/team/new'">submitting a team proposal</a>.
-        </div>
-        <div class="invitations">
-          <h3>Invitations</h3>
-          <app-team-invitation-list [invitations]="activeTeamInvitations" (invitationAccept)="teamInvitationAccepted($event)" (invitationDecline)="teamInvitationDeclined($event)"></app-team-invitation-list>
-        </div>
-        <div class="invitations" *ngIf="inactiveTeamInvitations.length">
-          <h3>Old invitations&ensp;<span class="autodelete">(automatically deleted after 7 days)</span></h3>
-          <app-team-invitation-list [invitations]="inactiveTeamInvitations"></app-team-invitation-list>
-        </div>
-      </div>
-    </app-tile>
+    <app-student-course-team-detail></app-student-course-team-detail>
   </app-page>
 </div>
 <ng-template #loading>
