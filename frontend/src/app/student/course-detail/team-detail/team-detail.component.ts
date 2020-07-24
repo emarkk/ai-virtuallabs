@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import { Team, TeamStatus, TeamInvitationStatus } from 'src/app/core/models/team.model';
 
@@ -29,6 +30,7 @@ export class StudentCourseTeamDetailComponent implements OnInit {
   }
   
   teams$: Observable<Team[]>;
+  teamsRefreshToken = new BehaviorSubject(undefined);
 
   team: Team;
   acceptedTeam: Team;
@@ -43,7 +45,9 @@ export class StudentCourseTeamDetailComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.courseCode = params.code;
-      this.teams$ = this.studentService.getTeamsForCourse(this.authService.getId(), this.courseCode);
+      this.teams$ = this.teamsRefreshToken.pipe(
+        switchMap(() => this.studentService.getTeamsForCourse(this.authService.getId(), this.courseCode))
+      );
 
       this.teams$.subscribe(teams => {
         if(!teams.length)
@@ -82,6 +86,7 @@ export class StudentCourseTeamDetailComponent implements OnInit {
       if(confirmed) {
         this.teamService.acceptTeamInvitation(teamId).subscribe(res => {
           if(res) {
+            this.teamsRefreshToken.next(undefined);
             this.toastService.show({ type: 'success', text: 'Team invitation accepted successfully.' });
           } else
             this.toastService.show({ type: 'danger', text: 'An error occurred.' });
@@ -99,6 +104,7 @@ export class StudentCourseTeamDetailComponent implements OnInit {
       if(confirmed) {
         this.teamService.declineTeamInvitation(teamId).subscribe(res => {
           if(res) {
+            this.teamsRefreshToken.next(undefined);
             this.toastService.show({ type: 'success', text: 'Team invitation declined successfully.' });
           } else
             this.toastService.show({ type: 'danger', text: 'An error occurred.' });

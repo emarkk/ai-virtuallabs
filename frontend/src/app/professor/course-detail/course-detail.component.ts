@@ -27,8 +27,8 @@ export class ProfessorCourseDetailComponent implements OnInit {
   navigationData: Array<any>|null = null;
   updatingStatus: boolean = false;
   
-  professorsRefreshToken = new BehaviorSubject(undefined);
   professors$: Observable<Professor[]>;
+  professorsRefreshToken = new BehaviorSubject(undefined);
 
   showSearch: boolean = false;
   professorMatches: any[] = [];
@@ -80,9 +80,10 @@ export class ProfessorCourseDetailComponent implements OnInit {
     this.clearSearch();
     this.courseService.addProfessor(this.courseCode, id).subscribe(res => {
       if(res) {
-        this.toastService.show({ type: 'success', text: 'Collaborator added successfully.' });
         this.professorsRefreshToken.next(undefined);
-      }
+        this.toastService.show({ type: 'success', text: 'Collaborator added successfully.' });
+      } else 
+        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
     });
   }
   searchCloseButtonClicked() {
