@@ -7,9 +7,8 @@ import { Page } from '../models/page.model';
 import { Course } from '../models/course.model';
 import { Student } from '../models/student.model';
 import { Professor } from '../models/professor.model';
-import { Team } from '../models/team.model';
 
-import { url, httpOptions, fileHttpOptions } from '../utils';
+import { url, httpOptions } from '../utils';
 
 @Injectable({
   providedIn: 'root'
@@ -91,7 +90,9 @@ export class CourseService {
   }
   // enroll students from CSV
   enrollFromCSV(code: string, csvFile: File): Observable<boolean> {
-    return this.http.post(url(`courses/${code}/enrollList`), csvFile, fileHttpOptions(csvFile.type)).pipe(
+    const formData: FormData = new FormData();
+    formData.append('csvFile', csvFile);
+    return this.http.post(url(`courses/${code}/enroll/csv`), formData).pipe(
       map(_ => true),
       catchError(error => of(false))
     );

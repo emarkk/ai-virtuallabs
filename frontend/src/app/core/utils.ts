@@ -8,12 +8,6 @@ export const httpOptions = {
   })
 };
 
-export const fileHttpOptions = type => ({
-  headers: new HttpHeaders({
-    'Content-Type': type,
-  })
-});
-
 export const timeString = ms => {
   if(ms < 0)
     return null;

@@ -34,10 +34,8 @@ export class EnrolledStudentsDataSource implements PagingSortingDataSource<Stude
 
   loadData(sortBy: string = null, sortDirection: string = null, pageIndex: number = 0, pageSize: number = 15) {
     this.courseService.getStudents(this.courseCode, sortBy, sortDirection, pageIndex, pageSize).subscribe(page => {
-      console.log(page);
       this.datasetSize = page.count;
       this.studentsSubject.next(page.data)
-    }
-    );
+    });
   }
 }
