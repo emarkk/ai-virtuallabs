@@ -1,17 +1,8 @@
 package it.polito.ai.virtuallabs.backend.utils;
 
-import it.polito.ai.virtuallabs.backend.entities.Course;
-import it.polito.ai.virtuallabs.backend.entities.Professor;
-import it.polito.ai.virtuallabs.backend.entities.Student;
-import it.polito.ai.virtuallabs.backend.entities.Team;
-import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
-import it.polito.ai.virtuallabs.backend.repositories.ProfessorRepository;
-import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
-import it.polito.ai.virtuallabs.backend.repositories.TeamRepository;
-import it.polito.ai.virtuallabs.backend.services.CourseNotFoundException;
-import it.polito.ai.virtuallabs.backend.services.ProfessorNotFoundException;
-import it.polito.ai.virtuallabs.backend.services.StudentNotFoundException;
-import it.polito.ai.virtuallabs.backend.services.TeamNotFoundException;
+import it.polito.ai.virtuallabs.backend.entities.*;
+import it.polito.ai.virtuallabs.backend.repositories.*;
+import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
@@ -29,6 +20,9 @@ public class GetterProxy {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private VmModelRepository vmModelRepository;
 
     public Course course(String courseCode) {
         Optional<Course> courseOptional = courseRepository.findById(courseCode);
@@ -66,4 +60,12 @@ public class GetterProxy {
         return teamOptional.get();
     }
 
+    public VmModel vmModel(Long vmModelId) {
+        Optional<VmModel> vmModelOptional = vmModelRepository.findById(vmModelId);
+
+        if(vmModelOptional.isEmpty())
+            throw new VmModelNotFoundException();
+
+        return vmModelOptional.get();
+    }
 }

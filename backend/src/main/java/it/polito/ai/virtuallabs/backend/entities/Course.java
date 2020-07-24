@@ -42,7 +42,6 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<Homework> homeworks = new ArrayList<>();
 
-    @Builder.Default
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "vmModel_id", referencedColumnName = "id")
     private VmModel vmModel;
