@@ -47,6 +47,9 @@ span {
   padding-top: 3px;
   font-size: 1em;
 }
+.plain-members, .plain-members span {
+  display: inline;
+}
 .action {
   cursor: pointer;
   text-align: center;
@@ -61,4 +64,7 @@ span {
 }
 .action:hover span {
   text-decoration: underline;
+}
+.status {
+  font-size: 0.8em;
 }

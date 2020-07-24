@@ -1,28 +1,38 @@
 <div class="item">
   <div class="col col-name">
-    <span class="header">name</span>
+    <span class="header" *ngIf="enabled">name</span>
     <span>{{ invitation.name }}</span>
   </div>
   <div class="col col-members">
-    <div>
-      <span class="header">proposed by</span>
-      <div *ngFor="let member of (invitation.members | teamCreator)" class="member">
-        <app-user-tag [firstName]="member.student.firstName" [lastName]="member.student.lastName.toUpperCase()" [picture]="member.student.picturePath" [id]="'s' + member.student.id"></app-user-tag>
+    <ng-container *ngIf="enabled">
+      <div>
+        <span class="header">proposed by</span>
+        <div *ngFor="let member of (invitation.members | teamCreator)" class="member">
+          <app-user-tag [firstName]="member.student.firstName" [lastName]="member.student.lastName.toUpperCase()" [picture]="member.student.picturePath" [id]="'s' + member.student.id"></app-user-tag>
+        </div>
       </div>
-    </div>
-    <div class="members">
-      <span class="header">members</span>
-      <div *ngFor="let member of (invitation.members | teamGuests)" class="member">
-        <mat-icon>schedule</mat-icon>
-        <app-user-tag [firstName]="member.student.firstName" [lastName]="member.student.lastName.toUpperCase()" [picture]="member.student.picturePath" [id]="'s' + member.student.id"></app-user-tag>
+      <div class="members">
+        <span class="header">members</span>
+        <div *ngFor="let member of (invitation.members | teamGuests)" class="member">
+          <mat-icon>schedule</mat-icon>
+          <app-user-tag [firstName]="member.student.firstName" [lastName]="member.student.lastName.toUpperCase()" [picture]="member.student.picturePath" [id]="'s' + member.student.id"></app-user-tag>
+        </div>
       </div>
-    </div>
+    </ng-container>
+    <ng-container *ngIf="!enabled">
+      <div *ngFor="let member of invitation.members; let odd = odd; let last = last" class="plain-members">
+        <span>{{ member.student.firstName }} {{ member.student.lastName }}</span>
+        <span *ngIf="!last">,</span>
+        <span [innerHTML]="odd && !last ? '<br />' : ' '"></span>
+      </div>
+    </ng-container>
   </div>
   <div class="col col-expiration">
-    <span class="header">expires in</span>
-    <span>{{ expiration }}</span>
+    <span class="header" *ngIf="enabled">expires in</span>
+    <span *ngIf="enabled">{{ expiration }}</span>
+    <span *ngIf="!enabled" class="status">{{ invitation.status }}</span>
   </div>
-  <div class="col col-actions">
+  <div class="col col-actions" *ngIf="enabled">
     <div class="action accept" (click)="acceptClicked()"><mat-icon class="accept">check_circle_outline</mat-icon><span>Accept</span></div>
     <div class="action decline" (click)="declineClicked()"><span>Decline</span></div>
   </div>

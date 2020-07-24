@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-import { Team } from 'src/app/core/models/team.model';
+import { Team, TeamStatus } from 'src/app/core/models/team.model';
 import { timeString } from 'src/app/core/utils';
 
 @Component({
@@ -10,11 +10,13 @@ import { timeString } from 'src/app/core/utils';
 })
 export class TeamInvitationItemComponent implements OnInit {
   invitation: Team;
+  enabled: boolean;
   expiration: string;
   expirationUpdateHandle: number;
 
   @Input() set data(value: Team) {
     this.invitation = value;
+    this.enabled = this.invitation.status == TeamStatus.PROVISIONAL;
     this.expiration = '...';
 
     clearInterval(this.expirationUpdateHandle);

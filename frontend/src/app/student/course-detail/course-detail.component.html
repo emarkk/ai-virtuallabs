@@ -60,7 +60,7 @@
           <app-team-invitation-list [invitations]="activeTeamInvitations" (invitationAccept)="teamInvitationAccepted($event)" (invitationDecline)="teamInvitationDeclined($event)"></app-team-invitation-list>
         </div>
         <div class="invitations" *ngIf="inactiveTeamInvitations.length">
-          <h3>Old invitations</h3>
+          <h3>Old invitations&ensp;<span class="autodelete">(automatically deleted after 7 days)</span></h3>
           <app-team-invitation-list [invitations]="inactiveTeamInvitations"></app-team-invitation-list>
         </div>
       </div>
