@@ -16,6 +16,17 @@ public class VmController {
     @Autowired
     VmService vmService;
 
+    @GetMapping("/models/{id}")
+    public VmModelDTO getVmModel(@PathVariable(name = "id") Long vmModelId) {
+        try{
+            return vmService.getVmModel(vmModelId);
+        } catch (VmModelNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm Model with id: " + vmModelId + " not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        }
+    }
+
     @PostMapping("/models")
     @ResponseStatus(HttpStatus.CREATED)
     public VmModelDTO addVmModel(@RequestBody Map<String, String> input) {
@@ -37,10 +48,10 @@ public class VmController {
     public VmModelDTO updateVmModel(@PathVariable(name = "id") Long vmModelId, @RequestBody VmModelDTO vmModelDTO) {
         try{
             return vmService.updateVmModel(vmModelId, vmModelDTO);
-        }  catch(NotAllowedException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         } catch (VmModelNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm Model with id: " + vmModelId + " not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         }
     }
 
