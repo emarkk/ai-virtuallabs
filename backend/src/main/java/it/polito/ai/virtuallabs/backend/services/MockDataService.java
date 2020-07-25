@@ -1,13 +1,7 @@
 package it.polito.ai.virtuallabs.backend.services;
 
-import it.polito.ai.virtuallabs.backend.entities.Course;
-import it.polito.ai.virtuallabs.backend.entities.Professor;
-import it.polito.ai.virtuallabs.backend.entities.Student;
-import it.polito.ai.virtuallabs.backend.entities.User;
-import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
-import it.polito.ai.virtuallabs.backend.repositories.ProfessorRepository;
-import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
-import it.polito.ai.virtuallabs.backend.repositories.UserRepository;
+import it.polito.ai.virtuallabs.backend.entities.*;
+import it.polito.ai.virtuallabs.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,6 +27,12 @@ public class MockDataService {
 
     @Autowired
     CourseRepository courseRepository;
+
+    @Autowired
+    TeamRepository teamRepository;
+
+    @Autowired
+    TeamStudentRepository teamStudentRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -128,6 +129,29 @@ public class MockDataService {
         profToCourse("02DUCOV", 22294L);
     }
 
+    public void addTeam(String teamName, String courseCode, List<Long> studentIds) {
+        Course course = courseRepository.getOne(courseCode);
+        Team team = Team.builder()
+                .name(teamName)
+                .formationStatus(Team.FormationStatus.COMPLETE)
+                .invitationsExpiration(new Timestamp(System.currentTimeMillis()))
+                .lastAction(new Timestamp(System.currentTimeMillis()))
+                .course(course)
+                .build();
+        teamRepository.save(team);
+        List<Student> students = studentRepository.findAllById(studentIds);
+        List<TeamStudent> members = students.stream().map(s -> new TeamStudent(s, team, students.indexOf(s) == 0 ?  TeamStudent.InvitationStatus.CREATOR : TeamStudent.InvitationStatus.ACCEPTED))
+                .collect(Collectors.toList());
+        members.forEach(m -> teamStudentRepository.save(m));
+    }
+
+    public void addTeams() {
+        addTeam("team-1", "01NYHOV", List.of(251129L, 229302L));
+    }
+
+
+
+
     public void insertMockData() {
         addProfessors();
         addStudents();
@@ -135,6 +159,7 @@ public class MockDataService {
 
         addProfessorsToCourses();
         enrollStudents();
+        addTeams();
     }
 
 }
