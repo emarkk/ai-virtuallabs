@@ -4,6 +4,7 @@ import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
+import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.VmModelRepository;
 import it.polito.ai.virtuallabs.backend.repositories.VmRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
@@ -14,6 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -28,6 +31,9 @@ public class VmServiceImpl implements VmService {
 
     @Autowired
     CourseRepository courseRepository;
+
+    @Autowired
+    StudentRepository studentRepository;
 
     @Autowired
     AuthenticatedEntityMapper authenticatedEntityMapper;
@@ -111,5 +117,30 @@ public class VmServiceImpl implements VmService {
         vm.addOwner(authenticated);
         vmRepository.save(vm);
         return modelMapper.map(vm, VmDTO.class);
+    }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @Override
+    public List<Boolean> addVmOwners(Long vmId, List<Long> studentIds) {
+        Vm vm = getter.vm(vmId);
+        HashSet hashSet = new HashSet(studentIds);
+        if(hashSet.size() < studentIds.size())
+            throw new DuplicateParticipantException();
+        if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
+            throw new IllegalVmOwnerException();
+        List<Boolean> result = studentIds
+                .stream()
+                .map(id -> {
+                    Student s = getter.student(id);
+                    if(!vm.getTeam().getMembers().stream().map(TeamStudent::getStudent).collect(Collectors.toList()).contains(s))
+                        throw new StudentNotInTeamException();
+                    if(vm.getOwners().contains(s))
+                        return false;
+                    vm.addOwner(s);
+                    return true;
+                })
+                .collect(Collectors.toList());
+        vmRepository.save(vm);
+        return result;
     }
 }

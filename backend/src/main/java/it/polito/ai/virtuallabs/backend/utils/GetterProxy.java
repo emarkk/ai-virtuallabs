@@ -24,6 +24,9 @@ public class GetterProxy {
     @Autowired
     private VmModelRepository vmModelRepository;
 
+    @Autowired
+    private VmRepository vmRepository;
+
     public Course course(String courseCode) {
         Optional<Course> courseOptional = courseRepository.findById(courseCode);
 
@@ -67,5 +70,14 @@ public class GetterProxy {
             throw new VmModelNotFoundException();
 
         return vmModelOptional.get();
+    }
+
+    public Vm vm(Long vmId) {
+        Optional<Vm> vmOptional = vmRepository.findById(vmId);
+
+        if(vmOptional.isEmpty())
+            throw new VmNotFoundException();
+
+        return vmOptional.get();
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -32,6 +33,25 @@ public class VmController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not in team");
         } catch (TeamNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found");
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        }
+    }
+
+    @PatchMapping("/{id}/owners")
+    public List<Boolean> addVmOwners(@PathVariable(name = "id") String vmId, @RequestBody List<Long> studentIds) {
+        try{
+           return vmService.addVmOwners(Long.parseLong(vmId), studentIds);
+        } catch (VmNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
+        } catch (IllegalVmOwnerException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requesting student is not an owner");
+        } catch (StudentNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student Not Found");
+        } catch (StudentNotInTeamException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student does not belong to vm team");
+        } catch (DuplicateParticipantException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate student in list");
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         }
