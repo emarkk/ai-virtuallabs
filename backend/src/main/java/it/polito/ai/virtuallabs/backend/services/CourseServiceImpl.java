@@ -4,6 +4,7 @@ import it.polito.ai.virtuallabs.backend.dtos.*;
 import it.polito.ai.virtuallabs.backend.entities.Course;
 import it.polito.ai.virtuallabs.backend.entities.Professor;
 import it.polito.ai.virtuallabs.backend.entities.Student;
+import it.polito.ai.virtuallabs.backend.entities.VmModel;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.HomeworkRepository;
 import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
@@ -163,6 +164,12 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public VmModelDTO getVmModel(String courseCode) {
+        VmModel vmModel = getter.course(courseCode).getVmModel();
+        return new VmModelDTO(vmModel.getId(), vmModel.getName(), null);
+    }
+
+    @Override
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     public boolean addStudentToCourse(Long studentId, String courseCode) {
         Student student = getter.student(studentId);
@@ -179,12 +186,6 @@ public class CourseServiceImpl implements CourseService {
 
         course.addStudent(student);
         return true;
-    }
-
-    @Override
-    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
-    public List<Boolean> enrollAll(List<Long> studentsIds, String courseCode) {
-        return studentsIds.stream().map(i -> addStudentToCourse(i, courseCode)).collect(Collectors.toList());
     }
 
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")

@@ -70,6 +70,15 @@ public class CourseController {
         }
     }
 
+    @GetMapping("/{code}/vm/model")
+    public VmModelDTO getVmModel(@PathVariable("code") String courseCode) {
+        try {
+            return courseService.getVmModel(courseCode);
+        } catch(CourseNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
+        }
+    }
+
     @PostMapping({ "", "/" })
     @ResponseStatus(HttpStatus.CREATED)
     public CourseDTO addOne(@RequestBody CourseDTO courseDTO) {

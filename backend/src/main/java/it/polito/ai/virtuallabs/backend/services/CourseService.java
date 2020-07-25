@@ -16,8 +16,8 @@ public interface CourseService {
     PageDTO<StudentDTO> getEnrolledStudents(String courseCode, String sortField, String sortDirection, int page, int pageSize);
     List<ProfessorDTO> getProfessors(String courseCode);
     List<TeamDTO> getTeams(String courseCode);
+    VmModelDTO getVmModel(String courseCode);
     boolean addStudentToCourse(Long studentId, String courseCode);
-    List<Boolean> enrollAll(List<Long> studentsIds, String courseCode);
     List<Boolean> enrollAllViaCsv(MultipartFile csvFile, String courseCode);
     List<Boolean> unenrollAll(List<Long> studentsIds, String courseCode);
     void enableCourse(String courseCode);
