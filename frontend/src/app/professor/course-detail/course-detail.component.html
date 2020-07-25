@@ -28,29 +28,41 @@
         </td>
       </tr>
     </table>
-    <app-tile text="Students" [textLink]="'/professor/course/' + course.code + '/students'" icon="supervisor_account">
-      <table class="info">
-        <tr>
-          <td>Students enrolled</td>
-          <td><b>???</b></td>
-        </tr>
-      </table>
-    </app-tile>
-    <app-tile text="Teams" [textLink]="'/professor/course/' + course.code + '/teams'" icon="account_tree">
-      <table class="info">
-        <tr>
-          <td>Team size constraints</td>
-          <td><i>min&emsp;</i><b>{{ course.minTeamMembers }}</b><span class="sep"></span><i>max&emsp;</i><b>{{ course.maxTeamMembers }}</b></td>
-        </tr>
-        <tr>
-          <td>Teamed students</td>
-          <td><b>???</b></td>
-        </tr>
-        <tr>
-          <td>Unteamed students</td>
-          <td><b>???</b></td>
-        </tr>
-      </table>
+    <div class="flex flex-tile">
+      <div class="fl-1">
+        <ng-container *ngIf="studentsPreview$ | async as studentsPreview">
+          <app-tile [text]="'Students (' + studentsPreview.count + ')'" [textLink]="'/professor/course/' + course.code + '/students'" icon="supervisor_account">
+            
+          </app-tile>
+        </ng-container>
+      </div>
+      <div class="fl-1">
+        <app-tile text="Teams" [textLink]="'/professor/course/' + course.code + '/teams'" icon="account_tree">
+          <table class="info">
+            <tr>
+              <td>Team size constraints</td>
+              <td><i>min&emsp;</i><b>{{ course.minTeamMembers }}</b><span class="sep"></span><i>max&emsp;</i><b>{{ course.maxTeamMembers }}</b></td>
+            </tr>
+            <tr>
+              <td>Teamed students</td>
+              <td><b>???</b></td>
+            </tr>
+            <tr>
+              <td>Unteamed students</td>
+              <td><b>???</b></td>
+            </tr>
+          </table>
+        </app-tile>
+      </div>
+    </div>
+    <app-tile text="VMs" [textLink]="'/professor/course/' + course.code + '/vms'" icon="dns">
+      <div *ngIf="vmModel$ | async as vmModel">
+        <span>VM model: </span>
+        <span *ngIf="vmModel.id != null" class="bold-text">{{ vmModel.name }}</span>
+        <span *ngIf="vmModel.id == null" class="light-text">not specified <mat-icon class="align danger">warning</mat-icon></span>
+        <span class="sep"></span>
+        <a (click)="vmModelLinkClicked(vmModel)">{{ vmModel.id != null ? 'Edit' : 'Add' }}</a>
+      </div>
     </app-tile>
     <app-tile text="Homeworks" [textLink]="'/professor/course/' + course.code + '/homeworks'" icon="perm_media">
     </app-tile>

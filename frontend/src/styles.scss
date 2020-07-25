@@ -10,6 +10,12 @@ mat-icon {
   padding-top: 6px;
   vertical-align: text-top;
 }
+mat-icon.align {
+  padding-top: 0;
+}
+mat-icon.danger {
+  color: #da3125;
+}
 html, body {
   height: 100%;
 }
@@ -20,6 +26,7 @@ body {
 a {
   cursor: pointer;
   color: #ff6647;
+  text-decoration: underline;
 }
 .copyright {
   position: fixed;
@@ -32,6 +39,21 @@ a {
 .space-break {
   height: 5vh;
 }
+.flex {
+  display: flex;
+}
+.flex-tile {
+  margin-bottom: 2em;
+}
+.flex .tile {
+  height: 100%;
+}
+.flex > div:not(:first-child) {
+  margin-left: 25px;
+}
+.fl-1 {
+  flex: 1;
+}
 .fill {
   flex: 1 1 auto;
 }
@@ -41,6 +63,13 @@ a {
 .disable-click {
   pointer-events: none;
   cursor: default;
+}
+.bold-text {
+  font-weight: 700;
+}
+.light-text {
+  color: #888;
+  font-weight: 300;
 }
 p.list-empty {
   color: #777;

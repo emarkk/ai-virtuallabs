@@ -7,6 +7,7 @@ import { Page } from '../models/page.model';
 import { Course } from '../models/course.model';
 import { Student } from '../models/student.model';
 import { Professor } from '../models/professor.model';
+import { VmModel } from '../models/vmmodel.model';
 
 import { url, httpOptions } from '../utils';
 
@@ -21,7 +22,6 @@ export class CourseService {
   // get course by code
   get(code: string): Observable<Course> {
     return this.http.get<Course>(url(`courses/${code}`)).pipe(
-      map(x => new Course(x.code, x.name, x.acronym, x.minTeamMembers, x.maxTeamMembers, x.enabled)),
       catchError(error => of(null))
     );
   }
@@ -42,6 +42,13 @@ export class CourseService {
   getProfessors(code: string): Observable<Professor[]> {
     return this.http.get<any[]>(url(`courses/${code}/professors`)).pipe(
       map(arr => arr.map(x => new Professor(x.id, x.firstName, x.lastName, x.email, x.hasPicture))),
+      catchError(error => of(null))
+    );
+  }
+  // get course vm model
+  getVmModel(code: string): Observable<VmModel> {
+    return this.http.get<any>(url(`courses/${code}/vm/model`)).pipe(
+      map(x => x ? new VmModel(x.id, x.name, null) : new VmModel(null, null, null)),
       catchError(error => of(null))
     );
   }

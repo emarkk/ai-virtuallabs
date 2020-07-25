@@ -2,17 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, Subscription, BehaviorSubject } from 'rxjs';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { debounceTime, switchMap, map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Professor } from 'src/app/core/models/professor.model';
+import { Student } from 'src/app/core/models/student.model';
+import { Page } from 'src/app/core/models/page.model';
+import { VmModel } from 'src/app/core/models/vmmodel.model';
+
 import { CourseService } from 'src/app/core/services/course.service';
-
-import { ConfirmDialog } from 'src/app/components/dialogs/confirm/confirm.component';
-
-import { navHome, navCourses, nav } from '../professor.navdata';
 import { ProfessorService, ProfessorSearchFilters } from 'src/app/core/services/professor.service';
 import { ToastService } from 'src/app/core/services/toast.service';
+import { VmService } from 'src/app/core/services/vm.service';
+
+import { ConfirmDialog } from 'src/app/components/dialogs/confirm/confirm.component';
+import { VmModelDialog } from 'src/app/components/dialogs/vm-model/vm-model.component';
+
+import { navHome, navCourses, nav } from '../professor.navdata';
 
 @Component({
   selector: 'app-professor-course-detail',
@@ -30,13 +36,18 @@ export class ProfessorCourseDetailComponent implements OnInit {
   professors$: Observable<Professor[]>;
   professorsRefreshToken = new BehaviorSubject(undefined);
 
+  studentsPreview$: Observable<Page<Student>>;
+
+  vmModel$: Observable<VmModel>;
+  vmModelRefreshToken = new BehaviorSubject(undefined);
+
   showSearch: boolean = false;
   professorMatches: any[] = [];
   searchSubject: Subject<string> = new Subject();
   searchSubscription: Subscription;
 
-  constructor(private router: Router, private route: ActivatedRoute, private courseService: CourseService,
-      private professorService: ProfessorService, private dialog: MatDialog, private toastService: ToastService) {
+  constructor(private router: Router, private route: ActivatedRoute, private courseService: CourseService, private professorService: ProfessorService,
+    private vmService: VmService, private dialog: MatDialog, private toastService: ToastService) {
   }
 
   ngOnInit(): void {
@@ -45,6 +56,11 @@ export class ProfessorCourseDetailComponent implements OnInit {
       this.course$ = this.courseService.get(this.courseCode);
       this.professors$ = this.professorsRefreshToken.pipe(
         switchMap(() => this.courseService.getProfessors(this.courseCode))
+      );
+      this.studentsPreview$ = this.courseService.getStudents(this.courseCode, null, null, 0, 30);
+      this.vmModel$ = this.vmModelRefreshToken.pipe(
+        switchMap(() => this.courseService.getVmModel(this.courseCode)),
+        switchMap(x => this.vmService.get(x.id))
       );
 
       this.course$.subscribe(course => {
@@ -120,5 +136,22 @@ export class ProfessorCourseDetailComponent implements OnInit {
   }
   addCollaboratorButtonClicked() {
     this.showSearch = true;
+  }
+  vmModelLinkClicked(vmModel: VmModel) {
+    this.dialog.open(VmModelDialog, {
+      data: {
+        id: vmModel.id,
+        name: vmModel.name,
+        configuration: vmModel.configuration,
+        courseCode: this.courseCode,
+        courseName: this.courseName
+      }
+    }).afterClosed().subscribe(res => {
+      if(res) {
+        this.vmModelRefreshToken.next(undefined);
+        this.toastService.show({ type: 'success', text: 'VM model information saved successfully.' });
+      } else if(res === false)
+        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+    });
   }
 }

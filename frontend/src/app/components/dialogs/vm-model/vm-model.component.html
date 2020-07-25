@@ -1,0 +1,22 @@
+<div class="dialog">
+  <h2>VM model for "{{ data.courseName }}"</h2>
+  <form [formGroup]="form">
+    <div class="input-container">
+      <mat-form-field appearance="legacy">
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Spring + Angular + MariaDB [Ubuntu]" formControlName="name" required>
+        <mat-error>{{ getNameErrorMessage() }}</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="legacy">
+        <mat-label>Configuration</mat-label>
+        <textarea matInput rows="8" [placeholder]="sampleConfig" formControlName="config" required>
+        </textarea>
+        <mat-error>{{ getConfigErrorMessage() }}</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="actions">
+      <button mat-flat-button mat-dialog-close>Cancel</button>
+      <app-async-button (aclick)="saveButtonClicked()" [loading]="locked">Save</app-async-button>
+    </div>
+  </form>
+</div>

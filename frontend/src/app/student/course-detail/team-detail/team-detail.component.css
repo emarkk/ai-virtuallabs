@@ -57,7 +57,5 @@ mat-icon.icon-creator, mat-icon.icon-accepted {
   margin-top: 2.2em;
 }
 .autodelete {
-  color: #888;
   font-size: 0.8em;
-  font-weight: 300;
 }

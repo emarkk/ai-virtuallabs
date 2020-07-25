@@ -28,6 +28,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { AppComponent } from './app.component';
 import { PageComponent } from './components/page/page.component';
 import { ConfirmDialog } from './components/dialogs/confirm/confirm.component';
+import { VmModelDialog } from './components/dialogs/vm-model/vm-model.component';
 import { TileComponent } from './components/tile/tile.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { AsyncButtonComponent } from './components/async-button/async-button.component';
@@ -70,6 +71,7 @@ import { StudentNewTeamComponent } from './student/new-team/new-team.component';
     AppComponent,
     PageComponent,
     ConfirmDialog,
+    VmModelDialog,
     TileComponent,
     ToastComponent,
     AsyncButtonComponent,
