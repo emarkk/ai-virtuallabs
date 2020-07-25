@@ -11,4 +11,5 @@ public interface VmService {
     VmModelDTO getVmModel(Long vmModelId);
     VmDTO addVm(Long teamId, Integer vCpus, Long diskSpace, Long ram);
     List<Boolean> addVmOwners(Long vmId, List<Long> studentIds);
+    void deleteVm(Long vmId);
 }

@@ -54,6 +54,21 @@ public class VmController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate student in list");
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        } catch (IllegalVmConfigurationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vm configuration not allowed");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteVm(@PathVariable(name = "id") String vmId) {
+        try{
+            vmService.deleteVm(Long.parseLong(vmId));
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        } catch (VmNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
+        } catch (IllegalVmOwnerException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requesting student is not an owner");
         }
     }
 

@@ -107,6 +107,9 @@ public class VmServiceImpl implements VmService {
         if(!team.getMembers().stream().map(TeamStudent::getStudent).collect(Collectors.toList()).contains(authenticated))
             throw new StudentNotInTeamException();
 
+        if(vCpus < 0 || diskSpace < 0 || ram < 0)
+            throw new IllegalVmConfigurationException();
+
         Vm vm = Vm.builder()
                 .diskSpace(diskSpace)
                 .vCpus(vCpus)
@@ -142,5 +145,15 @@ public class VmServiceImpl implements VmService {
                 .collect(Collectors.toList());
         vmRepository.save(vm);
         return result;
+    }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @Override
+    public void deleteVm(Long vmId) {
+        Vm vm = getter.vm(vmId);
+        if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
+            throw new IllegalVmOwnerException();
+        vm.removeAllOwners();
+        vmRepository.delete(vm);
     }
 }
