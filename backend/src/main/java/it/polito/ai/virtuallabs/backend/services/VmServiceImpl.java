@@ -1,11 +1,11 @@
 package it.polito.ai.virtuallabs.backend.services;
 
+import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
-import it.polito.ai.virtuallabs.backend.entities.Course;
-import it.polito.ai.virtuallabs.backend.entities.Professor;
-import it.polito.ai.virtuallabs.backend.entities.VmModel;
+import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.VmModelRepository;
+import it.polito.ai.virtuallabs.backend.repositories.VmRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import org.modelmapper.ModelMapper;
@@ -14,9 +14,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.stream.Collectors;
+
 @Transactional
 @Service
 public class VmServiceImpl implements VmService {
+
+    @Autowired
+    VmRepository vmRepository;
 
     @Autowired
     VmModelRepository vmModelRepository;
@@ -81,5 +86,30 @@ public class VmServiceImpl implements VmService {
             throw new NotAllowedException();
 
         return modelMapper.map(vmModel, VmModelDTO.class);
+    }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @Override
+    public VmDTO addVm(Long teamId, Integer vCpus, Long diskSpace, Long ram) {
+        Team team = getter.team(teamId);
+
+        if(!team.getFormationStatus().equals(Team.FormationStatus.COMPLETE))
+            throw new TeamNotActiveException();
+
+        Student authenticated = (Student) authenticatedEntityMapper.get();
+
+        if(!team.getMembers().stream().map(TeamStudent::getStudent).collect(Collectors.toList()).contains(authenticated))
+            throw new StudentNotInTeamException();
+
+        Vm vm = Vm.builder()
+                .diskSpace(diskSpace)
+                .vCpus(vCpus)
+                .ram(ram)
+                .online(false)
+                .build();
+        vm.setTeam(team);
+        vm.addOwner(authenticated);
+        vmRepository.save(vm);
+        return modelMapper.map(vm, VmDTO.class);
     }
 }

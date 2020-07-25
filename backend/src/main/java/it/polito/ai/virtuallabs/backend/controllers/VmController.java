@@ -1,5 +1,6 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
+import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,26 @@ public class VmController {
     @Autowired
     VmService vmService;
 
+    @PostMapping({"", "/"})
+    @ResponseStatus(HttpStatus.CREATED)
+    public VmDTO addVm(@RequestBody Map<String, String> input) {
+        if(!input.containsKey("teamId") || !input.containsKey("vCpus") || !input.containsKey("diskSpace") || !input.containsKey("ram")) {
+            System.out.println("ciaoooooooooo");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        }
+        try{
+            return vmService.addVm(Long.parseLong(input.get("teamId")), Integer.parseInt(input.get("vCpus")), Long.parseLong(input.get("diskSpace")), Long.parseLong(input.get("ram")));
+        } catch (TeamNotActiveException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is not active");
+        } catch (StudentNotInTeamException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not in team");
+        } catch (TeamNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found");
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        }
+    }
+
     @GetMapping("/models/{id}")
     public VmModelDTO getVmModel(@PathVariable(name = "id") Long vmModelId) {
         try{
@@ -30,9 +51,9 @@ public class VmController {
     @PostMapping("/models")
     @ResponseStatus(HttpStatus.CREATED)
     public VmModelDTO addVmModel(@RequestBody Map<String, String> input) {
-        if(!input.containsKey("courseCode") || !input.containsKey("name") || !input.containsKey("configuration")) {
+        if(!input.containsKey("courseCode") || !input.containsKey("name") || !input.containsKey("configuration"))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
-        }
+
         try{
             return vmService.addVmModel(input.get("courseCode"), input.get("name"), input.get("configuration"));
         } catch (CourseNotFoundException e) {
