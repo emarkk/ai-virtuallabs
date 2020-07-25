@@ -72,6 +72,32 @@ public class VmController {
         }
     }
 
+    @PostMapping("/{id}/on")
+    public void turnOnVm(@PathVariable(name = "id") String vmId) {
+        try{
+            vmService.turnOnVm(Long.parseLong(vmId));
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        } catch (VmNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
+        } catch (IllegalVmOwnerException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requesting student is not an owner");
+        }
+    }
+
+    @PostMapping("/{id}/off")
+    public void turnOffVm(@PathVariable(name = "id") String vmId) {
+        try{
+            vmService.turnOffVm(Long.parseLong(vmId));
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        } catch (VmNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
+        } catch (IllegalVmOwnerException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requesting student is not an owner");
+        }
+    }
+
     @GetMapping("/models/{id}")
     public VmModelDTO getVmModel(@PathVariable(name = "id") Long vmModelId) {
         try{

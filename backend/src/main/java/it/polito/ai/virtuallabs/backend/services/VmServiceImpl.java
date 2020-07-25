@@ -156,4 +156,24 @@ public class VmServiceImpl implements VmService {
         vm.removeAllOwners();
         vmRepository.delete(vm);
     }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @Override
+    public void turnOnVm(Long vmId) {
+        Vm vm = getter.vm(vmId);
+        if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
+            throw new IllegalVmOwnerException();
+        vm.setOnline(true);
+        vmRepository.save(vm);
+    }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @Override
+    public void turnOffVm(Long vmId) {
+        Vm vm = getter.vm(vmId);
+        if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
+            throw new IllegalVmOwnerException();
+        vm.setOnline(false);
+        vmRepository.save(vm);
+    }
 }
