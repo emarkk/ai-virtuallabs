@@ -24,9 +24,13 @@ public class Student extends AuthenticatedEntity {
 
     private boolean hasPicture;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}) //Aggiunto EAGER
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "student_course", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "course_code"))
     private List<Course> courses = new ArrayList<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "owner_vm", joinColumns = @JoinColumn(name = "owner_id"), inverseJoinColumns = @JoinColumn(name = "vm_id"))
+    private List<Vm> vms = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
     private List<TeamStudent> teams = new ArrayList<>();

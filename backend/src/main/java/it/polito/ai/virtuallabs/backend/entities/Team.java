@@ -45,6 +45,10 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private List<TeamStudent> members = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "team")
+    private List<Vm> vms = new ArrayList<>();
+
     public void setCourse(Course c) {
         this.course = c;
         c.getTeams().add(this);
