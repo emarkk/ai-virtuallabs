@@ -166,6 +166,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public VmModelDTO getVmModel(String courseCode) {
         VmModel vmModel = getter.course(courseCode).getVmModel();
+
+        if(vmModel == null)
+            return null;
+
         return new VmModelDTO(vmModel.getId(), vmModel.getName(), null);
     }
 
