@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -39,34 +39,35 @@ export class StudentCourseTeamDetailComponent implements OnInit {
   activeTeamInvitations: Team[] = [];
   inactiveTeamInvitations: Team[] = [];
 
-  constructor(private route: ActivatedRoute, private authService: AuthService, private studentService: StudentService, private teamService: TeamService, private dialog: MatDialog, private toastService: ToastService) {
+  @Output() completeTeam = new EventEmitter<Team>();
+
+  constructor(private authService: AuthService, private studentService: StudentService, private teamService: TeamService, private dialog: MatDialog, private toastService: ToastService) {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.courseCode = params.code;
-      this.teams$ = this.teamsRefreshToken.pipe(
-        switchMap(() => this.studentService.getTeamsForCourse(this.authService.getId(), this.courseCode))
-      );
+    this.teams$ = this.teamsRefreshToken.pipe(
+      switchMap(() => this.studentService.getTeamsForCourse(this.authService.getId(), this.courseCode))
+    );
 
-      this.teams$.subscribe(teams => {
-        if(!teams.length)
-          return;
-        
-        this.team = teams.find(t => t.status == TeamStatus.COMPLETE);
+    this.teams$.subscribe(teams => {
+      if(!teams.length)
+        return;
+      
+      this.team = teams.find(t => t.status == TeamStatus.COMPLETE);
 
-        if(!this.team) {
-          this.acceptedTeam = teams.find(t => t.status == TeamStatus.PROVISIONAL && this.isAccepted(t));
-          if(this.acceptedTeam) {
-            setInterval(() => {
-              this.proposalExpiration = this.timeTo(this.acceptedTeam.invitationsExpiration);
-            }, 1000);
-          }
+      if(this.team) {
+        this.completeTeam.emit(this.team);
+      } else {
+        this.acceptedTeam = teams.find(t => t.status == TeamStatus.PROVISIONAL && this.isAccepted(t));
+        if(this.acceptedTeam) {
+          setInterval(() => {
+            this.proposalExpiration = this.timeTo(this.acceptedTeam.invitationsExpiration);
+          }, 1000);
         }
+      }
 
-        this.activeTeamInvitations = teams.filter(t => t.status == TeamStatus.PROVISIONAL && !this.isAccepted(t));
-        this.inactiveTeamInvitations = teams.filter(t => [TeamStatus.ABORTED, TeamStatus.EXPIRED].includes(t.status) && !this.isAccepted(t));
-      });
+      this.activeTeamInvitations = teams.filter(t => t.status == TeamStatus.PROVISIONAL && !this.isAccepted(t));
+      this.inactiveTeamInvitations = teams.filter(t => [TeamStatus.ABORTED, TeamStatus.EXPIRED].includes(t.status) && !this.isAccepted(t));
     });
   }
 

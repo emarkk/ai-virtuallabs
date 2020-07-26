@@ -1,4 +1,4 @@
-<app-tile text="Your team" icon="account_tree" *ngIf="teams$ | async as teams">
+<app-tile text="Team" icon="account_tree" *ngIf="teams$ | async as teams">
   <div *ngIf="team" class="team">
     <div class="team-name">
       <h3>{{ team.name }}</h3>
@@ -31,7 +31,7 @@
       </div>
     </div>
     <div *ngIf="!acceptedTeam">
-      You haven't joined any team yet. Have a look at the invitations below, or consider <a [routerLink]="'/student/course/' + courseCode + '/team/new'">submitting a team proposal</a>.
+      You haven't joined any team yet. Have a look at the invitations below, or consider <a [routerLink]="'/student/course/' + courseCode + '/teams/new'">submitting a team proposal</a>.
     </div>
     <div class="invitations">
       <h3>Invitations</h3>

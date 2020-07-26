@@ -43,6 +43,8 @@ import { CourseListComponent } from './components/course-list/course-list.compon
 import { CourseFormComponent } from './components/course-form/course-form.component';
 import { TeamInvitationItemComponent } from './components/team-invitation-item/team-invitation-item.component';
 import { TeamInvitationListComponent } from './components/team-invitation-list/team-invitation-list.component';
+import { VmItemComponent } from './components/vm-item/vm-item.component';
+import { VmListComponent } from './components/vm-list/vm-list.component';
 
 import { ContainerComponent } from './container/container.component';
 import { SignInComponent } from './auth/signin/signin.component';
@@ -64,7 +66,9 @@ import { StudentHomeComponent } from './student/home/home.component';
 import { StudentCoursesComponent } from './student/courses/courses.component';
 import { StudentCourseDetailComponent } from './student/course-detail/course-detail.component';
 import { StudentCourseTeamDetailComponent } from './student/course-detail/team-detail/team-detail.component';
+import { StudentCourseVmsDetailComponent } from './student/course-detail/vms-detail/vms-detail.component';
 import { StudentNewTeamComponent } from './student/new-team/new-team.component';
+import { StudentNewVmComponent } from './student/new-vm/new-vm.component';
 
 @NgModule({
   declarations: [
@@ -86,6 +90,8 @@ import { StudentNewTeamComponent } from './student/new-team/new-team.component';
     CourseFormComponent,
     TeamInvitationItemComponent,
     TeamInvitationListComponent,
+    VmItemComponent,
+    VmListComponent,
     ContainerComponent,
     SignInComponent,
     SignUpComponent,
@@ -106,7 +112,9 @@ import { StudentNewTeamComponent } from './student/new-team/new-team.component';
     StudentCoursesComponent,
     StudentCourseDetailComponent,
     StudentCourseTeamDetailComponent,
+    StudentCourseVmsDetailComponent,
     StudentNewTeamComponent,
+    StudentNewVmComponent,
     TeamCreatorPipe,
     TeamGuestsPipe
   ],

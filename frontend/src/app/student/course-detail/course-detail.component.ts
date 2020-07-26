@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Professor } from 'src/app/core/models/professor.model';
+import { Team } from 'src/app/core/models/team.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
 
@@ -23,6 +24,8 @@ export class StudentCourseDetailComponent implements OnInit {
 
   professors$: Observable<Professor[]>;
 
+  team: Team;
+
   constructor(private route: ActivatedRoute, private courseService: CourseService) {
   }
 
@@ -40,4 +43,7 @@ export class StudentCourseDetailComponent implements OnInit {
     });
   }
 
+  joinedTeam(team: Team) {
+    this.team = team;
+  }
 }

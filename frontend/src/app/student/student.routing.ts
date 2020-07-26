@@ -6,6 +6,7 @@ import { StudentHomeComponent } from './home/home.component';
 import { StudentCoursesComponent } from './courses/courses.component';
 import { StudentCourseDetailComponent } from './course-detail/course-detail.component';
 import { StudentNewTeamComponent } from './new-team/new-team.component';
+import { StudentNewVmComponent } from './new-vm/new-vm.component';
 
 export const studentRouting = [
   {
@@ -32,8 +33,12 @@ export const studentRouting = [
         component: StudentCourseDetailComponent,
       },
       {
-        path: 'course/:code/team/new',
+        path: 'course/:code/teams/new',
         component: StudentNewTeamComponent,
+      },
+      {
+        path: 'course/:code/vms/new',
+        component: StudentNewVmComponent,
       }
     ]
   }

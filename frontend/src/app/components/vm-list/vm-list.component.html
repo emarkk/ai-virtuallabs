@@ -1,0 +1,6 @@
+<div class="vm-list">
+  <div *ngFor="let vm of vmList" class="vm">
+    <app-vm-item [data]="vm"></app-vm-item>
+  </div>
+  <p *ngIf="vmList && !vmList.length" class="list-empty">No VMs to show.</p>
+</div>

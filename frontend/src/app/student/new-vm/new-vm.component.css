@@ -1,0 +1,9 @@
+mat-icon {
+  padding-top: 0;
+}
+.form {
+  margin-top: 40px;
+}
+.mat-chip-list-wrapper {
+  display: inline-block;
+}
