@@ -1,9 +1,6 @@
 package it.polito.ai.virtuallabs.backend.services;
 
-import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
-import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
-import it.polito.ai.virtuallabs.backend.dtos.TeamMemberStatusDTO;
-import it.polito.ai.virtuallabs.backend.dtos.TeamProposalDTO;
+import it.polito.ai.virtuallabs.backend.dtos.*;
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.TeamStudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.TeamRepository;
@@ -60,6 +57,14 @@ public class TeamServiceImpl implements TeamService {
         return getter.team(teamId).getMembers()
                 .stream()
                 .map(ts -> new TeamMemberStatusDTO(modelMapper.map(ts.getStudent(), StudentDTO.class), ts.getInvitationStatus()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VmDTO> getVms(Long teamId) {
+        return getter.team(teamId).getVms()
+                .stream()
+                .map(vm -> modelMapper.map(vm, VmDTO.class))
                 .collect(Collectors.toList());
     }
 

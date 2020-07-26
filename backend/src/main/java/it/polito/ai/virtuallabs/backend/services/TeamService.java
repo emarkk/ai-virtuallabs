@@ -1,9 +1,6 @@
 package it.polito.ai.virtuallabs.backend.services;
 
-import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
-import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
-import it.polito.ai.virtuallabs.backend.dtos.TeamMemberStatusDTO;
-import it.polito.ai.virtuallabs.backend.dtos.TeamProposalDTO;
+import it.polito.ai.virtuallabs.backend.dtos.*;
 import it.polito.ai.virtuallabs.backend.entities.TeamStudent;
 
 import java.util.ArrayList;
@@ -15,6 +12,7 @@ public interface TeamService {
     Optional<TeamDTO> getTeam(Long teamId);
     List<StudentDTO> getMembers(Long teamId);
     List<TeamMemberStatusDTO> getMembersStatus(Long teamId);
+    List<VmDTO> getVms(Long teamId);
     TeamDTO proposeTeam(TeamProposalDTO teamProposalDTO);
     void acceptTeam(Long teamId);
     void declineTeam(Long teamId);

@@ -1,9 +1,6 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
-import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
-import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
-import it.polito.ai.virtuallabs.backend.dtos.TeamMemberStatusDTO;
-import it.polito.ai.virtuallabs.backend.dtos.TeamProposalDTO;
+import it.polito.ai.virtuallabs.backend.dtos.*;
 import it.polito.ai.virtuallabs.backend.entities.TeamStudent;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +45,15 @@ public class TeamController {
     public List<TeamMemberStatusDTO> getMembersStatus(@PathVariable("id") Long id) {
         try {
             return teamService.getMembersStatus(id);
+        } catch(TeamNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team '" + id + "' not found");
+        }
+    }
+
+    @GetMapping("/{id}/vms")
+    public List<VmDTO> getVms(@PathVariable("id") Long id) {
+        try {
+            return teamService.getVms(id);
         } catch(TeamNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team '" + id + "' not found");
         }
