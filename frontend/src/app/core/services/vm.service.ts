@@ -16,6 +16,9 @@ export class VmService {
 
   // get vm model
   getModel(id: number): Observable<VmModel> {
+    if(id == null)
+      return of(new VmModel(null, null, null));
+
     return this.http.get<VmModel>(url(`vms/models/${id}`)).pipe(
       catchError(error => of(null))
     );
