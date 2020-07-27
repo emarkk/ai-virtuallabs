@@ -1,17 +1,18 @@
 .item {
   display: flex;
   align-items: center;
-  padding: 20px 40px;
+  padding: 20px 20px 10px 40px;
+  border-bottom: 1px solid #ddd;
 }
 .col-name {
   flex: 4;
 }
-.col-vcpu, .col-disk, .col-ram, .col-online {
-  flex: 1.7;
-}
-.col-actions {
-  flex: 2;
+.col-vcpu, .col-disk, .col-ram, .col-online, .col-actions {
+  flex: 1.8;
 }
 .col-actions mat-icon {
   margin: 0 10px;
+}
+.col-actions mat-icon.owners {
+  color: #ff6647;
 }
