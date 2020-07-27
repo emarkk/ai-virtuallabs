@@ -41,7 +41,7 @@
               </div>
               <div class="actions">
                 <button mat-flat-button [routerLink]="'/student/course/' + courseCode">Cancel</button>
-                <app-async-button [loading]="locked">Create</app-async-button>
+                <app-async-button (aclick)="createButtonClicked()" [loading]="locked">Create</app-async-button>
               </div>
             </form>
           </div>
