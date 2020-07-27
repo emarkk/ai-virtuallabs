@@ -1,0 +1,17 @@
+.item {
+  display: flex;
+  align-items: center;
+  padding: 20px 40px;
+}
+.col-name {
+  flex: 4;
+}
+.col-vcpu, .col-disk, .col-ram, .col-online {
+  flex: 1.7;
+}
+.col-actions {
+  flex: 2;
+}
+.col-actions mat-icon {
+  margin: 0 10px;
+}

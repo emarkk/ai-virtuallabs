@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { ZeroPadPipe } from './core/pipes/core.pipes';
 import { TeamCreatorPipe, TeamGuestsPipe } from './core/pipes/team.pipes';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -115,6 +116,7 @@ import { StudentNewVmComponent } from './student/new-vm/new-vm.component';
     StudentCourseVmsDetailComponent,
     StudentNewTeamComponent,
     StudentNewVmComponent,
+    ZeroPadPipe,
     TeamCreatorPipe,
     TeamGuestsPipe
   ],

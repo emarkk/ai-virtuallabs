@@ -39,7 +39,7 @@ export class TeamService {
   // get vms of team
   getVms(teamId: number): Observable<Vm[]> {
     return this.http.get<any[]>(url(`teams/${teamId}/vms`)).pipe(
-      map(arr => arr.map(x => new Vm(x.id))),
+      map(arr => arr.map(x => new Vm(x.id, x.vcpus, x.diskSpace, x.ram))),
       catchError(error => of(null))
     );
   }

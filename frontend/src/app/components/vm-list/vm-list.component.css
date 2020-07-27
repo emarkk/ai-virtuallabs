@@ -1,0 +1,17 @@
+.headers {
+  display: flex;
+  text-transform: uppercase;
+  font-size: 0.7em;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 0 40px;
+}
+.h-id {
+  flex: 4;
+}
+.h-vcpu, .h-disk, .h-ram, .h-online {
+  flex: 1.7;
+}
+.h-actions {
+  flex: 2;
+}

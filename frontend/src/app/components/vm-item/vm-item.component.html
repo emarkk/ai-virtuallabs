@@ -1,3 +1,21 @@
 <div class="item">
-  
+  <div class="col col-name">
+    <span>VM-{{ vm.id | zeroPad }}</span>
+  </div>
+  <div class="col col-vcpu">
+    <span>{{ vm.vCpus }}</span>
+  </div>
+  <div class="col col-disk">
+    <span>{{ vm.diskSpace }} GB</span>
+  </div>
+  <div class="col col-ram">
+    <span>{{ vm.ram }} MB</span>
+  </div>
+  <div class="col col-online">
+    <mat-slide-toggle></mat-slide-toggle>
+  </div>
+  <div class="col col-actions">
+    <mat-icon class="align">group_add</mat-icon>
+    <mat-icon class="align">delete</mat-icon>
+  </div>
 </div>
