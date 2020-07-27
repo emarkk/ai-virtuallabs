@@ -34,6 +34,13 @@ export class VmService {
       catchError(error => of(false))
     );
   }
+  // add vm
+  add(vCpus: number, diskSpace: number, ram: number, teamId: number): Observable<boolean> {
+    return this.http.post(url('vms'), { vCpus, diskSpace, ram, teamId }, httpOptions).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
   // turn on vm
   turnOn(id: number): Observable<boolean> {
     return this.http.post(url(`vms/${id}/on`), null, httpOptions).pipe(
