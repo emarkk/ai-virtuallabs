@@ -68,10 +68,10 @@ ENTRYPOINT ["nginx", "-g", "daemon off;"]`;
     let request: Observable<boolean>;
     if(this.data.id)
       // request is an update to existing vm model
-      request = this.vmService.update(this.data.id, name, config);
+      request = this.vmService.updateModel(this.data.id, name, config);
     else
       // request is a creation of a new vm model
-      request = this.vmService.add(name, config, this.data.courseCode);
+      request = this.vmService.addModel(name, config, this.data.courseCode);
 
     this.lock();
     request.subscribe(res => {

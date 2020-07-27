@@ -60,7 +60,7 @@ export class ProfessorCourseDetailComponent implements OnInit {
       this.studentsPreview$ = this.courseService.getStudents(this.courseCode, null, null, 0, 30);
       this.vmModel$ = this.vmModelRefreshToken.pipe(
         switchMap(() => this.courseService.getVmModel(this.courseCode)),
-        switchMap(x => this.vmService.get(x.id))
+        switchMap(x => this.vmService.getModel(x.id))
       );
 
       this.course$.subscribe(course => {

@@ -15,21 +15,42 @@ export class VmService {
   }
 
   // get vm model
-  get(id: number): Observable<VmModel> {
+  getModel(id: number): Observable<VmModel> {
     return this.http.get<VmModel>(url(`vms/models/${id}`)).pipe(
       catchError(error => of(null))
     );
   }
   // add vm model for course
-  add(name: string, configuration: string, courseCode: string): Observable<boolean> {
+  addModel(name: string, configuration: string, courseCode: string): Observable<boolean> {
     return this.http.post(url('vms/models'), { name, configuration, courseCode }, httpOptions).pipe(
       map(_ => true),
       catchError(error => of(false))
     );
   }
   // update vm model
-  update(id: number, name: string, configuration: string): Observable<boolean> {
+  updateModel(id: number, name: string, configuration: string): Observable<boolean> {
     return this.http.put(url(`vms/models/${id}`), { id, name, configuration }, httpOptions).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
+  // turn on vm
+  turnOn(id: number): Observable<boolean> {
+    return this.http.post(url(`vms/${id}/on`), null, httpOptions).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
+  // turn off vm
+  turnOff(id: number): Observable<boolean> {
+    return this.http.post(url(`vms/${id}/off`), null, httpOptions).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
+  // delete vm
+  delete(id: number): Observable<boolean> {
+    return this.http.delete(url(`vms/${id}/off`)).pipe(
       map(_ => true),
       catchError(error => of(false))
     );
