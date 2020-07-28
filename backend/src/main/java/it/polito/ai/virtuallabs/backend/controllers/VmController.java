@@ -23,11 +23,10 @@ public class VmController {
     @ResponseStatus(HttpStatus.CREATED)
     public VmDTO addVm(@RequestBody Map<String, String> input) {
         if(!input.containsKey("teamId") || !input.containsKey("vCpus") || !input.containsKey("diskSpace") || !input.containsKey("ram")) {
-            System.out.println("ciaoooooooooo");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         }
         try{
-            return vmService.addVm(Long.parseLong(input.get("teamId")), Integer.parseInt(input.get("vCpus")), Long.parseLong(input.get("diskSpace")), Long.parseLong(input.get("ram")));
+            return vmService.addVm(Long.parseLong(input.get("teamId")), Integer.parseInt(input.get("vCpus")), Integer.parseInt(input.get("diskSpace")), Integer.parseInt(input.get("ram")));
         } catch (TeamNotActiveException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is not active");
         } catch (StudentNotInTeamException e) {

@@ -10,7 +10,7 @@ public interface VmService {
     VmModelDTO addVmModel(String courseCode, String name, String configuration);
     VmModelDTO updateVmModel(Long vmModelId, VmModelDTO vmModelDTO);
     VmModelDTO getVmModel(Long vmModelId);
-    VmDTO addVm(Long teamId, Integer vCpus, Long diskSpace, Long ram);
+    VmDTO addVm(Long teamId, Integer vCpus, Integer diskSpace, Integer ram);
     List<Boolean> addVmOwners(Long vmId, List<Long> studentIds);
     void deleteVm(Long vmId);
     void turnOnVm(Long vmId);

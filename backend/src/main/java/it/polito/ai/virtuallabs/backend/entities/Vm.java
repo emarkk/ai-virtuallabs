@@ -22,9 +22,9 @@ public class Vm {
 
     private Integer vCpus;
 
-    private Long diskSpace;
+    private Integer diskSpace;
 
-    private Long ram;
+    private Integer ram;
 
     private Boolean online;
 

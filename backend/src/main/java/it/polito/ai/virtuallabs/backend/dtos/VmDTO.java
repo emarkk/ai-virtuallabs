@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class VmDTO {
     private Long id;
     private Integer vCpus;
-    private Long diskSpace;
-    private Long ram;
+    private Integer diskSpace;
+    private Integer ram;
     private Boolean online;
 }

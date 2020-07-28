@@ -112,7 +112,7 @@ public class VmServiceImpl implements VmService {
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
-    public VmDTO addVm(Long teamId, Integer vCpus, Long diskSpace, Long ram) {
+    public VmDTO addVm(Long teamId, Integer vCpus, Integer diskSpace, Integer ram) {
         Team team = getter.team(teamId);
 
         if(!team.getFormationStatus().equals(Team.FormationStatus.COMPLETE))
