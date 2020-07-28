@@ -2,6 +2,7 @@ package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
+import org.springframework.core.io.Resource;
 
 import java.util.List;
 
@@ -14,4 +15,5 @@ public interface VmService {
     void deleteVm(Long vmId);
     void turnOnVm(Long vmId);
     void turnOffVm(Long vmId);
+    byte[] connectVm(Long vmId);
 }

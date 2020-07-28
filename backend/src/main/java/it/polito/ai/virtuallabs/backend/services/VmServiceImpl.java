@@ -1,5 +1,8 @@
 package it.polito.ai.virtuallabs.backend.services;
 
+import ij.IJ;
+import ij.ImagePlus;
+import ij.process.ImageProcessor;
 import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
 import it.polito.ai.virtuallabs.backend.entities.*;
@@ -9,12 +12,25 @@ import it.polito.ai.virtuallabs.backend.repositories.VmModelRepository;
 import it.polito.ai.virtuallabs.backend.repositories.VmRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
+import it.polito.ai.virtuallabs.backend.utils.VmConnectionUtility;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.util.InMemoryResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -176,4 +192,24 @@ public class VmServiceImpl implements VmService {
         vm.setOnline(false);
         vmRepository.save(vm);
     }
+
+    @Override
+    public byte[] connectVm(Long vmId) {
+        Vm vm = getter.vm(vmId);
+
+        AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
+
+        if(authenticatedEntity.getClass().equals(Professor.class) && !((Professor) authenticatedEntity).getCourses().contains(vm.getTeam().getCourse()))
+            throw new NotAllowedException();
+        if(authenticatedEntity.getClass().equals(Student.class) && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(vm.getTeam()))
+            throw new StudentNotInTeamException();
+        if(!vm.getOnline())
+            throw new VmOfflineException();
+
+        return VmConnectionUtility.retrieveVm();
+
+    }
+
+
 }
+

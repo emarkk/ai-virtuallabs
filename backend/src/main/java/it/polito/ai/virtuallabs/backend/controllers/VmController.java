@@ -4,7 +4,8 @@ import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -39,9 +40,9 @@ public class VmController {
     }
 
     @PatchMapping("/{id}/owners")
-    public List<Boolean> addVmOwners(@PathVariable(name = "id") String vmId, @RequestBody List<Long> studentIds) {
+    public List<Boolean> addVmOwners(@PathVariable(name = "id") Long vmId, @RequestBody List<Long> studentIds) {
         try{
-           return vmService.addVmOwners(Long.parseLong(vmId), studentIds);
+           return vmService.addVmOwners(vmId, studentIds);
         } catch (VmNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
         } catch (IllegalVmOwnerException e) {
@@ -60,9 +61,9 @@ public class VmController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteVm(@PathVariable(name = "id") String vmId) {
+    public void deleteVm(@PathVariable(name = "id") Long vmId) {
         try{
-            vmService.deleteVm(Long.parseLong(vmId));
+            vmService.deleteVm(vmId);
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         } catch (VmNotFoundException e) {
@@ -73,9 +74,9 @@ public class VmController {
     }
 
     @PostMapping("/{id}/on")
-    public void turnOnVm(@PathVariable(name = "id") String vmId) {
+    public void turnOnVm(@PathVariable(name = "id") Long vmId) {
         try{
-            vmService.turnOnVm(Long.parseLong(vmId));
+            vmService.turnOnVm(vmId);
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         } catch (VmNotFoundException e) {
@@ -86,15 +87,36 @@ public class VmController {
     }
 
     @PostMapping("/{id}/off")
-    public void turnOffVm(@PathVariable(name = "id") String vmId) {
+    public void turnOffVm(@PathVariable(name = "id") Long vmId) {
         try{
-            vmService.turnOffVm(Long.parseLong(vmId));
+            vmService.turnOffVm(vmId);
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         } catch (VmNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
         } catch (IllegalVmOwnerException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requesting student is not an owner");
+        }
+    }
+
+    @GetMapping("/{id}/connect")
+    public ResponseEntity<byte[]> connectVm(@PathVariable(name = "id") Long vmId) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            byte[] file = vmService.connectVm(vmId);
+            headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+            headers.setContentType(MediaType.IMAGE_JPEG);
+            return new ResponseEntity<>(file, headers, HttpStatus.OK);
+        } catch (VmNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        } catch (StudentNotInTeamException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not in team");
+        } catch (VmConnectionException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred during vm connection");
+        } catch (VmOfflineException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vm is offline");
         }
     }
 
