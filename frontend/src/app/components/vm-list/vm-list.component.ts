@@ -9,9 +9,14 @@ import { Vm } from 'src/app/core/models/vm.model';
 })
 export class VmListComponent implements OnInit {
   vmList: Vm[] = null;
+  baseLink: string;
 
   @Input() set vms(data: Vm[]) {
     this.vmList = data;
+  }
+
+  @Input() set connectLink(value: string) {
+    this.baseLink = value;
   }
 
   @Output() vmOnline = new EventEmitter<{ vmId: number, online: boolean }>();

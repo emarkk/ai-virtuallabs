@@ -17,7 +17,6 @@ import { ConfirmDialog } from 'src/app/components/dialogs/confirm/confirm.compon
   styleUrls: ['./vms-detail.component.css']
 })
 export class StudentCourseVmsDetailComponent implements OnInit {
-
   courseCode: string;
   teamId: number;
 

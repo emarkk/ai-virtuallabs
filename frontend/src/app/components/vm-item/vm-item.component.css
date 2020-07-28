@@ -26,6 +26,7 @@ mat-icon.online {
 .col-actions mat-icon {
   cursor: pointer;
   margin: 0 10px;
+  outline: none;
 }
 .col-actions mat-icon {
   color: #333;
@@ -35,4 +36,8 @@ mat-icon.online {
 }
 .black {
   color: #000;
+}
+.disabled {
+  opacity: 0.2;
+  pointer-events: none;
 }

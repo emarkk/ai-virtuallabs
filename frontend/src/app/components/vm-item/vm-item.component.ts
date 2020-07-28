@@ -10,9 +10,16 @@ import { Vm } from 'src/app/core/models/vm.model';
 })
 export class VmItemComponent implements OnInit {
   vm: Vm;
+  owner: boolean;
+  baseLink: string;
 
   @Input() set data(value: Vm) {
     this.vm = value;
+    this.owner = false;
+  }
+
+  @Input() set connectLink(value: string) {
+    this.baseLink = value;
   }
 
   @Output() toggleOnline = new EventEmitter<void>();

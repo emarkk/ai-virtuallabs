@@ -12,14 +12,15 @@
     <span>{{ vm.ram }} MB</span>
   </div>
   <div class="col col-online">
-    <a class="black" (click)="onlineSwitchClicked()">{{ vm.online ? 'Yes' : 'No' }}</a>
+    <a class="black" *ngIf="owner" (click)="onlineSwitchClicked()">{{ vm.online ? 'Yes' : 'No' }}</a>
+    <span *ngIf="!owner">{{ vm.online ? 'Yes' : 'No' }}</span>
     <mat-icon *ngIf="vm.online" class="align online">fiber_manual_record</mat-icon>
   </div>
   <div class="col col-actions">
     <div>
-      <mat-icon *ngIf="vm.online" class="align connect">ondemand_video</mat-icon>
-      <mat-icon class="align owners" (click)="addOwnersButtonClicked()">group_add</mat-icon>
-      <mat-icon class="align delete" (click)="deleteButtonClicked()">delete_sweep</mat-icon>
+      <mat-icon *ngIf="vm.online" class="align connect" [routerLink]="baseLink + vm.id">ondemand_video</mat-icon>
+      <mat-icon [class.disabled]="!owner" class="align owners" (click)="addOwnersButtonClicked()">group_add</mat-icon>
+      <mat-icon [class.disabled]="!owner" class="align delete" (click)="deleteButtonClicked()">delete_sweep</mat-icon>
     </div>
   </div>
 </div>

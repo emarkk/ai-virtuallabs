@@ -70,6 +70,7 @@ import { StudentCourseTeamDetailComponent } from './student/course-detail/team-d
 import { StudentCourseVmsDetailComponent } from './student/course-detail/vms-detail/vms-detail.component';
 import { StudentNewTeamComponent } from './student/new-team/new-team.component';
 import { StudentNewVmComponent } from './student/new-vm/new-vm.component';
+import { StudentVmComponent } from './student/vm/vm.component';
 
 @NgModule({
   declarations: [
@@ -116,6 +117,7 @@ import { StudentNewVmComponent } from './student/new-vm/new-vm.component';
     StudentCourseVmsDetailComponent,
     StudentNewTeamComponent,
     StudentNewVmComponent,
+    StudentVmComponent,
     ZeroPadPipe,
     TeamCreatorPipe,
     TeamGuestsPipe
