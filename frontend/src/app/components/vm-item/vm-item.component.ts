@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { Vm } from 'src/app/core/models/vm.model';
 
@@ -14,6 +15,7 @@ export class VmItemComponent implements OnInit {
     this.vm = value;
   }
 
+  @Output() toggleOnline = new EventEmitter<void>();
   @Output() addOwners = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
 
@@ -23,6 +25,9 @@ export class VmItemComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onlineSwitchClicked() {
+    this.toggleOnline.emit();
+  }
   addOwnersButtonClicked() {
     this.addOwners.emit();
   }

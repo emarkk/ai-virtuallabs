@@ -14,6 +14,7 @@ export class VmListComponent implements OnInit {
     this.vmList = data;
   }
 
+  @Output() vmOnline = new EventEmitter<{ vmId: number, online: boolean }>();
   @Output() vmAddOwners = new EventEmitter<number>();
   @Output() vmDelete = new EventEmitter<number>();
 
@@ -23,6 +24,9 @@ export class VmListComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  vmStateChanged(vmId: number, online: boolean) {
+    this.vmOnline.emit({ vmId, online });
+  }
   vmAddedOwners(vmId: number) {
     this.vmAddOwners.emit(vmId);
   }

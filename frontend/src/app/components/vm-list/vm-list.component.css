@@ -4,11 +4,14 @@
   font-size: 0.7em;
   font-weight: bold;
   letter-spacing: 1px;
-  padding: 0 20px 0 40px;
+  padding: 0 20px;
 }
 .h-id {
-  flex: 4;
+  flex: 3.4;
 }
-.h-vcpu, .h-disk, .h-ram, .h-online, .h-actions {
+.h-vcpu, .h-disk, .h-ram, .h-online {
   flex: 1.8;
+}
+.h-actions {
+  flex: 2;
 }

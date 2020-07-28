@@ -40,6 +40,13 @@ export class StudentCourseVmsDetailComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  changeVmState(data: { vmId: number, online: boolean }) {
+    this.vmService.turnOnOff(data.vmId, data.online).subscribe(res => {
+      if(res) {
+        this.vmsRefreshToken.next(undefined);
+      }
+    });
+  }
   addVmOwners(vmId: number) {
     //
   }

@@ -44,16 +44,10 @@ export class VmService {
       catchError(error => of(false))
     );
   }
-  // turn on vm
-  turnOn(id: number): Observable<boolean> {
-    return this.http.post(url(`vms/${id}/on`), null, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
-    );
-  }
-  // turn off vm
-  turnOff(id: number): Observable<boolean> {
-    return this.http.post(url(`vms/${id}/off`), null, httpOptions).pipe(
+  // turn on / turn off vm
+  turnOnOff(id: number, online: boolean): Observable<boolean> {
+    const action = online ? 'on' : 'off';
+    return this.http.post(url(`vms/${id}/${action}`), null, httpOptions).pipe(
       map(_ => true),
       catchError(error => of(false))
     );

@@ -1,22 +1,38 @@
 .item {
   display: flex;
   align-items: center;
-  padding: 20px 20px 10px 40px;
+  padding: 20px 20px 10px;
   border-bottom: 1px solid #ddd;
 }
 .col-name {
-  flex: 4;
+  flex: 3.4;
 }
-.col-vcpu, .col-disk, .col-ram, .col-online, .col-actions {
+.col-vcpu, .col-disk, .col-ram, .col-online {
   flex: 1.8;
+}
+.col-actions {
+  flex: 2;
+}
+.col-actions div {
+  float: right;
+}
+mat-icon.online {
+  position: relative;
+  top: 7px;
+  font-size: 0.75em;
+  margin-left: 6px;
+  color: #33c322;
 }
 .col-actions mat-icon {
   cursor: pointer;
   margin: 0 10px;
 }
-.col-actions mat-icon.owners {
+.col-actions mat-icon {
+  color: #333;
+}
+.col-actions mat-icon.connect {
   color: #ff6647;
 }
-.col-actions mat-icon.delete {
-  color: #333;
+.black {
+  color: #000;
 }
