@@ -60,7 +60,7 @@ export class VmService {
   }
   // delete vm
   delete(id: number): Observable<boolean> {
-    return this.http.delete(url(`vms/${id}/off`)).pipe(
+    return this.http.delete(url(`vms/${id}`)).pipe(
       map(_ => true),
       catchError(error => of(false))
     );

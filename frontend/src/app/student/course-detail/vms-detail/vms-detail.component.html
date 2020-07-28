@@ -4,7 +4,7 @@
   </div>
   <div *ngIf="teamId">
     <div *ngIf="vms$ | async as vms">
-      <app-vm-list [vms]="vms"></app-vm-list>
+      <app-vm-list [vms]="vms" (vmAddOwners)="addVmOwners($event)" (vmDelete)="deleteVm($event)"></app-vm-list>
       <div class="controls">
         <button mat-flat-button color="primary" [routerLink]="'/student/course/' + courseCode + '/vms/new'">New VM</button>
       </div>

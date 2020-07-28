@@ -11,8 +11,12 @@
   flex: 1.8;
 }
 .col-actions mat-icon {
+  cursor: pointer;
   margin: 0 10px;
 }
 .col-actions mat-icon.owners {
   color: #ff6647;
+}
+.col-actions mat-icon.delete {
+  color: #333;
 }

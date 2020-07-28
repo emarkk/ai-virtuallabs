@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Vm } from 'src/app/core/models/vm.model';
 
@@ -14,10 +14,19 @@ export class VmListComponent implements OnInit {
     this.vmList = data;
   }
 
+  @Output() vmAddOwners = new EventEmitter<number>();
+  @Output() vmDelete = new EventEmitter<number>();
+
   constructor() {
   }
 
   ngOnInit(): void {
   }
 
+  vmAddedOwners(vmId: number) {
+    this.vmAddOwners.emit(vmId);
+  }
+  vmDeleted(vmId: number) {
+    this.vmDelete.emit(vmId);
+  }
 }

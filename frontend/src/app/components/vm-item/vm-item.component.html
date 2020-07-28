@@ -15,7 +15,7 @@
     <mat-slide-toggle></mat-slide-toggle>
   </div>
   <div class="col col-actions">
-    <mat-icon class="align owners">group_add</mat-icon>
-    <mat-icon class="align">delete_sweep</mat-icon>
+    <mat-icon class="align owners" (click)="addOwnersButtonClicked()">group_add</mat-icon>
+    <mat-icon class="align delete" (click)="deleteButtonClicked()">delete_sweep</mat-icon>
   </div>
 </div>

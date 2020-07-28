@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Vm } from 'src/app/core/models/vm.model';
 
@@ -14,10 +14,19 @@ export class VmItemComponent implements OnInit {
     this.vm = value;
   }
 
+  @Output() addOwners = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<void>();
+
   constructor() {
   }
 
   ngOnInit(): void {
   }
 
+  addOwnersButtonClicked() {
+    this.addOwners.emit();
+  }
+  deleteButtonClicked() {
+    this.delete.emit();
+  }
 }

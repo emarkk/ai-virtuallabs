@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -81,7 +80,7 @@ export class StudentCourseTeamDetailComponent implements OnInit {
     this.dialog.open(ConfirmDialog, {
       data: {
         title: 'Accept invitation',
-        message: `Do you confirm you want to accept this invitation?`
+        message: 'Do you confirm you want to accept this invitation?'
       }
     }).afterClosed().subscribe(confirmed => {
       if(confirmed) {
@@ -99,7 +98,7 @@ export class StudentCourseTeamDetailComponent implements OnInit {
     this.dialog.open(ConfirmDialog, {
       data: {
         title: 'Decline invitation',
-        message: `Are you sure you want to decline this team invitation?`
+        message: 'Are you sure you want to decline this team invitation?'
       }
     }).afterClosed().subscribe(confirmed => {
       if(confirmed) {
