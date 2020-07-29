@@ -142,6 +142,8 @@ public class VmServiceImpl implements VmService {
     @Override
     public List<Boolean> addVmOwners(Long vmId, List<Long> studentIds) {
         Vm vm = getter.vm(vmId);
+        if(vm.getOnline())
+            throw new VmOnlineException();
         HashSet hashSet = new HashSet(studentIds);
         if(hashSet.size() < studentIds.size())
             throw new DuplicateParticipantException();
