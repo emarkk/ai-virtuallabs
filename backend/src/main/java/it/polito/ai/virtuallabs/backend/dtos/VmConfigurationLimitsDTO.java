@@ -7,12 +7,18 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class VmModelDTO {
+public class VmConfigurationLimitsDTO {
 
     private Long id;
 
-    private String name;
+    private Integer vCpus;
 
-    private String configuration;
+    private Integer diskSpace;
+
+    private Integer ram;
+
+    private Integer maxInstances;
+
+    private Integer maxActiveInstances;
 
 }

@@ -49,9 +49,18 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private List<Vm> vms = new ArrayList<>();
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "vmConfLimit_id", referencedColumnName = "id")
+    private VmConfigurationLimits vmConfigurationLimits;
+
     public void setCourse(Course c) {
         this.course = c;
         c.getTeams().add(this);
+    }
+
+    public void setVmConfigurationLimits(VmConfigurationLimits vmConfigurationLimits) {
+        this.vmConfigurationLimits = vmConfigurationLimits;
+        vmConfigurationLimits.setTeam(this);
     }
 
 }
