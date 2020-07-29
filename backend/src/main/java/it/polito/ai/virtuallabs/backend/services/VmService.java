@@ -1,5 +1,6 @@
 package it.polito.ai.virtuallabs.backend.services;
 
+import it.polito.ai.virtuallabs.backend.dtos.VmConfigurationLimitsDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
 import org.springframework.core.io.Resource;
@@ -16,4 +17,5 @@ public interface VmService {
     void turnOnVm(Long vmId);
     void turnOffVm(Long vmId);
     byte[] connectVm(Long vmId);
+    VmConfigurationLimitsDTO addVmConfigurationLimit(Long teamId, Integer vCpus, Integer diskSpace, Integer ram, Integer maxInstances, Integer maxActiveInstances);
 }

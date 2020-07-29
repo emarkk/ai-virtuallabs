@@ -1,10 +1,10 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
+import it.polito.ai.virtuallabs.backend.dtos.VmConfigurationLimitsDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -163,6 +163,28 @@ public class VmController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm Model with id: " + vmModelId + " not found");
         } catch(NotAllowedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        }
+    }
+
+    @PostMapping("/configurations")
+    @ResponseStatus(HttpStatus.CREATED)
+    public VmConfigurationLimitsDTO addVmConfigurationLimit(@RequestBody Map<String, String> input) {
+        if(!input.containsKey("teamId") || !input.containsKey("vCpus") || !input.containsKey("diskSpace") || !input.containsKey("ram") || !input.containsKey("maxInstances") || !input.containsKey("maxActiveInstances"))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        try{
+            return vmService.addVmConfigurationLimit(Long.parseLong(input.get("teamId")), Integer.parseInt(input.get("vCpus")), Integer.parseInt(input.get("diskSpace")), Integer.parseInt(input.get("ram")), Integer.parseInt(input.get("maxInstances")), Integer.parseInt(input.get("maxActiveInstances")));
+        }  catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        } catch (TeamNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found");
+        } catch (TeamNotActiveException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is not active");
+        } catch (VmConfigurationLimitsAlreadyExistsException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vm configuration already exists for team with id :" + input.get("teamId"));
+        } catch (IllegalVmConfigurationLimitsException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This configuration is not allowed");
         }
     }
 

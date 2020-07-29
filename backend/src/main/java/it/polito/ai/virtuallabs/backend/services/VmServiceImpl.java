@@ -4,24 +4,18 @@ import it.polito.ai.virtuallabs.backend.dtos.VmConfigurationLimitsDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
 import it.polito.ai.virtuallabs.backend.entities.*;
-import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
-import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
-import it.polito.ai.virtuallabs.backend.repositories.VmModelRepository;
-import it.polito.ai.virtuallabs.backend.repositories.VmRepository;
+import it.polito.ai.virtuallabs.backend.repositories.*;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import it.polito.ai.virtuallabs.backend.utils.VmConnectionUtility;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -32,6 +26,9 @@ public class VmServiceImpl implements VmService {
     VmRepository vmRepository;
 
     @Autowired
+    VmConfigurationLimitsRepository vmConfigurationLimitsRepository;
+
+    @Autowired
     VmModelRepository vmModelRepository;
 
     @Autowired
@@ -39,6 +36,9 @@ public class VmServiceImpl implements VmService {
 
     @Autowired
     StudentRepository studentRepository;
+
+    @Autowired
+    TeamRepository teamRepository;
 
     @Autowired
     AuthenticatedEntityMapper authenticatedEntityMapper;
@@ -224,6 +224,38 @@ public class VmServiceImpl implements VmService {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @Override
+    public VmConfigurationLimitsDTO addVmConfigurationLimit(Long teamId, Integer vCpus, Integer diskSpace, Integer ram, Integer maxInstances, Integer maxActiveInstances) {
+        Team team = getter.team(teamId);
+        if(!team.getFormationStatus().equals(Team.FormationStatus.COMPLETE))
+            throw new TeamNotActiveException();
+        if(!team.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+        if(team.getVmConfigurationLimits() != null)
+            throw new VmConfigurationLimitsAlreadyExistsException();
 
+        Vm vmTotalResources = team.getVms().stream()
+                .reduce(Vm.builder().vCpus(0).diskSpace(0).ram(0).online(false).build(), (vmPartial, vm) -> Vm.builder()
+                        .vCpus(vmPartial.getVCpus() + vm.getVCpus())
+                        .diskSpace(vmPartial.getDiskSpace() + vm.getDiskSpace())
+                        .ram(vmPartial.getRam() + vm.getRam())
+                        .build());
+        if(vCpus < vmTotalResources.getVCpus() || diskSpace < vmTotalResources.getDiskSpace() || ram < vmTotalResources.getRam() || maxInstances < team.getVms().size() || maxActiveInstances < ((int) team.getVms().stream().filter(Vm::getOnline).count()) || maxInstances < maxActiveInstances)
+            throw new IllegalVmConfigurationLimitsException();
+
+        VmConfigurationLimits limits = VmConfigurationLimits.builder()
+                .vCpus(vCpus)
+                .diskSpace(diskSpace)
+                .ram(ram)
+                .maxInstances(maxInstances)
+                .maxActiveInstances(maxActiveInstances)
+                .team(team)
+                .build();
+        vmConfigurationLimitsRepository.save(limits);
+        team.setVmConfigurationLimits(limits);
+        teamRepository.save(team);
+        return modelMapper.map(limits, VmConfigurationLimitsDTO.class);
+    }
 }
 
