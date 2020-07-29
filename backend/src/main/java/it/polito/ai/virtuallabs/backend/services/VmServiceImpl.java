@@ -169,6 +169,8 @@ public class VmServiceImpl implements VmService {
         Vm vm = getter.vm(vmId);
         if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
             throw new IllegalVmOwnerException();
+        if(vm.getOnline())
+            throw new VmOnlineException();
         vm.removeAllOwners();
         vmRepository.delete(vm);
     }

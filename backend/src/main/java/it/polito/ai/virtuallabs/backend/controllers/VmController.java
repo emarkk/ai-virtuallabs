@@ -69,6 +69,8 @@ public class VmController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
         } catch (IllegalVmOwnerException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Requesting student is not an owner");
+        } catch (VmOnlineException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vm with id: " + vmId + " is online");
         }
     }
 
