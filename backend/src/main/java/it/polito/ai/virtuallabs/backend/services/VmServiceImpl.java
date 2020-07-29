@@ -128,7 +128,7 @@ public class VmServiceImpl implements VmService {
 
         if(vmTotalResources.getVCpus() + vCpus > limits.getVCpus() || vmTotalResources.getDiskSpace() + diskSpace > limits.getDiskSpace() || vmTotalResources.getRam() + ram > limits.getRam())
             throw new IllegalVmConfigurationException();
-        if(team.getVms().size() > limits.getMaxInstances())
+        if(team.getVms().size() + 1 > limits.getMaxInstances())
             throw new VmInstancesLimitNumberException();
 
         Vm vm = Vm.builder()
@@ -188,6 +188,11 @@ public class VmServiceImpl implements VmService {
         Vm vm = getter.vm(vmId);
         if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
             throw new IllegalVmOwnerException();
+        VmConfigurationLimits limits = vm.getTeam().getVmConfigurationLimits();
+        if(limits == null)
+            limits = VmConfigurationLimits.defaultVmLimits;
+        if(((int) vm.getTeam().getVms().stream().filter(Vm::getOnline).count()) + 1 > limits.getMaxActiveInstances())
+            throw new VmActiveInstancesLimitNumberException();
         vm.setOnline(true);
         vmRepository.save(vm);
     }

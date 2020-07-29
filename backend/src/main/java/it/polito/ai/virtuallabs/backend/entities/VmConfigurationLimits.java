@@ -33,6 +33,6 @@ public class VmConfigurationLimits {
     @OneToOne(mappedBy = "vmConfigurationLimits")
     private Team team;
 
-    public static final VmConfigurationLimits defaultVmLimits = new VmConfigurationLimits(null, 8, 40, 4096, 10, 8, null);
+    public static final VmConfigurationLimits defaultVmLimits = new VmConfigurationLimits(null, 8, 40, 4096, 3, 2, null);
 
 }
