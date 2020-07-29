@@ -12,18 +12,14 @@ import { AuthService } from 'src/app/core/services/auth.service';
 export class VmItemComponent implements OnInit {
   vm: Vm;
   owner: boolean;
-  baseLink: string;
 
   @Input() set data(value: Vm) {
     this.vm = value;
-    this.owner = this.vm.owners.includes(this.authService.getId());
-  }
-
-  @Input() set connectLink(value: string) {
-    this.baseLink = value;
+    this.owner = this.vm.ownersIds.includes(this.authService.getId());
   }
 
   @Output() toggleOnline = new EventEmitter<void>();
+  @Output() connect = new EventEmitter<void>();
   @Output() addOwners = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
 
@@ -35,6 +31,9 @@ export class VmItemComponent implements OnInit {
 
   onlineSwitchClicked() {
     this.toggleOnline.emit();
+  }
+  connectButtonClicked() {
+    this.connect.emit();
   }
   addOwnersButtonClicked() {
     this.addOwners.emit();

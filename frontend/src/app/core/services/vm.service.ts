@@ -52,6 +52,13 @@ export class VmService {
       catchError(error => of(false))
     );
   }
+  // add owners to vm
+  addOwners(id: number, studentIds: number[]): Observable<boolean> {
+    return this.http.patch(url(`vms/${id}/owners`), studentIds, httpOptions).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
   // delete vm
   delete(id: number): Observable<boolean> {
     return this.http.delete(url(`vms/${id}`)).pipe(

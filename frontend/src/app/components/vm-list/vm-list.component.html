@@ -8,7 +8,7 @@
     <span class="header h-actions"></span>
   </div>
   <div *ngFor="let vm of vmList" class="vm">
-    <app-vm-item [data]="vm" [connectLink]="baseLink" (toggleOnline)="vmStateChanged(vm.id, !vm.online)" (addOwners)="vmAddedOwners(vm.id)" (delete)="vmDeleted(vm.id)"></app-vm-item>
+    <app-vm-item [data]="vm" (toggleOnline)="vmStateChanged(vm.id, !vm.online)" (connect)="vmConnected(vm.id)" (addOwners)="vmAddedOwners(vm.id)" (delete)="vmDeleted(vm.id)"></app-vm-item>
   </div>
   <p *ngIf="vmList && !vmList.length" class="list-empty">No VMs to show.</p>
 </div>

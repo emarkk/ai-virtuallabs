@@ -1,0 +1,13 @@
+.dialog {
+  width: 480px;
+}
+.name {
+  margin-left: 10px;
+}
+.actions {
+  float: right;
+  margin-top: 20px;
+}
+.actions button {
+  margin: 0 10px;
+}

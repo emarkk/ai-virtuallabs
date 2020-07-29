@@ -25,6 +25,7 @@ export class StudentCourseDetailComponent implements OnInit {
   professors$: Observable<Professor[]>;
 
   team: Team;
+  vmAction: { edit: string, vm: number };
 
   constructor(private route: ActivatedRoute, private courseService: CourseService) {
   }
@@ -40,6 +41,13 @@ export class StudentCourseDetailComponent implements OnInit {
         this.courseEnabled = course.enabled;
         this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`)];
       });
+    });
+
+    this.route.queryParams.subscribe(queryParams => {
+      if(queryParams.edit && queryParams.vm)
+        this.vmAction = { edit: queryParams.edit, vm: queryParams.vm };
+      else
+        this.vmAction = null;
     });
   }
 

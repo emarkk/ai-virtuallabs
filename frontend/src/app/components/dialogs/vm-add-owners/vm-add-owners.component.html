@@ -1,0 +1,14 @@
+<div class="dialog">
+  <h2>Owners of VM-{{ data.vmId | zeroPad }}</h2>
+  <div class="students">
+    <div *ngFor="let student of data.students">
+      <mat-checkbox [checked]="data.ownersIds.includes(student.id)" [disabled]="data.ownersIds.includes(student.id)" (change)="setCheckedState(student.id, $event.checked)">
+        <span class="name">{{ student.firstName }} {{ student.lastName.toUpperCase() }} (s{{ student.id }})</span>
+      </mat-checkbox>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-flat-button mat-dialog-close>Cancel</button>
+    <app-async-button (aclick)="saveButtonClicked()" [loading]="locked">Save</app-async-button>
+  </div>
+</div>

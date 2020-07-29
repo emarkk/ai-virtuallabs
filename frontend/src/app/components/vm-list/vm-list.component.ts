@@ -9,17 +9,13 @@ import { Vm } from 'src/app/core/models/vm.model';
 })
 export class VmListComponent implements OnInit {
   vmList: Vm[] = null;
-  baseLink: string;
 
   @Input() set vms(data: Vm[]) {
     this.vmList = data;
   }
 
-  @Input() set connectLink(value: string) {
-    this.baseLink = value;
-  }
-
   @Output() vmOnline = new EventEmitter<{ vmId: number, online: boolean }>();
+  @Output() vmConnect = new EventEmitter<number>();
   @Output() vmAddOwners = new EventEmitter<number>();
   @Output() vmDelete = new EventEmitter<number>();
 
@@ -31,6 +27,9 @@ export class VmListComponent implements OnInit {
 
   vmStateChanged(vmId: number, online: boolean) {
     this.vmOnline.emit({ vmId, online });
+  }
+  vmConnected(vmId: number) {
+    this.vmConnect.emit(vmId);
   }
   vmAddedOwners(vmId: number) {
     this.vmAddOwners.emit(vmId);

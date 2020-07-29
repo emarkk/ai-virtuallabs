@@ -21,7 +21,7 @@
       </tr>
     </table>
     <app-student-course-team-detail [course]="courseCode" (completeTeam)="joinedTeam($event)"></app-student-course-team-detail>
-    <app-student-course-vms-detail [course]="courseCode" [team]="team?.id"></app-student-course-vms-detail>
+    <app-student-course-vms-detail [course]="courseCode" [team]="team"></app-student-course-vms-detail>
   </app-page>
 </div>
 <ng-template #loading>
