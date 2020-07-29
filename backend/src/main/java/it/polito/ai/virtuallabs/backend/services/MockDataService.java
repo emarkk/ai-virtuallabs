@@ -35,6 +35,9 @@ public class MockDataService {
     TeamStudentRepository teamStudentRepository;
 
     @Autowired
+    VmModelRepository vmModelRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     public void addProfessor(Long id, String email, String password, String firstName, String lastName) {
@@ -149,8 +152,16 @@ public class MockDataService {
         addTeam("team-1", "01NYHOV", List.of(251129L, 229302L));
     }
 
+    public void addVmModel(String name, String configuration, String courseCode) {
+        Course course = courseRepository.getOne(courseCode);
+        VmModel vmModel = new VmModel(null, name, configuration, null);
+        vmModelRepository.save(vmModel);
+        course.setVmModel(vmModel);
+    }
 
-
+    public void addVmModels() {
+        addVmModel("Spring+Angular", "FROM ubuntu", "01NYHOV");
+    }
 
     public void insertMockData() {
         addProfessors();
@@ -160,6 +171,7 @@ public class MockDataService {
         addProfessorsToCourses();
         enrollStudents();
         addTeams();
+        addVmModels();
     }
 
 }
