@@ -59,6 +59,21 @@ public class TeamController {
         }
     }
 
+    @GetMapping("/{id}/vm/limits")
+    public VmConfigurationLimitsDTO getVmConfigurationLimits(@PathVariable(name = "id") Long teamId) {
+        try{
+            return teamService.getVmConfigurationLimits(teamId);
+        } catch (TeamNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team '" + teamId + "' not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        } catch (StudentNotInTeamException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not in team");
+        } catch (VmConfigurationLimitsNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Configuration limits Not Found");
+        }
+    }
+
     @PostMapping({ "", "/" })
     @ResponseStatus(HttpStatus.CREATED)
     public void proposeTeam(@RequestBody TeamProposalDTO teamProposalDTO) {

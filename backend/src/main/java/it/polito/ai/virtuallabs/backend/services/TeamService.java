@@ -16,4 +16,5 @@ public interface TeamService {
     TeamDTO proposeTeam(TeamProposalDTO teamProposalDTO);
     void acceptTeam(Long teamId);
     void declineTeam(Long teamId);
+    VmConfigurationLimitsDTO getVmConfigurationLimits(Long teamId);
 }

@@ -23,31 +23,31 @@ import java.util.stream.Collectors;
 public class VmServiceImpl implements VmService {
 
     @Autowired
-    VmRepository vmRepository;
+    private VmRepository vmRepository;
 
     @Autowired
-    VmConfigurationLimitsRepository vmConfigurationLimitsRepository;
+    private VmConfigurationLimitsRepository vmConfigurationLimitsRepository;
 
     @Autowired
-    VmModelRepository vmModelRepository;
+    private VmModelRepository vmModelRepository;
 
     @Autowired
-    CourseRepository courseRepository;
+    private CourseRepository courseRepository;
 
     @Autowired
-    StudentRepository studentRepository;
+    private StudentRepository studentRepository;
 
     @Autowired
-    TeamRepository teamRepository;
+    private TeamRepository teamRepository;
 
     @Autowired
-    AuthenticatedEntityMapper authenticatedEntityMapper;
+    private AuthenticatedEntityMapper authenticatedEntityMapper;
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Autowired
-    GetterProxy getter;
+    private GetterProxy getter;
 
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
