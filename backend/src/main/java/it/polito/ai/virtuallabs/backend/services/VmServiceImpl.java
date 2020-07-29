@@ -257,5 +257,18 @@ public class VmServiceImpl implements VmService {
         teamRepository.save(team);
         return modelMapper.map(limits, VmConfigurationLimitsDTO.class);
     }
+
+    @Override
+    public VmConfigurationLimitsDTO getVmConfigurationLimits(Long vmConfigurationLimitsId) {
+        VmConfigurationLimits vmConfigurationLimits = getter.vmConfigurationLimits(vmConfigurationLimitsId);
+
+        AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
+        if(authenticatedEntity.getClass().equals(Professor.class) && !((Professor) authenticatedEntity).getCourses().contains(vmConfigurationLimits.getTeam().getCourse()))
+            throw new NotAllowedException();
+        if(authenticatedEntity.getClass().equals(Student.class) && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(vmConfigurationLimits.getTeam()))
+            throw new StudentNotInTeamException();
+
+        return modelMapper.map(vmConfigurationLimits, VmConfigurationLimitsDTO.class);
+    }
 }
 

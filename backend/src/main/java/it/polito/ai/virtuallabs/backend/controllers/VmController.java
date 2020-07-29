@@ -188,4 +188,17 @@ public class VmController {
         }
     }
 
+    @GetMapping("/configurations/{id}")
+    public VmConfigurationLimitsDTO getVmConfigurationLimits(@PathVariable(name = "id") Long vmConfigurationLimitsId) {
+        try{
+            return vmService.getVmConfigurationLimits(vmConfigurationLimitsId);
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        } catch (VmConfigurationLimitsNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Configuration limits Not Found");
+        } catch (StudentNotInTeamException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not in team");
+        }
+    }
+
 }

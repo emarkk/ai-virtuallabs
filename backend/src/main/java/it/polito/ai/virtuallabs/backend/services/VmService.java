@@ -18,4 +18,5 @@ public interface VmService {
     void turnOffVm(Long vmId);
     byte[] connectVm(Long vmId);
     VmConfigurationLimitsDTO addVmConfigurationLimit(Long teamId, Integer vCpus, Integer diskSpace, Integer ram, Integer maxInstances, Integer maxActiveInstances);
+    VmConfigurationLimitsDTO getVmConfigurationLimits(Long vmConfigurationLimitsId);
 }
