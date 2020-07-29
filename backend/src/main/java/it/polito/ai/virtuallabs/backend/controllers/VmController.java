@@ -58,6 +58,8 @@ public class VmController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vm configuration not allowed");
         }  catch (VmOnlineException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vm with id: " + vmId + " is online");
+        } catch (VmInstancesLimitNumberException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many VMs for this team");
         }
     }
 

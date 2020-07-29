@@ -1,5 +1,6 @@
 package it.polito.ai.virtuallabs.backend.services;
 
+import it.polito.ai.virtuallabs.backend.dtos.VmConfigurationLimitsDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
 import it.polito.ai.virtuallabs.backend.entities.*;
@@ -12,12 +13,15 @@ import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import it.polito.ai.virtuallabs.backend.utils.VmConnectionUtility;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -110,6 +114,22 @@ public class VmServiceImpl implements VmService {
 
         if(vCpus < 0 || diskSpace < 0 || ram < 0)
             throw new IllegalVmConfigurationException();
+
+        //Check dei limits
+        VmConfigurationLimits limits = team.getVmConfigurationLimits();
+        if(limits == null)
+            limits = VmConfigurationLimits.defaultVmLimits;
+        Vm vmTotalResources = team.getVms().stream()
+                .reduce(Vm.builder().vCpus(0).diskSpace(0).ram(0).online(false).build(), (vmPartial, vm) -> Vm.builder()
+                        .vCpus(vmPartial.getVCpus() + vm.getVCpus())
+                        .diskSpace(vmPartial.getDiskSpace() + vm.getDiskSpace())
+                        .ram(vmPartial.getRam() + vm.getRam())
+                        .build());
+
+        if(vmTotalResources.getVCpus() + vCpus > limits.getVCpus() || vmTotalResources.getDiskSpace() + diskSpace > limits.getDiskSpace() || vmTotalResources.getRam() + ram > limits.getRam())
+            throw new IllegalVmConfigurationException();
+        if(team.getVms().size() > limits.getMaxInstances())
+            throw new VmInstancesLimitNumberException();
 
         Vm vm = Vm.builder()
                 .diskSpace(diskSpace)
