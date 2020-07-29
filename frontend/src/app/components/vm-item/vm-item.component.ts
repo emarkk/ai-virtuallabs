@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
 
 import { Vm } from 'src/app/core/models/vm.model';
+
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-vm-item',
@@ -15,7 +16,7 @@ export class VmItemComponent implements OnInit {
 
   @Input() set data(value: Vm) {
     this.vm = value;
-    this.owner = false;
+    this.owner = this.vm.owners.includes(this.authService.getId());
   }
 
   @Input() set connectLink(value: string) {
@@ -26,7 +27,7 @@ export class VmItemComponent implements OnInit {
   @Output() addOwners = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
 
-  constructor() {
+  constructor(private authService: AuthService) {
   }
 
   ngOnInit(): void {
