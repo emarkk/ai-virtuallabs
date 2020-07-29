@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, Subscription, BehaviorSubject } from 'rxjs';
-import { debounceTime, switchMap, map } from 'rxjs/operators';
+import { Observable, Subject, Subscription, BehaviorSubject, combineLatest } from 'rxjs';
+import { debounceTime, switchMap } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Professor } from 'src/app/core/models/professor.model';
@@ -40,6 +40,7 @@ export class ProfessorCourseDetailComponent implements OnInit {
 
   vmModel$: Observable<VmModel>;
   vmModelRefreshToken = new BehaviorSubject(undefined);
+  vmModelDialogRef: MatDialogRef<VmModelDialog> = null;
 
   showSearch: boolean = false;
   professorMatches: any[] = [];
@@ -62,6 +63,30 @@ export class ProfessorCourseDetailComponent implements OnInit {
         switchMap(() => this.courseService.getVmModel(this.courseCode)),
         switchMap(x => this.vmService.getModel(x.id))
       );
+
+      combineLatest(this.route.queryParams, this.vmModel$).subscribe(([queryParams, vmModel]) => {
+        if(queryParams.edit == 'vm-model') {
+          this.vmModelDialogRef = this.dialog.open(VmModelDialog, {
+            data: {
+              id: vmModel.id,
+              name: vmModel.name,
+              configuration: vmModel.configuration,
+              courseCode: this.courseCode,
+              courseName: this.courseName
+            }
+          });
+          this.vmModelDialogRef.afterClosed().subscribe(res => {
+            if(res) {
+              this.vmModelRefreshToken.next(undefined);
+              this.toastService.show({ type: 'success', text: 'VM model information saved successfully.' });
+            } else if(res === false)
+              this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+              
+            this.router.navigate([`professor/course/${this.courseCode}`]);
+          });
+        } else if(this.vmModelDialogRef)
+          this.vmModelDialogRef.close();
+      });
 
       this.course$.subscribe(course => {
         this.courseName = course.name;
@@ -137,21 +162,7 @@ export class ProfessorCourseDetailComponent implements OnInit {
   addCollaboratorButtonClicked() {
     this.showSearch = true;
   }
-  vmModelLinkClicked(vmModel: VmModel) {
-    this.dialog.open(VmModelDialog, {
-      data: {
-        id: vmModel.id,
-        name: vmModel.name,
-        configuration: vmModel.configuration,
-        courseCode: this.courseCode,
-        courseName: this.courseName
-      }
-    }).afterClosed().subscribe(res => {
-      if(res) {
-        this.vmModelRefreshToken.next(undefined);
-        this.toastService.show({ type: 'success', text: 'VM model information saved successfully.' });
-      } else if(res === false)
-        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
-    });
+  vmModelLinkClicked() {
+    this.router.navigate([`professor/course/${this.courseCode}`], { queryParams: { edit: 'vm-model' } });
   }
 }

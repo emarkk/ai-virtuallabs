@@ -61,7 +61,7 @@
         <span *ngIf="vmModel.id != null" class="bold-text">{{ vmModel.name }}</span>
         <span *ngIf="vmModel.id == null" class="light-text">not specified <mat-icon class="align danger">warning</mat-icon></span>
         <span class="sep"></span>
-        <a (click)="vmModelLinkClicked(vmModel)">{{ vmModel.id != null ? 'Edit' : 'Add' }}</a>
+        <a (click)="vmModelLinkClicked()">{{ vmModel.id != null ? 'Edit' : 'Add' }}</a>
       </div>
     </app-tile>
     <app-tile text="Homeworks" [textLink]="'/professor/course/' + course.code + '/homeworks'" icon="perm_media">
