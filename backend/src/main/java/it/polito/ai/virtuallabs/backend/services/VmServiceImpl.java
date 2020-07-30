@@ -170,6 +170,18 @@ public class VmServiceImpl implements VmService {
         return result;
     }
 
+    @Override
+    public VmDTO getVm(Long vmId) {
+        Vm vm = getter.vm(vmId);
+        AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
+
+        if(authenticatedEntity.getClass().equals(Professor.class) && !((Professor) authenticatedEntity).getCourses().contains(vm.getTeam().getCourse()))
+            throw new NotAllowedException();
+        if(authenticatedEntity.getClass().equals(Student.class) && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(vm.getTeam()))
+            throw new StudentNotInTeamException();
+        return modelMapper.map(vm, VmDTO.class);
+    }
+
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
     public void deleteVm(Long vmId) {

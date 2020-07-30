@@ -38,6 +38,21 @@ public class VmController {
         }
     }
 
+    @GetMapping("/{id}")
+    public VmDTO getVm(@PathVariable(name = "id") Long vmId) {
+        try{
+            return vmService.getVm(vmId);
+        } catch (VmNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
+        } catch (StudentNotInTeamException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not in team");
+        } catch (TeamNotActiveException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is not active");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        }
+    }
+
     @PatchMapping("/{id}/owners")
     public List<Boolean> addVmOwners(@PathVariable(name = "id") Long vmId, @RequestBody List<Long> studentIds) {
         try{
