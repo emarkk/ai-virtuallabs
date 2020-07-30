@@ -1,16 +1,3 @@
-table.info {
-  width: 100%;
-  font-size: 0.9em;
-}
-table.info.main {
-  margin-bottom: 40px;
-}
-table.info td {
-  padding-bottom: 0.5em;
-}
-table.info td:first-child {
-  width: 25%;
-}
 .team {
   display: flex;
   align-items: center;
