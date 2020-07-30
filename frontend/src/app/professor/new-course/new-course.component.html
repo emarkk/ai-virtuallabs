@@ -4,7 +4,7 @@
     <h1>New course</h1>
     <p>Enter the required course information in the form below. By creating a course, you are automatically promoted as the <i>admin</i> of the course.</p>
     <div class="info">
-      <app-course-form (update)="saveCourse($event.data)" cancelLink="/professor/courses"></app-course-form>
+      <app-course-form cancelLink="/professor/courses" (update)="saveCourse($event.data)"></app-course-form>
     </div>
   </app-page>
 </div>

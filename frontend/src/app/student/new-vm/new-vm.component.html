@@ -13,37 +13,8 @@
         </div>
         <div *ngIf="vmModel.id">
           <p>Enter the required VM information in the form below. Note that the following configuration parameters may be subject to limitations established by the course professors. By creating a new VM, you are automatically promoted to <i>owner</i> of the VM itself.</p>
-          <div class="form">
-            <form [formGroup]="form">
-              <div class="input-container">
-                <mat-form-field class="fraction half first" appearance="legacy">
-                  <mat-label>VM model</mat-label>
-                  <input matInput formControlName="model" required>
-                </mat-form-field>
-                <mat-form-field class="fraction half" appearance="legacy">
-                  <mat-label>vCPU</mat-label>
-                  <mat-icon matSuffix>memory</mat-icon>
-                  <input matInput placeholder="1" formControlName="vcpu" required>
-                  <mat-error>{{ getVcpuErrorMessage() }}</mat-error>
-                </mat-form-field>
-                <mat-form-field class="fraction half first" appearance="legacy">
-                  <mat-label>Disk space (GB)</mat-label>
-                  <mat-icon matSuffix>storage</mat-icon>
-                  <input matInput placeholder="32" formControlName="disk" required>
-                  <mat-error>{{ getDiskErrorMessage() }}</mat-error>
-                </mat-form-field>
-                <mat-form-field class="fraction half" appearance="legacy">
-                  <mat-label>RAM (MB)</mat-label>
-                  <mat-icon matSuffix>drag_indicator</mat-icon>
-                  <input matInput placeholder="2048" formControlName="ram" required>
-                  <mat-error>{{ getRamErrorMessage() }}</mat-error>
-                </mat-form-field>
-              </div>
-              <div class="actions">
-                <button mat-flat-button [routerLink]="'/student/course/' + courseCode">Cancel</button>
-                <app-async-button (aclick)="createButtonClicked()" [loading]="locked">Create</app-async-button>
-              </div>
-            </form>
+          <div class="info">
+            <app-vm-form [model]="vmModel" [cancelLink]="'/student/course/' + courseCode" (update)="saveVm($event.data)"></app-vm-form>
           </div>
         </div>
       </div>

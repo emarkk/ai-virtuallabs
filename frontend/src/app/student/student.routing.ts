@@ -8,6 +8,7 @@ import { StudentCourseDetailComponent } from './course-detail/course-detail.comp
 import { StudentNewTeamComponent } from './new-team/new-team.component';
 import { StudentNewVmComponent } from './new-vm/new-vm.component';
 import { StudentVmComponent } from './vm/vm.component';
+import { StudentEditVmComponent } from './edit-vm/edit-vm.component';
 
 export const studentRouting = [
   {
@@ -44,6 +45,10 @@ export const studentRouting = [
       {
         path: 'course/:code/vm/:id',
         component: StudentVmComponent,
+      },
+      {
+        path: 'course/:code/vm/:id/edit',
+        component: StudentEditVmComponent,
       }
     ]
   }

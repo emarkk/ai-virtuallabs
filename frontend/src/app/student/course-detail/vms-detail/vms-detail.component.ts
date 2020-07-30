@@ -81,6 +81,9 @@ export class StudentCourseVmsDetailComponent implements OnInit {
   connectToVm(vmId: number) {
     this.router.navigate([`/student/course/${this.courseCode}/vm/${vmId}`]);
   }
+  editVm(vmId: number) {
+    this.router.navigate([`/student/course/${this.courseCode}/vm/${vmId}/edit`]);
+  }
   addVmOwners(vmId: number) {
     this.router.navigate([`/student/course/${this.courseCode}`], { queryParams: { edit: 'vm-owners', vm: vmId } });
   }

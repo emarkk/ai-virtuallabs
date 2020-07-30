@@ -16,6 +16,7 @@ export class VmListComponent implements OnInit {
 
   @Output() vmOnline = new EventEmitter<{ vmId: number, online: boolean }>();
   @Output() vmConnect = new EventEmitter<number>();
+  @Output() vmEdit = new EventEmitter<number>();
   @Output() vmAddOwners = new EventEmitter<number>();
   @Output() vmDelete = new EventEmitter<number>();
 
@@ -30,6 +31,9 @@ export class VmListComponent implements OnInit {
   }
   vmConnected(vmId: number) {
     this.vmConnect.emit(vmId);
+  }
+  vmEdited(vmId: number) {
+    this.vmEdit.emit(vmId);
   }
   vmAddedOwners(vmId: number) {
     this.vmAddOwners.emit(vmId);

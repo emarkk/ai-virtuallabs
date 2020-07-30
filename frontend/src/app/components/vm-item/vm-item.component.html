@@ -19,6 +19,7 @@
   <div class="col col-actions">
     <div>
       <mat-icon [class.disabled]="!vm.online" class="align connect" (click)="connectButtonClicked()">ondemand_video</mat-icon>
+      <mat-icon [class.disabled]="!owner || vm.online" class="align edit" (click)="editButtonClicked()">settings</mat-icon>
       <mat-icon [class.disabled]="!owner || vm.online" class="align owners" (click)="addOwnersButtonClicked()">group_add</mat-icon>
       <mat-icon [class.disabled]="!owner || vm.online" class="align delete" (click)="deleteButtonClicked()">delete_sweep</mat-icon>
     </div>

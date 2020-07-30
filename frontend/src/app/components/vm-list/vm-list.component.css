@@ -7,11 +7,11 @@
   padding: 0 20px;
 }
 .h-id {
-  flex: 3.4;
+  flex: 3;
 }
 .h-vcpu, .h-disk, .h-ram, .h-online {
   flex: 1.8;
 }
 .h-actions {
-  flex: 2;
+  flex: 2.4;
 }

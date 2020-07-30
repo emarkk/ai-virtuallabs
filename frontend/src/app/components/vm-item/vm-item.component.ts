@@ -20,6 +20,7 @@ export class VmItemComponent implements OnInit {
 
   @Output() toggleOnline = new EventEmitter<void>();
   @Output() connect = new EventEmitter<void>();
+  @Output() edit = new EventEmitter<void>();
   @Output() addOwners = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
 
@@ -34,6 +35,9 @@ export class VmItemComponent implements OnInit {
   }
   connectButtonClicked() {
     this.connect.emit();
+  }
+  editButtonClicked() {
+    this.edit.emit();
   }
   addOwnersButtonClicked() {
     this.addOwners.emit();

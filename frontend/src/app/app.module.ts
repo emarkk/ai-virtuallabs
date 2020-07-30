@@ -47,6 +47,7 @@ import { TeamInvitationItemComponent } from './components/team-invitation-item/t
 import { TeamInvitationListComponent } from './components/team-invitation-list/team-invitation-list.component';
 import { VmItemComponent } from './components/vm-item/vm-item.component';
 import { VmListComponent } from './components/vm-list/vm-list.component';
+import { VmFormComponent } from './components/vm-form/vm-form.component';
 
 import { ContainerComponent } from './container/container.component';
 import { SignInComponent } from './auth/signin/signin.component';
@@ -71,6 +72,7 @@ import { StudentCourseTeamDetailComponent } from './student/course-detail/team-d
 import { StudentCourseVmsDetailComponent } from './student/course-detail/vms-detail/vms-detail.component';
 import { StudentNewTeamComponent } from './student/new-team/new-team.component';
 import { StudentNewVmComponent } from './student/new-vm/new-vm.component';
+import { StudentEditVmComponent } from './student/edit-vm/edit-vm.component';
 import { StudentVmComponent } from './student/vm/vm.component';
 
 @NgModule({
@@ -96,6 +98,7 @@ import { StudentVmComponent } from './student/vm/vm.component';
     TeamInvitationListComponent,
     VmItemComponent,
     VmListComponent,
+    VmFormComponent,
     ContainerComponent,
     SignInComponent,
     SignUpComponent,
@@ -119,6 +122,7 @@ import { StudentVmComponent } from './student/vm/vm.component';
     StudentCourseVmsDetailComponent,
     StudentNewTeamComponent,
     StudentNewVmComponent,
+    StudentEditVmComponent,
     StudentVmComponent,
     ZeroPadPipe,
     TeamCreatorPipe,

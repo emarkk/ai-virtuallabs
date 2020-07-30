@@ -1,0 +1,32 @@
+<div class="container">
+  <form [formGroup]="form">
+    <div class="input-container">
+      <mat-form-field class="fraction half first" appearance="legacy">
+        <mat-label>VM model</mat-label>
+        <input matInput formControlName="model" required>
+      </mat-form-field>
+      <mat-form-field class="fraction half" appearance="legacy">
+        <mat-label>vCPU</mat-label>
+        <mat-icon matSuffix>memory</mat-icon>
+        <input matInput placeholder="1" formControlName="vcpu" required>
+        <mat-error>{{ getVcpuErrorMessage() }}</mat-error>
+      </mat-form-field>
+      <mat-form-field class="fraction half first" appearance="legacy">
+        <mat-label>Disk space (GB)</mat-label>
+        <mat-icon matSuffix>storage</mat-icon>
+        <input matInput placeholder="32" formControlName="disk" required>
+        <mat-error>{{ getDiskErrorMessage() }}</mat-error>
+      </mat-form-field>
+      <mat-form-field class="fraction half" appearance="legacy">
+        <mat-label>RAM (MB)</mat-label>
+        <mat-icon matSuffix>drag_indicator</mat-icon>
+        <input matInput placeholder="2048" formControlName="ram" required>
+        <mat-error>{{ getRamErrorMessage() }}</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="actions">
+      <button mat-flat-button [routerLink]="cancelButtonLink">Cancel</button>
+      <app-async-button (aclick)="saveButtonClicked()" [loading]="locked">Create</app-async-button>
+    </div>
+  </form>
+</div>
