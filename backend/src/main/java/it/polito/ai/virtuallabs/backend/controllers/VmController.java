@@ -35,6 +35,10 @@ public class VmController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team Not Found");
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        } catch (IllegalVmConfigurationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vm configuration not allowed");
+        } catch (VmInstancesLimitNumberException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many VMs for this team");
         }
     }
 
@@ -50,6 +54,25 @@ public class VmController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is not active");
         } catch(NotAllowedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        }
+    }
+
+    @PutMapping("/{id}")
+    public VmDTO updateVm(@PathVariable(name = "id") Long vmId, @RequestBody Map<String, Integer> input) {
+        try{
+            if(!input.containsKey("diskSpace") || !input.containsKey("ram") || !input.containsKey("vCpus"))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+            return vmService.updateVm(vmId, input.get("vCpus"), input.get("diskSpace"), input.get("ram"));
+        } catch (VmNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
+        } catch (StudentNotInTeamException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not in team");
+        } catch (TeamNotActiveException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is not active");
+        } catch (IllegalVmConfigurationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vm configuration not allowed");
+        } catch (VmOnlineException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vm with id: " + vmId + " is online");
         }
     }
 
@@ -69,12 +92,8 @@ public class VmController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate student in list");
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
-        } catch (IllegalVmConfigurationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vm configuration not allowed");
-        }  catch (VmOnlineException e) {
+        } catch (VmOnlineException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vm with id: " + vmId + " is online");
-        } catch (VmInstancesLimitNumberException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many VMs for this team");
         }
     }
 

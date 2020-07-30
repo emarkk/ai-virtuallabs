@@ -179,6 +179,47 @@ public class VmServiceImpl implements VmService {
             throw new NotAllowedException();
         if(authenticatedEntity.getClass().equals(Student.class) && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(vm.getTeam()))
             throw new StudentNotInTeamException();
+        if(!vm.getTeam().getFormationStatus().equals(Team.FormationStatus.COMPLETE))
+            throw new TeamNotActiveException();
+        return modelMapper.map(vm, VmDTO.class);
+    }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @Override
+    public VmDTO updateVm(Long vmId, Integer vCpus, Integer diskSpace, Integer ram) {
+        Vm vm = getter.vm(vmId);
+        if(vm.getOnline())
+            throw new VmOnlineException();
+        if(!((Student) authenticatedEntityMapper.get()).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(vm.getTeam()))
+            throw new StudentNotInTeamException();
+        if(!vm.getTeam().getFormationStatus().equals(Team.FormationStatus.COMPLETE))
+            throw new TeamNotActiveException();
+
+        if(vCpus < 0 || diskSpace < 0 || ram < 0)
+            throw new IllegalVmConfigurationException();
+
+        //Check dei limits
+        VmConfigurationLimits limits = vm.getTeam().getVmConfigurationLimits();
+        if(limits == null)
+            limits = VmConfigurationLimits.defaultVmLimits;
+
+        //Verifico compatibilità della richiesta di modifica della vm con i limiti attuali.
+        //Escludo risorse precedenti della vm da aggiornare
+        Vm vmTotalResources = vm.getTeam().getVms().stream()
+                .filter(e -> !e.equals(vm))
+                .reduce(Vm.builder().vCpus(0).diskSpace(0).ram(0).online(false).build(), (vmPartial, vmElem) -> Vm.builder()
+                        .vCpus(vmPartial.getVCpus() + vmElem.getVCpus())
+                        .diskSpace(vmPartial.getDiskSpace() + vmElem.getDiskSpace())
+                        .ram(vmPartial.getRam() + vmElem.getRam())
+                        .build());
+
+        if(vmTotalResources.getVCpus() + vCpus > limits.getVCpus() || vmTotalResources.getDiskSpace() + diskSpace > limits.getDiskSpace() || vmTotalResources.getRam() + ram > limits.getRam())
+            throw new IllegalVmConfigurationException();
+
+        vm.setVCpus(vCpus);
+        vm.setDiskSpace(diskSpace);
+        vm.setRam(ram);
+        vmRepository.save(vm);
         return modelMapper.map(vm, VmDTO.class);
     }
 

@@ -3,7 +3,6 @@ package it.polito.ai.virtuallabs.backend.services;
 import it.polito.ai.virtuallabs.backend.dtos.VmConfigurationLimitsDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
-import org.springframework.core.io.Resource;
 
 import java.util.List;
 
@@ -14,6 +13,7 @@ public interface VmService {
     VmDTO addVm(Long teamId, Integer vCpus, Integer diskSpace, Integer ram);
     List<Boolean> addVmOwners(Long vmId, List<Long> studentIds);
     VmDTO getVm(Long vmId);
+    VmDTO updateVm(Long vmId, Integer vCpus, Integer diskSpace, Integer ram);
     void deleteVm(Long vmId);
     void turnOnVm(Long vmId);
     void turnOffVm(Long vmId);
