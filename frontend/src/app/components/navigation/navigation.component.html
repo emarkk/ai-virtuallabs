@@ -1,5 +1,6 @@
 <div class="navigation">
   <app-tile noPad>
+    <span>&nbsp;</span>
     <span *ngFor="let nav of data; last as last">
       <a *ngIf="!last" [routerLink]="nav.link">{{ nav.name }}</a>
       <span *ngIf="last">{{ nav.name }}</span>

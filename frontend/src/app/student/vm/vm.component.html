@@ -1,5 +1,9 @@
 <div class="container">
   <app-page>
+    <app-navigation [navigationData]="navigationData"></app-navigation>
     <h1>VM</h1>
   </app-page>
 </div>
+<ng-template #loading>
+  <app-data-placeholder></app-data-placeholder>
+</ng-template>

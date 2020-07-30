@@ -39,7 +39,7 @@ export class StudentCourseDetailComponent implements OnInit {
       this.course$.subscribe(course => {
         this.courseName = course.name;
         this.courseEnabled = course.enabled;
-        this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`)];
+        this.navigationData = [navHome, navCourses, nav(course.name)];
       });
     });
 

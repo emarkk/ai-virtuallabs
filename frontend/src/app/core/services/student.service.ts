@@ -67,17 +67,23 @@ export class StudentService {
         this.http.get<any[]>(url(`teams/${team.id}/members/status`)))
       ),
       // reconstruct Team object with members Map
-      map((info: [Team, any]) => {
-        info[0].members = [];
-        for(let member of info[1]) {
+      map(([team, members]: [Team, any]) => {
+        team.members = [];
+        for(let member of members) {
           const { id, firstName, lastName, email, hasPicture } = member.student;
           const student = new Student(id, firstName, lastName, email, hasPicture);
-          info[0].members.push({ student , status: member.status as TeamInvitationStatus });
+          team.members.push({ student , status: member.status as TeamInvitationStatus });
         }
-        return info[0];
+        return team;
       }),
       // go back to Observable<Team[]>
       reduce((a, t) => a.concat(t), [])
+    );
+  }
+  // get complete team for student for a specific course
+  getJoinedTeamForCourse(studentId: number, courseCode: string): Observable<Team> {
+    return this.getTeamsForCourse(studentId, courseCode).pipe(
+      map(arr => arr.find(t => t.status == TeamStatus.COMPLETE))
     );
   }
 }

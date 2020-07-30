@@ -69,10 +69,11 @@ import { StudentHomeComponent } from './student/home/home.component';
 import { StudentCoursesComponent } from './student/courses/courses.component';
 import { StudentCourseDetailComponent } from './student/course-detail/course-detail.component';
 import { StudentCourseTeamDetailComponent } from './student/course-detail/team-detail/team-detail.component';
-import { StudentCourseVmsDetailComponent } from './student/course-detail/vms-detail/vms-detail.component';
 import { StudentNewTeamComponent } from './student/new-team/new-team.component';
+import { StudentVmsDetailComponent } from './student/vms-detail/vms-detail.component';
 import { StudentNewVmComponent } from './student/new-vm/new-vm.component';
 import { StudentEditVmComponent } from './student/edit-vm/edit-vm.component';
+import { StudentVmsComponent } from './student/vms/vms.component';
 import { StudentVmComponent } from './student/vm/vm.component';
 
 @NgModule({
@@ -119,10 +120,11 @@ import { StudentVmComponent } from './student/vm/vm.component';
     StudentCoursesComponent,
     StudentCourseDetailComponent,
     StudentCourseTeamDetailComponent,
-    StudentCourseVmsDetailComponent,
     StudentNewTeamComponent,
+    StudentVmsDetailComponent,
     StudentNewVmComponent,
     StudentEditVmComponent,
+    StudentVmsComponent,
     StudentVmComponent,
     ZeroPadPipe,
     TeamCreatorPipe,

@@ -54,7 +54,7 @@ export class StudentEditVmComponent implements OnInit {
 
       this.course$.subscribe(course => {
         this.courseName = course.name;
-        this.navigationData = [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('VMs', `/student/course/${course.code}/vms`), nav('New')];
+        this.navigationData = [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('VMs', `/student/course/${course.code}/vms`), nav('Edit')];
       });
     });
   }

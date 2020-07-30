@@ -6,6 +6,7 @@ import { StudentHomeComponent } from './home/home.component';
 import { StudentCoursesComponent } from './courses/courses.component';
 import { StudentCourseDetailComponent } from './course-detail/course-detail.component';
 import { StudentNewTeamComponent } from './new-team/new-team.component';
+import { StudentVmsComponent } from './vms/vms.component';
 import { StudentNewVmComponent } from './new-vm/new-vm.component';
 import { StudentVmComponent } from './vm/vm.component';
 import { StudentEditVmComponent } from './edit-vm/edit-vm.component';
@@ -37,6 +38,10 @@ export const studentRouting = [
       {
         path: 'course/:code/teams/new',
         component: StudentNewTeamComponent,
+      },
+      {
+        path: 'course/:code/vms',
+        component: StudentVmsComponent,
       },
       {
         path: 'course/:code/vms/new',

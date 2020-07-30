@@ -15,11 +15,11 @@ import { ConfirmDialog } from 'src/app/components/dialogs/confirm/confirm.compon
 import { VmAddOwnersDialog } from 'src/app/components/dialogs/vm-add-owners/vm-add-owners.component';
 
 @Component({
-  selector: 'app-student-course-vms-detail',
+  selector: 'app-student-vms-detail',
   templateUrl: './vms-detail.component.html',
   styleUrls: ['./vms-detail.component.css']
 })
-export class StudentCourseVmsDetailComponent implements OnInit {
+export class StudentVmsDetailComponent implements OnInit {
   courseCode: string;
   joinedTeam: Team;
 
@@ -48,7 +48,7 @@ export class StudentCourseVmsDetailComponent implements OnInit {
       if(vms && queryParams.edit == 'vm-owners') {
         const vm = vms.find(vm => vm.id == queryParams.vm);
         if(!vm || vm.online)
-          this.router.navigate([`student/course/${this.courseCode}`]);
+          this.router.navigate([]);
 
         this.vmAddOwnersDialogRef = this.dialog.open(VmAddOwnersDialog, {
           data: {
@@ -64,7 +64,7 @@ export class StudentCourseVmsDetailComponent implements OnInit {
           } else if(res === false)
             this.toastService.show({ type: 'danger', text: 'An error occurred.' });
             
-          this.router.navigate([`student/course/${this.courseCode}`]);
+          this.router.navigate([]);
         });
       } else if(this.vmAddOwnersDialogRef)
         this.vmAddOwnersDialogRef.close();
@@ -85,7 +85,7 @@ export class StudentCourseVmsDetailComponent implements OnInit {
     this.router.navigate([`/student/course/${this.courseCode}/vm/${vmId}/edit`]);
   }
   addVmOwners(vmId: number) {
-    this.router.navigate([`/student/course/${this.courseCode}`], { queryParams: { edit: 'vm-owners', vm: vmId } });
+    this.router.navigate([], { queryParams: { edit: 'vm-owners', vm: vmId } });
   }
   deleteVm(vmId: number) {
     this.dialog.open(ConfirmDialog, {
