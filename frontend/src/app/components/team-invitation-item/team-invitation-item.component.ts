@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-import { Team, TeamStatus } from 'src/app/core/models/team.model';
+import { Team, TeamStatus, TeamInvitationStatus } from 'src/app/core/models/team.model';
 import { timeString } from 'src/app/core/utils';
 
 @Component({
@@ -9,6 +9,8 @@ import { timeString } from 'src/app/core/utils';
   styleUrls: ['./team-invitation-item.component.css']
 })
 export class TeamInvitationItemComponent implements OnInit {
+  InvitationStatus = TeamInvitationStatus;
+  
   invitation: Team;
   enabled: boolean;
   expiration: string;

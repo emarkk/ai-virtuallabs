@@ -18,9 +18,9 @@
         </div>
         <div class="team-members">
           <div *ngFor="let member of acceptedTeam.members" class="team-member">
-            <mat-icon *ngIf="member.status == InvitationStatus.CREATOR" class="icon-creator">verified</mat-icon>
-            <mat-icon *ngIf="member.status == InvitationStatus.ACCEPTED" class="icon-accepted">done_all</mat-icon>
-            <mat-icon *ngIf="member.status == InvitationStatus.PENDING" class="icon-pending">schedule</mat-icon>
+            <mat-icon *ngIf="member.status == InvitationStatus.CREATOR" class="icon-creator" title="Founder">verified</mat-icon>
+            <mat-icon *ngIf="member.status == InvitationStatus.ACCEPTED" class="icon-accepted" title="Invitation accepted">done_all</mat-icon>
+            <mat-icon *ngIf="member.status == InvitationStatus.PENDING" class="icon-pending" title="Pending approval">schedule</mat-icon>
             <app-user-tag [firstName]="member.student.firstName" [lastName]="member.student.lastName.toUpperCase()" [picture]="member.student.picturePath"></app-user-tag>
           </div>
         </div>
