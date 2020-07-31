@@ -13,7 +13,7 @@ public interface CourseService {
     void updateCourse(String courseCode, CourseDTO course);
     void removeCourse(String courseCode);
     boolean inviteProfessor(String courseCode, Long professorId);
-    PageDTO<StudentDTO> getEnrolledStudents(String courseCode, String sortField, String sortDirection, int page, int pageSize);
+    PageDTO<CourseStudentDTO> getEnrolledStudents(String courseCode, String sortField, String sortDirection, int page, int pageSize);
     List<ProfessorDTO> getProfessors(String courseCode);
     List<TeamDTO> getTeams(String courseCode);
     VmModelDTO getVmModel(String courseCode);
