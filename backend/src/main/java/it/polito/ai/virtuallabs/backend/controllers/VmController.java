@@ -5,10 +5,14 @@ import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmModelDTO;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -141,13 +145,14 @@ public class VmController {
     }
 
     @GetMapping("/{id}/connect")
-    public ResponseEntity<byte[]> connectVm(@PathVariable(name = "id") Long vmId) {
+    public ResponseEntity<Resource> connectVm(@PathVariable(name = "id") Long vmId) {
         try {
             HttpHeaders headers = new HttpHeaders();
             byte[] file = vmService.connectVm(vmId);
+            Resource resource = new ByteArrayResource(file);
             headers.setCacheControl(CacheControl.noCache().getHeaderValue());
             headers.setContentType(MediaType.IMAGE_JPEG);
-            return new ResponseEntity<>(file, headers, HttpStatus.OK);
+            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
         } catch (VmNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
         } catch(NotAllowedException e) {
