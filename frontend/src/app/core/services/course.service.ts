@@ -50,6 +50,13 @@ export class CourseService {
       catchError(error => of(null))
     );
   }
+  // get course teams
+  getTeams(code: string): Observable<Team[]> {
+    return this.http.get<any[]>(url(`courses/${code}/teams`)).pipe(
+      map(arr => arr.map(x => new Team(x.id, x.name, x.status as TeamStatus, null, new Date(x.invitationExpiration), new Date(x.lastAction)))),
+      catchError(error => of(null))
+    );
+  }
   // get course vm model
   getVmModel(code: string): Observable<VmModel> {
     return this.http.get<any>(url(`courses/${code}/vm/model`)).pipe(

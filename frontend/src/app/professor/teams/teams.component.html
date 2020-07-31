@@ -1,7 +1,34 @@
 <div class="container" *ngIf="course$ | async as course; else loading">
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
-    <h1>{{ course.name }} <span class="bar"></span><span>Teams</span></h1>
+    <h1>{{ course.name }} <span class="bar"></span><span>Teams<span *ngIf="teamFilter"> ({{ teamFilter }})</span></span></h1>
+    <p *ngIf="!teamFilter">All active teams (completed teams and active team proposals) for this course are shown below. You can choose to select only <a [routerLink]="[]" [queryParams]="{ filter: 'complete' }">complete teams</a>, or you can have a look at (old) <a [routerLink]="[]" [queryParams]="{ filter: 'inactive' }">inactive team proposals</a>.</p>
+    <p *ngIf="teamFilter == 'complete'">Only completed teams (that is, accepted by all members) for this course are shown below. You may want to see a list of all <a [routerLink]="[]" [queryParams]="{}">active teams</a> instead, or you can have a look at (old) <a [routerLink]="[]" [queryParams]="{ filter: 'inactive' }">inactive team proposals</a>.</p>
+    <p *ngIf="teamFilter == 'inactive'">This is a list of inactive team proposals (either expired or aborted). Note that inactive team proposals are automatically deleted after 7 days. You can switch to see <a [routerLink]="[]" [queryParams]="{ filter: 'complete' }">complete teams</a>, or you can have a look at all <a [routerLink]="[]" [queryParams]="{}">active teams</a>.</p>
+    <br />
+    <div *ngIf="teams$ | async as teams">
+      <div *ngIf="teams.filter(filterFunction) as filteredTeams">
+        <div *ngIf="filteredTeams.length" class="mat-elevation-z1">
+          <table mat-table [dataSource]="filteredTeams">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let team">{{ team.id }}</td>
+            </ng-container>
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let team">{{ team.name }}</td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let team">{{ team.status }}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
+          </table>
+        </div>
+        <p *ngIf="!filteredTeams.length" class="list-empty">No teams to show.</p>
+      </div>
+    </div>
   </app-page>
 </div>
 <ng-template #loading>
