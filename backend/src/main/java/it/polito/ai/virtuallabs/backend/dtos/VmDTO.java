@@ -25,6 +25,8 @@ public class VmDTO {
 
     private List<Long> owners;
 
+    private StudentDTO creator;
+
     public void setOwners(List<Student> students) {
         this.owners = students.stream().map(Student::getId).collect(Collectors.toList());
     }

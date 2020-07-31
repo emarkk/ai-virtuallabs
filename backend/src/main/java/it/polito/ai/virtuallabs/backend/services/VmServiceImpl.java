@@ -139,6 +139,7 @@ public class VmServiceImpl implements VmService {
                 .build();
         vm.setTeam(team);
         vm.addOwner(authenticated);
+        vm.setCreator(authenticated);
         vmRepository.save(vm);
         return modelMapper.map(vm, VmDTO.class);
     }

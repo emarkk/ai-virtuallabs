@@ -36,6 +36,10 @@ public class Vm {
     @JoinColumn(name = "team_id")
     private Team team;
 
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private Student creator;
+
     public void setTeam(Team t) {
         this.team = t;
         t.getVms().add(this);
@@ -54,6 +58,11 @@ public class Vm {
     public void removeAllOwners(){
         this.owners.forEach(s -> s.getVms().remove(this));
         this.owners.clear();
+    }
+
+    public void setCreator(Student s) {
+        this.creator = s;
+        s.getCreatedVms().add(this);
     }
 
 }

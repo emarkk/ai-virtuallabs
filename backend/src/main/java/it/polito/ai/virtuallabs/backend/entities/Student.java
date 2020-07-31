@@ -35,4 +35,12 @@ public class Student extends AuthenticatedEntity {
     @OneToMany(mappedBy = "student")
     private List<TeamStudent> teams = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "creator")
+    private List<Vm> createdVms = new ArrayList<>();
+
+    public void removeAllCreatedVms(){
+        this.createdVms.forEach(cVm -> cVm.setCreator(null));
+        this.createdVms.clear();
+    }
 }
