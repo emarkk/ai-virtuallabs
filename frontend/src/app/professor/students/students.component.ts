@@ -15,14 +15,16 @@ import { EnrolledStudentsDataSource } from 'src/app/core/datasources/enrolled-st
 import { ConfirmDialog } from 'src/app/components/dialogs/confirm/confirm.component';
 import { SelectableTableComponent } from 'src/app/components/selectable-table/selectable-table.component';
 
+import { pictureTemplate, lastNameTemplate, teamTemplate } from './templates';
+
 import { navHome, navCourses, nav } from '../professor.navdata';
 
 @Component({
-  selector: 'app-professor-course-students',
-  templateUrl: './course-students.component.html',
-  styleUrls: ['./course-students.component.css']
+  selector: 'app-professor-students',
+  templateUrl: './students.component.html',
+  styleUrls: ['./students.component.css']
 })
-export class ProfessorCourseStudentsComponent implements OnInit {
+export class ProfessorStudentsComponent implements OnInit {
   courseCode: string;
   course$: Observable<Course>;
   navigationData: Array<any>|null = null;
@@ -34,10 +36,10 @@ export class ProfessorCourseStudentsComponent implements OnInit {
 
   enrolledStudentColumns = [    
     { name: 'id', label: 'ID', sortable: true },
-    { name: 'picture', label: '', template: student => `<div class="profile-pic"><img src="${student.picturePath || 'assets/img/user.png'}" /></div>` },
+    { name: 'picture', label: '', template: pictureTemplate },
     { name: 'firstName', label: 'First Name', sortable: true },
-    { name: 'lastName', label: 'Last Name', sortable: true, template: student => `${student.lastName.toUpperCase()}` },
-    { name: 'teamName', label: 'Team', sortable: true }
+    { name: 'lastName', label: 'Last Name', sortable: true, template: lastNameTemplate },
+    { name: 'teamName', label: 'Team', sortable: true, template: teamTemplate }
   ];
   selectedEnrolledStudents: Set<string> | 'all' = new Set<string>();
   enrolledStudentsDataSource: EnrolledStudentsDataSource;

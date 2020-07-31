@@ -7,9 +7,10 @@ import { ProfessorCoursesComponent } from './courses/courses.component';
 import { ProfessorNewCourseComponent } from './new-course/new-course.component';
 import { ProfessorEditCourseComponent } from './edit-course/edit-course.component';
 import { ProfessorCourseDetailComponent } from './course-detail/course-detail.component';
-import { ProfessorCourseStudentsComponent } from './course-students/course-students.component';
-import { ProfessorCourseTeamsComponent } from './course-teams/course-teams.component';
-import { ProfessorCourseHomeworksComponent } from './course-homeworks/course-homeworks.component';
+import { ProfessorStudentsComponent } from './students/students.component';
+import { ProfessorTeamsComponent } from './teams/teams.component';
+import { ProfessorVmsComponent } from './vms/vms.component';
+import { ProfessorHomeworksComponent } from './homeworks/homeworks.component';
 
 export const professorRouting = [
   {
@@ -45,15 +46,19 @@ export const professorRouting = [
       },
       {
         path: 'course/:code/students',
-        component: ProfessorCourseStudentsComponent,
+        component: ProfessorStudentsComponent,
       },
       {
         path: 'course/:code/teams',
-        component: ProfessorCourseTeamsComponent,
+        component: ProfessorTeamsComponent,
+      },
+      {
+        path: 'course/:code/vms',
+        component: ProfessorVmsComponent,
       },
       {
         path: 'course/:code/homeworks',
-        component: ProfessorCourseHomeworksComponent,
+        component: ProfessorHomeworksComponent,
       }
     ]
   }

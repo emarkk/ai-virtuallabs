@@ -1,22 +1,22 @@
 import { Observable, BehaviorSubject } from 'rxjs';
-import { CollectionViewer, DataSource } from '@angular/cdk/collections';
+import { CollectionViewer } from '@angular/cdk/collections';
 
-import { Student } from '../models/student.model';
+import { EnrolledStudent } from '../models/enrolledstudent.model';
 
 import { CourseService } from '../services/course.service';
 
 import { PagingSortingDataSource } from './pagingsorting.datasource';
 
-export class EnrolledStudentsDataSource implements PagingSortingDataSource<Student> {
+export class EnrolledStudentsDataSource implements PagingSortingDataSource<EnrolledStudent> {
   private courseCode: string;
   private datasetSize: number;
-  private studentsSubject = new BehaviorSubject<Student[]>([]);
+  private studentsSubject = new BehaviorSubject<EnrolledStudent[]>([]);
   
   constructor(private courseService: CourseService, courseCode: string) {
     this.courseCode = courseCode;
   }
 
-  connect(collectionViewer: CollectionViewer): Observable<Student[]> {
+  connect(collectionViewer: CollectionViewer): Observable<EnrolledStudent[]> {
     return this.studentsSubject.asObservable();
   }
 

@@ -6,6 +6,8 @@ import { map, catchError } from 'rxjs/operators';
 import { Page } from '../models/page.model';
 import { Course } from '../models/course.model';
 import { Student } from '../models/student.model';
+import { EnrolledStudent } from '../models/enrolledstudent.model';
+import { Team, TeamStatus } from '../models/team.model';
 import { Professor } from '../models/professor.model';
 import { VmModel } from '../models/vmmodel.model';
 
@@ -26,7 +28,7 @@ export class CourseService {
     );
   }
   // get course students
-  getStudents(code: string, sortBy: string = null, sortDirection: string = null, pageIndex: number = 0, pageSize: number = 15): Observable<Page<Student>> {
+  getStudents(code: string, sortBy: string = null, sortDirection: string = null, pageIndex: number = 0, pageSize: number = 15): Observable<Page<EnrolledStudent>> {
     let params = new HttpParams().set('page', pageIndex.toString()).set('pageSize', pageSize.toString());
     if(sortBy)
       params = params.set('sortBy', sortBy);
@@ -34,7 +36,10 @@ export class CourseService {
       params = params.set('sortDirection', sortDirection);
 
     return this.http.get<any>(url(`courses/${code}/enrolled`), { params }).pipe(
-      map(x => new Page(x.total, x.page.map(s => new Student(s.id, s.firstName, s.lastName, s.email, s.hasPicture)))),
+      map(x => new Page(x.total, x.page.map(e =>
+        new EnrolledStudent(e.student.id, e.student.firstName, e.student.lastName, e.student.email, e.student.hasPicture,
+          e.team ? new Team(e.team.id, e.team.name, e.team.status as TeamStatus, null, new Date(e.team.invitationExpiration), new Date(e.team.lastAction)) : null)
+      ))),
       catchError(error => of(null))
     );
   }

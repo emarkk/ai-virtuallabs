@@ -32,26 +32,13 @@
       <div class="fl-1">
         <ng-container *ngIf="studentsPreview$ | async as studentsPreview">
           <app-tile [text]="'Students (' + studentsPreview.count + ')'" [textLink]="'/professor/course/' + course.code + '/students'" icon="supervisor_account">
-            
+            <span class="tile-desc">Browse students of the course. Enroll and unenroll students.</span>
           </app-tile>
         </ng-container>
       </div>
       <div class="fl-1">
         <app-tile text="Teams" [textLink]="'/professor/course/' + course.code + '/teams'" icon="account_tree">
-          <table class="info">
-            <tr>
-              <td>Team size constraints</td>
-              <td><i>min&emsp;</i><b>{{ course.minTeamMembers }}</b><span class="sep"></span><i>max&emsp;</i><b>{{ course.maxTeamMembers }}</b></td>
-            </tr>
-            <tr>
-              <td>Teamed students</td>
-              <td><b>???</b></td>
-            </tr>
-            <tr>
-              <td>Unteamed students</td>
-              <td><b>???</b></td>
-            </tr>
-          </table>
+          
         </app-tile>
       </div>
     </div>

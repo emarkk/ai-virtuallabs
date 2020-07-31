@@ -47,6 +47,7 @@ a {
 }
 .flex .tile {
   height: 100%;
+  margin-bottom: 0 !important;
 }
 .flex > div:not(:first-child) {
   margin-left: 25px;
@@ -76,6 +77,16 @@ p.list-empty {
   text-align: center;
   font-style: italic;
   letter-spacing: 1px;
+}
+.tile-desc {
+  font-size: 0.8em;
+  font-style: italic;
+}
+.provisional {
+  opacity: 0.5;
+}
+.provisional::after {
+  content: ' \1F552';
 }
 .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background, .mat-checkbox-checked.mat-accent .mat-checkbox-background {
   background-color: #ff6647;
