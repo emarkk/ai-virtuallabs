@@ -2,12 +2,18 @@
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <h1>{{ course.name }} <span class="bar"></span><span>VMs</span></h1>
-    <div *ngIf="teamsVms">
+    <div *ngIf="teamsVms$ | async as teamsVms">
       <div *ngIf="teamsVms.length" class="mat-elevation-z1">
         <table mat-table [dataSource]="teamsVms">
           <ng-container matColumnDef="team">
             <th mat-header-cell *matHeaderCellDef>Team</th>
-            <td mat-cell [rowSpan]="getRowSpan(i)" [class.hidden]="!display(i)" *matCellDef="let tv; let i = index">{{ tv.team.name }}</td>
+            <td mat-cell
+              [rowSpan]="getRowSpan(i, teamsVms)"
+              [class.hidden]="!display(i, teamsVms)"
+              *matCellDef="let tv; let i = index">
+              {{ tv.team.name }}<br />
+              <span class="edit-limits" [routerLink]="[]" [queryParams]="{ edit: 'vm-limits', team: tv.team.id }">(edit VM limits)</span>
+            </td>
           </ng-container>
           <ng-container matColumnDef="vm">
             <th mat-header-cell *matHeaderCellDef>VM</th>
@@ -28,7 +34,7 @@
           </ng-container>
           <ng-container matColumnDef="_connect">
             <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell class="connectColumn" *matCellDef="let tv">
+            <td mat-cell class="connect-column" *matCellDef="let tv">
               <mat-icon *ngIf="tv.vm.online" class="align connect" [routerLink]="'/professor/course/' + courseCode + '/vm/' + tv.vm.id">ondemand_video</mat-icon>
             </td>
           </ng-container>

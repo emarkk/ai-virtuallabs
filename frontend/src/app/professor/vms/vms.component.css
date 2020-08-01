@@ -4,8 +4,14 @@ table {
 h1 span {
   font-weight: normal;
 }
-.connectColumn {
+.connect-column {
   text-align: center;
+}
+.edit-limits {
+  cursor: pointer;
+  font-size: 0.9em;
+  text-decoration: underline;
+  outline: none;
 }
 .online {
   position: relative;

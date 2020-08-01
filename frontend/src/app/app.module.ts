@@ -31,6 +31,7 @@ import { PageComponent } from './components/page/page.component';
 import { ConfirmDialog } from './components/dialogs/confirm/confirm.component';
 import { VmModelDialog } from './components/dialogs/vm-model/vm-model.component';
 import { VmAddOwnersDialog } from './components/dialogs/vm-add-owners/vm-add-owners.component';
+import { VmLimitsDialog } from './components/dialogs/vm-limits/vm-limits.component';
 import { TileComponent } from './components/tile/tile.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { AsyncButtonComponent } from './components/async-button/async-button.component';
@@ -85,6 +86,7 @@ import { StudentVmComponent } from './student/vm/vm.component';
     ConfirmDialog,
     VmModelDialog,
     VmAddOwnersDialog,
+    VmLimitsDialog,
     TileComponent,
     ToastComponent,
     AsyncButtonComponent,
