@@ -208,10 +208,10 @@ public class VmController {
     @PostMapping("/configurations")
     @ResponseStatus(HttpStatus.CREATED)
     public VmConfigurationLimitsDTO addVmConfigurationLimit(@RequestBody Map<String, String> input) {
-        if(!input.containsKey("teamId") || !input.containsKey("vCpus") || !input.containsKey("diskSpace") || !input.containsKey("ram") || !input.containsKey("maxInstances") || !input.containsKey("maxActiveInstances"))
+        if(!input.containsKey("teamId") || !input.containsKey("maxVCpus") || !input.containsKey("maxDiskSpace") || !input.containsKey("maxRam") || !input.containsKey("maxInstances") || !input.containsKey("maxActiveInstances"))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         try{
-            return vmService.addVmConfigurationLimit(Long.parseLong(input.get("teamId")), Integer.parseInt(input.get("vCpus")), Integer.parseInt(input.get("diskSpace")), Integer.parseInt(input.get("ram")), Integer.parseInt(input.get("maxInstances")), Integer.parseInt(input.get("maxActiveInstances")));
+            return vmService.addVmConfigurationLimit(Long.parseLong(input.get("teamId")), Integer.parseInt(input.get("maxVCpus")), Integer.parseInt(input.get("maxDiskSpace")), Integer.parseInt(input.get("maxRam")), Integer.parseInt(input.get("maxInstances")), Integer.parseInt(input.get("maxActiveInstances")));
         }  catch(NotAllowedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         } catch (NumberFormatException e) {
@@ -240,4 +240,20 @@ public class VmController {
         }
     }
 
+    @PutMapping("/configurations/{id}")
+    public VmConfigurationLimitsDTO updateVmConfigurationLimits(@PathVariable(name = "id") Long vmConfigurationLimitsId, @RequestBody Map<String, Integer> input) {
+        if( !input.containsKey("maxVCpus") || !input.containsKey("maxDiskSpace") || !input.containsKey("maxRam") || !input.containsKey("maxInstances") || !input.containsKey("maxActiveInstances"))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        try{
+            return vmService.updateVmConfigurationLimits(vmConfigurationLimitsId, input.get("maxVCpus"), input.get("maxDiskSpace"), input.get("maxRam"), input.get("maxInstances"), input.get("maxActiveInstances"));
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        } catch (VmConfigurationLimitsNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Configuration limits Not Found");
+        } catch (IllegalVmConfigurationLimitsException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This configuration is not allowed");
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
+        }
+    }
 }

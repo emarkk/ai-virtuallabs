@@ -126,7 +126,7 @@ public class VmServiceImpl implements VmService {
                         .ram(vmPartial.getRam() + vm.getRam())
                         .build());
 
-        if(vmTotalResources.getVCpus() + vCpus > limits.getVCpus() || vmTotalResources.getDiskSpace() + diskSpace > limits.getDiskSpace() || vmTotalResources.getRam() + ram > limits.getRam())
+        if(vmTotalResources.getVCpus() + vCpus > limits.getMaxVCpus() || vmTotalResources.getDiskSpace() + diskSpace > limits.getMaxDiskSpace() || vmTotalResources.getRam() + ram > limits.getMaxRam())
             throw new IllegalVmConfigurationException();
         if(team.getVms().size() + 1 > limits.getMaxInstances())
             throw new VmInstancesLimitNumberException();
@@ -214,7 +214,7 @@ public class VmServiceImpl implements VmService {
                         .ram(vmPartial.getRam() + vmElem.getRam())
                         .build());
 
-        if(vmTotalResources.getVCpus() + vCpus > limits.getVCpus() || vmTotalResources.getDiskSpace() + diskSpace > limits.getDiskSpace() || vmTotalResources.getRam() + ram > limits.getRam())
+        if(vmTotalResources.getVCpus() + vCpus > limits.getMaxVCpus() || vmTotalResources.getDiskSpace() + diskSpace > limits.getMaxDiskSpace() || vmTotalResources.getRam() + ram > limits.getMaxRam())
             throw new IllegalVmConfigurationException();
 
         vm.setVCpus(vCpus);
@@ -280,7 +280,7 @@ public class VmServiceImpl implements VmService {
 
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
-    public VmConfigurationLimitsDTO addVmConfigurationLimit(Long teamId, Integer vCpus, Integer diskSpace, Integer ram, Integer maxInstances, Integer maxActiveInstances) {
+    public VmConfigurationLimitsDTO addVmConfigurationLimit(Long teamId, Integer maxVCpus, Integer maxDiskSpace, Integer maxRam, Integer maxInstances, Integer maxActiveInstances) {
         Team team = getter.team(teamId);
         if(!team.getFormationStatus().equals(Team.FormationStatus.COMPLETE))
             throw new TeamNotActiveException();
@@ -295,13 +295,13 @@ public class VmServiceImpl implements VmService {
                         .diskSpace(vmPartial.getDiskSpace() + vm.getDiskSpace())
                         .ram(vmPartial.getRam() + vm.getRam())
                         .build());
-        if(vCpus < vmTotalResources.getVCpus() || diskSpace < vmTotalResources.getDiskSpace() || ram < vmTotalResources.getRam() || maxInstances < team.getVms().size() || maxActiveInstances < ((int) team.getVms().stream().filter(Vm::getOnline).count()) || maxInstances < maxActiveInstances)
+        if(maxVCpus < vmTotalResources.getVCpus() || maxDiskSpace < vmTotalResources.getDiskSpace() || maxRam < vmTotalResources.getRam() || maxInstances < team.getVms().size() || maxActiveInstances < ((int) team.getVms().stream().filter(Vm::getOnline).count()) || maxInstances < maxActiveInstances)
             throw new IllegalVmConfigurationLimitsException();
 
         VmConfigurationLimits limits = VmConfigurationLimits.builder()
-                .vCpus(vCpus)
-                .diskSpace(diskSpace)
-                .ram(ram)
+                .maxVCpus(maxVCpus)
+                .maxDiskSpace(maxDiskSpace)
+                .maxRam(maxRam)
                 .maxInstances(maxInstances)
                 .maxActiveInstances(maxActiveInstances)
                 .team(team)
@@ -322,6 +322,33 @@ public class VmServiceImpl implements VmService {
         if(authenticatedEntity.getClass().equals(Student.class) && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(vmConfigurationLimits.getTeam()))
             throw new StudentNotInTeamException();
 
+        return modelMapper.map(vmConfigurationLimits, VmConfigurationLimitsDTO.class);
+    }
+
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @Override
+    public VmConfigurationLimitsDTO updateVmConfigurationLimits(Long vmConfigurationLimitsId, Integer maxVCpus, Integer maxDiskSpace, Integer maxRam, Integer maxInstances, Integer maxActiveInstances) {
+        VmConfigurationLimits vmConfigurationLimits = getter.vmConfigurationLimits(vmConfigurationLimitsId);
+
+        if(!((Professor) authenticatedEntityMapper.get()).getCourses().contains(vmConfigurationLimits.getTeam().getCourse()))
+            throw new NotAllowedException();
+
+        Vm vmTotalResources = vmConfigurationLimits.getTeam().getVms().stream()
+                .reduce(Vm.builder().vCpus(0).diskSpace(0).ram(0).online(false).build(), (vmPartial, vm) -> Vm.builder()
+                        .vCpus(vmPartial.getVCpus() + vm.getVCpus())
+                        .diskSpace(vmPartial.getDiskSpace() + vm.getDiskSpace())
+                        .ram(vmPartial.getRam() + vm.getRam())
+                        .build());
+
+        if(maxVCpus < vmTotalResources.getVCpus() || maxDiskSpace < vmTotalResources.getDiskSpace() || maxRam < vmTotalResources.getRam() || maxInstances < vmConfigurationLimits.getTeam().getVms().size() || maxActiveInstances < ((int) vmConfigurationLimits.getTeam().getVms().stream().filter(Vm::getOnline).count()) || maxInstances < maxActiveInstances)
+            throw new IllegalVmConfigurationLimitsException();
+
+        vmConfigurationLimits.setMaxVCpus(maxVCpus);
+        vmConfigurationLimits.setMaxDiskSpace(maxDiskSpace);
+        vmConfigurationLimits.setMaxRam(maxRam);
+        vmConfigurationLimits.setMaxInstances(maxInstances);
+        vmConfigurationLimits.setMaxActiveInstances(maxActiveInstances);
+        vmConfigurationLimitsRepository.save(vmConfigurationLimits);
         return modelMapper.map(vmConfigurationLimits, VmConfigurationLimitsDTO.class);
     }
 }

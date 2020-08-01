@@ -11,11 +11,11 @@ public class VmConfigurationLimitsDTO {
 
     private Long id;
 
-    private Integer vCpus;
+    private Integer maxVCpus;
 
-    private Integer diskSpace;
+    private Integer maxDiskSpace;
 
-    private Integer ram;
+    private Integer maxRam;
 
     private Integer maxInstances;
 
