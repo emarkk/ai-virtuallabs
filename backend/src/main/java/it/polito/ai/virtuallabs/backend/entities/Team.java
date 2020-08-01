@@ -63,4 +63,20 @@ public class Team {
         vmConfigurationLimits.setTeam(this);
     }
 
+    public Boolean isComplete() {
+        return this.formationStatus == FormationStatus.COMPLETE;
+    }
+
+    public Boolean isProvisional() {
+        return this.formationStatus == FormationStatus.PROVISIONAL;
+    }
+
+    public Boolean isAborted() {
+        return this.formationStatus == FormationStatus.ABORTED;
+    }
+
+    public Boolean isExpired() {
+        return this.formationStatus == FormationStatus.EXPIRED;
+    }
+
 }

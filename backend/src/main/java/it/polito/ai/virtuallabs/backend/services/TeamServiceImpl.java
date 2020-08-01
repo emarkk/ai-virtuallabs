@@ -112,7 +112,7 @@ public class TeamServiceImpl implements TeamService {
         if(students.size() < course.getMinTeamMembers() || students.size() > course.getMaxTeamMembers())
             throw new IllegalTeamSizeException();
         if(students.stream().anyMatch(s ->
-                s.getTeams().stream().anyMatch(ts -> ts.getTeam().getFormationStatus() == Team.FormationStatus.COMPLETE)))
+                s.getTeams().stream().anyMatch(ts -> ts.getTeam().isComplete())))
             throw new StudentAlreadyInTeamException();
 
         Team team = Team.builder()
@@ -139,15 +139,14 @@ public class TeamServiceImpl implements TeamService {
         Team team = getter.team(teamId);
         Student authenticated = (Student) authenticatedEntityMapper.get();
 
-        if(!team.getFormationStatus().equals(Team.FormationStatus.PROVISIONAL))
+        if(!team.isProvisional())
             throw new IllegalTeamInvitationReplyException();
 
         if(authenticated.getTeams()
                 .stream()
                 .filter(ts -> ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.ACCEPTED))
                 .map(TeamStudent::getTeam)
-                .anyMatch(t -> t.getFormationStatus().equals(Team.FormationStatus.COMPLETE) ||
-                        t.getFormationStatus().equals(Team.FormationStatus.PROVISIONAL))) {
+                .anyMatch(t -> t.isComplete() || t.isProvisional())) {
             throw new IllegalTeamInvitationReplyException();
         }
 
@@ -176,7 +175,7 @@ public class TeamServiceImpl implements TeamService {
         Team team = getter.team(teamId);
         Student authenticated = (Student) authenticatedEntityMapper.get();
 
-        if(!team.getFormationStatus().equals(Team.FormationStatus.PROVISIONAL))
+        if(!team.isProvisional())
             throw new IllegalTeamInvitationReplyException();
 
         Optional<TeamStudent> optionalTeamStudent = team.getMembers().stream().filter(ts -> ts.getStudent().equals(authenticated)).findFirst();

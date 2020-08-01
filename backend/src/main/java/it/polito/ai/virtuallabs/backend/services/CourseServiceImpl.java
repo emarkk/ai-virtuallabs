@@ -140,10 +140,10 @@ public class CourseServiceImpl implements CourseService {
 
         List<CourseStudentDTO> students = studentPage.stream()
                 .map(s -> {
-                    Optional<Team> team = s.getTeams().stream().map(TeamStudent::getTeam).filter(t -> t.getFormationStatus().equals(Team.FormationStatus.COMPLETE) && t.getCourse().equals(course)).findFirst();
+                    Optional<Team> team = s.getTeams().stream().map(TeamStudent::getTeam).filter(t -> t.isComplete() && t.getCourse().equals(course)).findFirst();
                     if(team.isPresent())
                         return new CourseStudentDTO(modelMapper.map(s, StudentDTO.class), modelMapper.map(team.get(), TeamDTO.class));
-                    Optional<TeamStudent> ts = s.getTeams().stream().filter(t -> (t.getTeam().getFormationStatus() == Team.FormationStatus.COMPLETE || t.getTeam().getFormationStatus() == Team.FormationStatus.PROVISIONAL) && (t.getInvitationStatus().equals(TeamStudent.InvitationStatus.ACCEPTED) || t.getInvitationStatus().equals(TeamStudent.InvitationStatus.CREATOR))).findFirst();
+                    Optional<TeamStudent> ts = s.getTeams().stream().filter(t -> (t.getTeam().isComplete() || t.getTeam().isProvisional()) && (t.getInvitationStatus().equals(TeamStudent.InvitationStatus.ACCEPTED) || t.getInvitationStatus().equals(TeamStudent.InvitationStatus.CREATOR))).findFirst();
                     return ts.map(teamStudent -> new CourseStudentDTO(modelMapper.map(s, StudentDTO.class), modelMapper.map(teamStudent.getTeam(), TeamDTO.class))).orElseGet(() -> new CourseStudentDTO(modelMapper.map(s, StudentDTO.class), null));
                 })
                 .collect(Collectors.toList());

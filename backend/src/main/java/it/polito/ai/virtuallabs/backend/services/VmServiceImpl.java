@@ -104,7 +104,7 @@ public class VmServiceImpl implements VmService {
     public VmDTO addVm(Long teamId, Integer vCpus, Integer diskSpace, Integer ram) {
         Team team = getter.team(teamId);
 
-        if(!team.getFormationStatus().equals(Team.FormationStatus.COMPLETE))
+        if(!team.isComplete())
             throw new TeamNotActiveException();
 
         Student authenticated = (Student) authenticatedEntityMapper.get();
@@ -180,7 +180,7 @@ public class VmServiceImpl implements VmService {
             throw new NotAllowedException();
         if(authenticatedEntity.getClass().equals(Student.class) && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(vm.getTeam()))
             throw new StudentNotInTeamException();
-        if(!vm.getTeam().getFormationStatus().equals(Team.FormationStatus.COMPLETE))
+        if(!vm.getTeam().isComplete())
             throw new TeamNotActiveException();
         return modelMapper.map(vm, VmDTO.class);
     }
@@ -193,7 +193,7 @@ public class VmServiceImpl implements VmService {
             throw new VmOnlineException();
         if(!((Student) authenticatedEntityMapper.get()).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(vm.getTeam()))
             throw new StudentNotInTeamException();
-        if(!vm.getTeam().getFormationStatus().equals(Team.FormationStatus.COMPLETE))
+        if(!vm.getTeam().isComplete())
             throw new TeamNotActiveException();
 
         if(vCpus < 0 || diskSpace < 0 || ram < 0)
@@ -282,7 +282,7 @@ public class VmServiceImpl implements VmService {
     @Override
     public VmConfigurationLimitsDTO addVmConfigurationLimit(Long teamId, Integer maxVCpus, Integer maxDiskSpace, Integer maxRam, Integer maxInstances, Integer maxActiveInstances) {
         Team team = getter.team(teamId);
-        if(!team.getFormationStatus().equals(Team.FormationStatus.COMPLETE))
+        if(!team.isComplete())
             throw new TeamNotActiveException();
         if(!team.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
