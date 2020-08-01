@@ -64,6 +64,7 @@ import { ProfessorCourseDetailComponent } from './professor/course-detail/course
 import { ProfessorStudentsComponent } from './professor/students/students.component';
 import { ProfessorTeamsComponent } from './professor/teams/teams.component';
 import { ProfessorVmsComponent } from './professor/vms/vms.component';
+import { ProfessorVmComponent } from './professor/vm/vm.component';
 import { ProfessorHomeworksComponent } from './professor/homeworks/homeworks.component';
 import { StudentContainerComponent } from './student/container/container.component';
 import { StudentHomeComponent } from './student/home/home.component';
@@ -116,6 +117,7 @@ import { StudentVmComponent } from './student/vm/vm.component';
     ProfessorStudentsComponent,
     ProfessorTeamsComponent,
     ProfessorVmsComponent,
+    ProfessorVmComponent,
     ProfessorHomeworksComponent,
     StudentContainerComponent,
     StudentHomeComponent,

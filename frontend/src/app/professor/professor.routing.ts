@@ -10,6 +10,7 @@ import { ProfessorCourseDetailComponent } from './course-detail/course-detail.co
 import { ProfessorStudentsComponent } from './students/students.component';
 import { ProfessorTeamsComponent } from './teams/teams.component';
 import { ProfessorVmsComponent } from './vms/vms.component';
+import { ProfessorVmComponent } from './vm/vm.component';
 import { ProfessorHomeworksComponent } from './homeworks/homeworks.component';
 
 export const professorRouting = [
@@ -55,6 +56,10 @@ export const professorRouting = [
       {
         path: 'course/:code/vms',
         component: ProfessorVmsComponent,
+      },
+      {
+        path: 'course/:code/vm/:id',
+        component: ProfessorVmComponent,
       },
       {
         path: 'course/:code/homeworks',
