@@ -7,6 +7,7 @@ import { VmModel } from '../models/vmmodel.model';
 import { Vm } from '../models/vm.model';
 
 import { url, httpOptions } from '../utils';
+import { Student } from '../models/student.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +43,7 @@ export class VmService {
   // get vm
   get(id: number): Observable<Vm> {
     return this.http.get<any>(url(`vms/${id}`)).pipe(
-      map(x => new Vm(x.id, x.vcpus, x.diskSpace, x.ram, x.online, x.owners)),
+      map(x => new Vm(x.id, x.vcpus, x.diskSpace, x.ram, x.online, x.owners, new Student(x.creator.id, x.creator.firstName, x.creator.lastName, x.creator.email, x.creator.hasPicture))),
       catchError(error => of(null))
     );
   }

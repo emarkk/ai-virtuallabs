@@ -67,7 +67,7 @@ export class StudentService {
         this.http.get<any[]>(url(`teams/${team.id}/members/status`)))
       ),
       // reconstruct Team object with members Map
-      map(([team, members]: [Team, any]) => {
+      map(([team, members]: [Team, any[]]) => {
         team.members = [];
         for(let member of members) {
           const { id, firstName, lastName, email, hasPicture } = member.student;

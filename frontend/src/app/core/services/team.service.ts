@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+import { Student } from '../models/student.model';
 import { Vm } from '../models/vm.model';
 
 import { url, httpOptions } from '../utils';
@@ -39,7 +40,7 @@ export class TeamService {
   // get vms of team
   getVms(teamId: number): Observable<Vm[]> {
     return this.http.get<any[]>(url(`teams/${teamId}/vms`)).pipe(
-      map(arr => arr.map(x => new Vm(x.id, x.vcpus, x.diskSpace, x.ram, x.online, x.owners))),
+      map(arr => arr.map(x => new Vm(x.id, x.vcpus, x.diskSpace, x.ram, x.online, x.owners, new Student(x.creator.id, x.creator.firstName, x.creator.lastName, x.creator.email, x.creator.hasPicture)))),
       catchError(error => of(null))
     );
   }

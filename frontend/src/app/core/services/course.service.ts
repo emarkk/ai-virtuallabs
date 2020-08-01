@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Observable, of, forkJoin } from 'rxjs';
+import { map, catchError, concatMap, flatMap, reduce, filter } from 'rxjs/operators';
 
 import { Page } from '../models/page.model';
 import { Course } from '../models/course.model';
@@ -10,6 +10,7 @@ import { EnrolledStudent } from '../models/enrolledstudent.model';
 import { Team, TeamStatus } from '../models/team.model';
 import { Professor } from '../models/professor.model';
 import { VmModel } from '../models/vmmodel.model';
+import { Vm } from '../models/vm.model';
 
 import { url, httpOptions } from '../utils';
 
@@ -62,6 +63,25 @@ export class CourseService {
     return this.http.get<any>(url(`courses/${code}/vm/model`)).pipe(
       map(x => x ? new VmModel(x.id, x.name, null) : new VmModel(null, null, null)),
       catchError(error => of(null))
+    );
+  }
+  // get course teams with relative vms
+  getTeamsAndVms(code: string): Observable<{ team: Team, vm: Vm }[]> {
+    return this.getTeams(code).pipe(
+      concatMap(teams => teams),
+      filter((team: Team) => team.status == TeamStatus.COMPLETE),
+      flatMap((team: Team) => forkJoin(
+        of(team),
+        this.http.get<any[]>(url(`teams/${team.id}/vms`)))
+      ),
+      map(([team, vms]: [Team, any[]]) => {
+        let teamsVms = { team, vms: [] };
+        for(let vm of vms)
+          teamsVms.vms.push(new Vm(vm.id, vm.vcpus, vm.diskSpace, vm.ram, vm.online, vm.owners, new Student(vm.creator.id, vm.creator.firstName, vm.creator.lastName, vm.creator.email, vm.creator.hasPicture)));
+        return teamsVms;
+      }),
+      flatMap((teamVms: { team: Team, vms: Vm[] }) => of(teamVms.vms.map(vm => ({ team: teamVms.team, vm })))),
+      reduce((a, t) => a.concat(t), [])
     );
   }
   // create new course

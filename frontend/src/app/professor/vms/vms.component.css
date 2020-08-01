@@ -1,3 +1,21 @@
+table {
+  width: 100%;
+}
 h1 span {
   font-weight: normal;
+}
+.connectColumn {
+  text-align: center;
+}
+.online {
+  position: relative;
+  top: 5px;
+  font-size: 0.85em;
+  margin-left: 2px;
+  color: #33c322;
+}
+.connect {
+  cursor: pointer;
+  color: #ff6647;
+  outline: none;
 }
