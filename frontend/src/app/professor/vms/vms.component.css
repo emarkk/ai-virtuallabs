@@ -4,6 +4,9 @@ table {
 h1 span {
   font-weight: normal;
 }
+.team-name {
+  padding: 10px 0;
+}
 .connect-column {
   text-align: center;
 }
@@ -24,4 +27,7 @@ h1 span {
   cursor: pointer;
   color: #ff6647;
   outline: none;
+}
+.no-padding {
+  padding: 0 !important;
 }

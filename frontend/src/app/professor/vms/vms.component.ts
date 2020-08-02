@@ -45,6 +45,7 @@ export class ProfessorVmsComponent implements OnInit {
     });
 
     combineLatest(this.route.queryParams, this.teamsVms$).subscribe(([queryParams, teamsVms]) => {
+      console.log(teamsVms);
       if(teamsVms && queryParams.edit == 'vm-limits') {
         const team = teamsVms.find(tv => tv.team.id == queryParams.team).team;
         if(!team)

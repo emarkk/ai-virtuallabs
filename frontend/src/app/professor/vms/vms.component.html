@@ -7,7 +7,7 @@
         <table mat-table [dataSource]="teamsVms">
           <ng-container matColumnDef="team">
             <th mat-header-cell *matHeaderCellDef>Team</th>
-            <td mat-cell
+            <td mat-cell class="team-name"
               [rowSpan]="getRowSpan(i, teamsVms)"
               [class.hidden]="!display(i, teamsVms)"
               *matCellDef="let tv; let i = index">
@@ -17,32 +17,48 @@
           </ng-container>
           <ng-container matColumnDef="vm">
             <th mat-header-cell *matHeaderCellDef>VM</th>
-            <td mat-cell *matCellDef="let tv">VM-{{ tv.vm.id | zeroPad }}</td>
+            <td mat-cell [colSpan]="tv.vm ? 1 : 4" *matCellDef="let tv">
+              <div *ngIf="tv.vm">
+                VM-{{ tv.vm.id | zeroPad }}
+              </div>
+              <div *ngIf="!tv.vm">
+                <p class="list-empty">This team has not created any VMs yet.</p>
+              </div>
+            </td>
           </ng-container>
           <ng-container matColumnDef="creator">
             <th mat-header-cell *matHeaderCellDef>Created by</th>
             <td mat-cell *matCellDef="let tv">
-              <app-user-tag [firstName]="tv.vm.creator.firstName" [lastName]="tv.vm.creator.lastName.toUpperCase()" [picture]="tv.vm.creator.picturePath"></app-user-tag>
+              <div *ngIf="tv.vm">
+                <app-user-tag [firstName]="tv.vm.creator.firstName" [lastName]="tv.vm.creator.lastName.toUpperCase()" [picture]="tv.vm.creator.picturePath"></app-user-tag>
+              </div>
             </td>
           </ng-container>
           <ng-container matColumnDef="online">
             <th mat-header-cell *matHeaderCellDef>Online</th>
             <td mat-cell *matCellDef="let tv">
-              {{ tv.vm.online ? 'Yes' : 'No' }}
-              <mat-icon *ngIf="tv.vm.online" class="align online">fiber_manual_record</mat-icon>
+              <div *ngIf="tv.vm">
+                {{ tv.vm.online ? 'Yes' : 'No' }}
+                <mat-icon *ngIf="tv.vm.online" class="align online">fiber_manual_record</mat-icon>
+              </div>
             </td>
           </ng-container>
           <ng-container matColumnDef="_connect">
             <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell class="connect-column" *matCellDef="let tv">
-              <mat-icon *ngIf="tv.vm.online" class="align connect" [routerLink]="'/professor/course/' + courseCode + '/vm/' + tv.vm.id">ondemand_video</mat-icon>
+            <td mat-cell class="connect-column" [class.no-padding]="!tv.vm" *matCellDef="let tv">
+              <div *ngIf="tv.vm">
+                <mat-icon *ngIf="tv.vm.online" class="align connect" [routerLink]="'/professor/course/' + courseCode + '/vm/' + tv.vm.id">ondemand_video</mat-icon>
+              </div>
             </td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
           <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
         </table>
       </div>
-      <p *ngIf="!teamsVms.length" class="list-empty">No complete teams exist for this course.</p>
+      <div *ngIf="!teamsVms.length">
+        <br />
+        <p class="list-empty">No complete teams exist for this course.</p>
+      </div>
     </div>
   </app-page>
 </div>

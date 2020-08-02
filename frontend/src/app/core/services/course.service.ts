@@ -80,7 +80,7 @@ export class CourseService {
           teamsVms.vms.push(new Vm(vm.id, vm.vcpus, vm.diskSpace, vm.ram, vm.online, vm.owners, new Student(vm.creator.id, vm.creator.firstName, vm.creator.lastName, vm.creator.email, vm.creator.hasPicture)));
         return teamsVms;
       }),
-      flatMap((teamVms: { team: Team, vms: Vm[] }) => of(teamVms.vms.map(vm => ({ team: teamVms.team, vm })))),
+      flatMap((teamVms: { team: Team, vms: Vm[] }) => of(teamVms.vms.length ? teamVms.vms.map(vm => ({ team: teamVms.team, vm })) : { team: teamVms.team, vm: null })),
       reduce((a, t) => a.concat(t), [])
     );
   }

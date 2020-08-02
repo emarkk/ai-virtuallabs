@@ -82,10 +82,10 @@ p.list-empty {
   font-size: 0.8em;
   font-style: italic;
 }
-.provisional {
+.team-provisional {
   opacity: 0.5;
 }
-.provisional::after {
+.team-provisional::after {
   content: ' \1F552';
 }
 .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background, .mat-checkbox-checked.mat-accent .mat-checkbox-background {
