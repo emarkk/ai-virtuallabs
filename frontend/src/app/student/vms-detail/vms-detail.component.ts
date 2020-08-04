@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, BehaviorSubject, combineLatest, of, merge } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, of, merge, forkJoin } from 'rxjs';
 import { switchMap, scan } from 'rxjs/operators';
 
 import { Vm } from 'src/app/core/models/vm.model';
@@ -9,6 +9,7 @@ import { Team } from 'src/app/core/models/team.model';
 import { TeamVmsResources } from 'src/app/core/models/team-vms-resources.model';
 
 import { VmSignal, VmSignalUpdateType } from 'src/app/core/models/signals/vm.signal';
+import { TeamVmsResourcesSignal, TeamVmsResourcesSignalUpdateType } from 'src/app/core/models/signals/team-vms-resources.signal';
 
 import { TeamService } from 'src/app/core/services/team.service';
 import { VmService } from 'src/app/core/services/vm.service';
@@ -31,7 +32,8 @@ export class StudentVmsDetailComponent implements OnInit {
   vmsRefreshToken = new BehaviorSubject(undefined);
   vmsResourcesLimits$: Observable<TeamVmsResources>;
 
-  updatesSignal: SignalObservable<VmSignal>;
+  vmUpdatesSignal: SignalObservable<VmSignal>;
+  vmsResourcesLimitsUpdatesSignal: SignalObservable<TeamVmsResourcesSignal>;
 
   vmAddOwnersDialogRef: MatDialogRef<VmAddOwnersDialog> = null;
   
@@ -42,8 +44,12 @@ export class StudentVmsDetailComponent implements OnInit {
     this.joinedTeam = value;
 
     if(this.joinedTeam) {
-      this.signalService.teamVmsUpdates(this.joinedTeam.id).subscribe(signal => {
-        this.updatesSignal = signal;
+      forkJoin(
+        this.signalService.teamVmsUpdates(this.joinedTeam.id),
+        this.signalService.teamVmsLimitsUpdates(this.joinedTeam.id)
+      ).subscribe(([vmSignal, vmsLimitsSignal]) => {
+        this.vmUpdatesSignal = vmSignal;
+        this.vmsResourcesLimitsUpdatesSignal = vmsLimitsSignal;
         this.vmsRefreshToken.next(undefined);
       });
     }
@@ -57,7 +63,7 @@ export class StudentVmsDetailComponent implements OnInit {
     this.vms$ = this.vmsRefreshToken.pipe(
       switchMap(() => merge(
         this.joinedTeam ? this.teamService.getVms(this.joinedTeam.id) : of(null),
-        this.updatesSignal ? this.updatesSignal.data() : of(null)
+        this.vmUpdatesSignal ? this.vmUpdatesSignal.data() : of(null)
       )),
       scan((vms: Vm[], update: Vm[] | VmSignal | null) => {
         if(update == null)
@@ -76,7 +82,20 @@ export class StudentVmsDetailComponent implements OnInit {
     );
     
     this.vmsResourcesLimits$ = this.vmsRefreshToken.pipe(
-      switchMap(() => this.joinedTeam ? this.teamService.getVmsResourceLimits(this.joinedTeam.id) : of(null))
+      switchMap(() => merge(
+        this.joinedTeam ? this.teamService.getVmsResourceLimits(this.joinedTeam.id) : of(null),
+        this.vmsResourcesLimitsUpdatesSignal ? this.vmsResourcesLimitsUpdatesSignal.data() : of(null)
+      )),
+      scan((limits: TeamVmsResources, update: TeamVmsResources | TeamVmsResourcesSignal | null) => {
+        if(update == null)
+          return limits;
+        if(!(update instanceof TeamVmsResourcesSignal))
+          return update;
+
+        if(update.updateType == TeamVmsResourcesSignalUpdateType.TOTAL)
+          limits = update.vmsResources;
+        return limits;
+      }, null)
     );
 
     combineLatest(this.route.queryParams, this.vms$).subscribe(([queryParams, vms]) => {
@@ -105,7 +124,8 @@ export class StudentVmsDetailComponent implements OnInit {
     });
   }
   ngOnDestroy(): void {
-    this.updatesSignal.unsubscribe();
+    this.vmUpdatesSignal.unsubscribe();
+    this.vmsResourcesLimitsUpdatesSignal.unsubscribe();
   }
 
   changeVmState(data: { vmId: number, online: boolean }) {

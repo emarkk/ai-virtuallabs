@@ -1,10 +1,22 @@
-.headers {
+.headers, .footers {
   display: flex;
   text-transform: uppercase;
   font-size: 0.7em;
   font-weight: bold;
   letter-spacing: 1px;
   padding: 0 20px;
+}
+.footers {
+  color: rgba(0, 0, 0, 0.5);
+  margin-top: 30px;
+  font-size: 0.8em;
+}
+.footers .num {
+  color: #3f51b5;
+  font-size: 1.1em;
+}
+.footer.danger .num {
+  color: #da3125;
 }
 .h-id {
   flex: 3;
@@ -14,4 +26,7 @@
 }
 .h-actions {
   flex: 2.4;
+}
+.footer.h-actions {
+  text-align: center;
 }

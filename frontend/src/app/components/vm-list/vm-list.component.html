@@ -11,6 +11,24 @@
     <div *ngFor="let vm of vmList" class="vm">
       <app-vm-item [data]="vm" (toggleOnline)="vmStateChanged(vm.id, !vm.online)" (connect)="vmConnected(vm.id)" (edit)="vmEdited(vm.id)" (addOwners)="vmAddedOwners(vm.id)" (delete)="vmDeleted(vm.id)"></app-vm-item>
     </div>
+    <div class="footers" *ngIf="getResourcesUsage() as resourcesUsage">
+      <span class="footer h-id" [class.danger]="resourcesUsage.instances.available == 0">
+        <span class="num">{{ resourcesUsage.instances.available }}</span> /{{ resourcesUsage.instances.total }}
+      </span>
+      <span class="footer h-vcpu" [class.danger]="resourcesUsage.vCpus.available == 0">
+        <span class="num">{{ resourcesUsage.vCpus.available }}</span> /{{ resourcesUsage.vCpus.total }}
+      </span>
+      <span class="footer h-disk" [class.danger]="resourcesUsage.diskSpace.available == 0">
+          <span class="num">{{ resourcesUsage.diskSpace.available }}</span> /{{ resourcesUsage.diskSpace.total }}
+      </span>
+      <span class="footer h-ram" [class.danger]="resourcesUsage.ram.available == 0">
+          <span class="num">{{ resourcesUsage.ram.available }}</span> /{{ resourcesUsage.ram.total }}
+      </span>
+      <span class="footer h-online" [class.danger]="resourcesUsage.activeInstances.available == 0">
+          <span class="num">{{ resourcesUsage.activeInstances.available }}</span> /{{ resourcesUsage.activeInstances.total }}
+      </span>
+      <span class="footer h-actions">resources available</span>
+    </div>
   </div>
   <p *ngIf="vmList && !vmList.length" class="list-empty">No VMs to show.</p>
 </div>
