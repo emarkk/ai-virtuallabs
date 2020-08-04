@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { Observable, combineLatest } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { Observable, combineLatest, merge } from 'rxjs';
+import { scan } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Vm } from 'src/app/core/models/vm.model';
@@ -29,7 +29,8 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
   teamsVms$: Observable<{ team: Team, vm: Vm }[]>;
   columnsToDisplay: string[] = ['team', 'vm', 'creator', 'online', '_connect'];
 
-  updatesSignal: SignalObservable<VmSignal>;
+  vmUpdatesSignal: SignalObservable<VmSignal>;
+  teamVmsLimitsSignal: SignalObservable<any>;
   
   vmLimitsDialogRef: MatDialogRef<VmLimitsDialog> = null;
 
@@ -43,7 +44,7 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
     this.init();
   }
   ngOnDestroy(): void {
-    this.updatesSignal.unsubscribe();
+    this.vmUpdatesSignal.unsubscribe();
   }
   init(): void {
     this.course$ = this.courseService.get(this.courseCode);
@@ -52,8 +53,23 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
     });
     
     this.signalService.courseVmsUpdates(this.courseCode).subscribe(signal => {
-      this.updatesSignal = signal;
-      this.teamsVms$ = this.courseService.getTeamsAndVms(this.courseCode);
+      this.vmUpdatesSignal = signal;
+      this.teamsVms$ = merge(this.courseService.getTeamsAndVms(this.courseCode), this.vmUpdatesSignal.data()).pipe(
+        scan((teamsVms, update) => {
+          if(!(update instanceof VmSignal))
+            return update;
+
+          if(update.updateType == VmSignalUpdateType.CREATED) {
+            teamsVms = teamsVms.some(tv => tv.team.id == update.teamId && tv.vm == null)
+              ? teamsVms.map(tv => tv.team.id == update.teamId && tv.vm == null ? { team: tv.team, vm: update.vm } : tv)
+              : teamsVms.concat({ team: teamsVms.find(tv => tv.team.id == update.teamId).team, vm: update.vm }).sort((a, b) => a.team.id - b.team.id || a.vm.id - b.vm.id);
+          } else if(update.updateType == VmSignalUpdateType.UPDATED)
+            teamsVms = teamsVms.map(tv => tv.vm.id == update.vm.id ? { team: tv.team, vm: update.vm } : tv);
+          else if(update.updateType == VmSignalUpdateType.DELETED)
+            teamsVms = teamsVms.filter(tv => tv.vm.id != update.vm.id);
+          return teamsVms;
+        }, [])
+      );
     });
 
     combineLatest(this.route.queryParams, this.teamsVms$).subscribe(([queryParams, teamsVms]) => {
@@ -62,13 +78,18 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
         if(!team)
           this.router.navigate([]);
 
-        this.vmLimitsDialogRef = this.dialog.open(VmLimitsDialog, {
-          data: {
-            teamName: team.name
-          }
+        this.signalService.teamVmsLimitsUpdates(team.id).subscribe(signal => {
+          this.teamVmsLimitsSignal = signal;
+          this.vmLimitsDialogRef = this.dialog.open(VmLimitsDialog, {
+            data: {
+              teamName: team.name
+            }
+          });
         });
+
         this.vmLimitsDialogRef.afterClosed().subscribe(res => {
           this.router.navigate([]);
+          this.teamVmsLimitsSignal.unsubscribe();
         });
       } else if(this.vmLimitsDialogRef)
         this.vmLimitsDialogRef.close();
