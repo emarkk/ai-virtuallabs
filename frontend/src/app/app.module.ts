@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { SignalService } from './core/services/signal.service';
 import { ZeroPadPipe } from './core/pipes/core.pipes';
 import { TeamCreatorPipe, TeamGuestsPipe } from './core/pipes/team.pipes';
 
@@ -163,6 +164,7 @@ import { StudentVmComponent } from './student/vm/vm.component';
     MatChipsModule
   ],
   providers: [
+    SignalService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

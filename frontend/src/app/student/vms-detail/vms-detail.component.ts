@@ -2,14 +2,17 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, startWith, map } from 'rxjs/operators';
 
 import { Vm } from 'src/app/core/models/vm.model';
 import { Team } from 'src/app/core/models/team.model';
 
+import { VmSignal, VmSignalUpdateType } from 'src/app/core/models/signals/vm.signal';
+
 import { TeamService } from 'src/app/core/services/team.service';
 import { VmService } from 'src/app/core/services/vm.service';
 import { ToastService } from 'src/app/core/services/toast.service';
+import { SignalService, SignalObservable } from 'src/app/core/services/signal.service';
 
 import { ConfirmDialog } from 'src/app/components/dialogs/confirm/confirm.component';
 import { VmAddOwnersDialog } from 'src/app/components/dialogs/vm-add-owners/vm-add-owners.component';
@@ -25,6 +28,9 @@ export class StudentVmsDetailComponent implements OnInit {
 
   vms$: Observable<Vm[]>;
   vmsRefreshToken = new BehaviorSubject(undefined);
+
+  updatesSignal: SignalObservable<VmSignal>;
+
   vmAddOwnersDialogRef: MatDialogRef<VmAddOwnersDialog> = null;
   
   @Input() set course(value: string) {
@@ -32,11 +38,17 @@ export class StudentVmsDetailComponent implements OnInit {
   }
   @Input() set team(value: Team) {
     this.joinedTeam = value;
-    this.vmsRefreshToken.next(undefined);
+
+    if(this.joinedTeam) {
+      this.signalService.teamVmsUpdates(this.joinedTeam.id).subscribe(signal => {
+        this.updatesSignal = signal;
+        this.vmsRefreshToken.next(undefined);
+      });
+    }
   }
   
   constructor(private router: Router, private route: ActivatedRoute, private teamService: TeamService,
-      private vmService: VmService, private dialog: MatDialog, private toastService: ToastService) {
+      private vmService: VmService, private signalService: SignalService, private dialog: MatDialog, private toastService: ToastService) {
   }
 
   ngOnInit(): void {
@@ -69,6 +81,9 @@ export class StudentVmsDetailComponent implements OnInit {
       } else if(this.vmAddOwnersDialogRef)
         this.vmAddOwnersDialogRef.close();
     });
+  }
+  ngOnDestroy(): void {
+    this.updatesSignal.unsubscribe();
   }
 
   changeVmState(data: { vmId: number, online: boolean }) {

@@ -3,6 +3,8 @@ import { HttpClient, HttpRequest } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+import { SignalService } from './signal.service';
+
 import { url, httpOptions } from '../utils';
 
 const ONE_HOUR = 60*60*1000;
@@ -12,14 +14,23 @@ const ONE_HOUR = 60*60*1000;
 })
 export class AuthService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private signalService: SignalService) {
   }
 
   // check if user is logged in
   isLogged() {
     const { token, expiration } = this.getToken();
     // token must exist and must not be expired
-    return !!token && Date.now() < expiration;
+    const logged = !!token && Date.now() < expiration;
+
+    if(logged)
+      // connect websocket if needed
+      this.signalService.initWebsocket(token);
+    else
+      // disconnect websocket
+      this.signalService.releaseWebsocket();
+    
+    return logged;
   }
   // get user id
   getId() {
@@ -49,6 +60,8 @@ export class AuthService {
   }
   logout(): void {
     this.deleteToken();
+    // disconnect websocket
+    this.signalService.releaseWebsocket();
   }
   authorizeRequest(request: HttpRequest<any>): HttpRequest<any> {
     // if not logged in, simply return original request

@@ -1,5 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 
+export const serverUrl = 'http://localhost:3000/';
 export const url = path => `http://localhost:3000/api/${path}`;
 
 export const httpOptions = {
