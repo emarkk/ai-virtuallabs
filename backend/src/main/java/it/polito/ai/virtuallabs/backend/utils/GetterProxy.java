@@ -28,7 +28,7 @@ public class GetterProxy {
     private VmRepository vmRepository;
 
     @Autowired
-    private VmConfigurationLimitsRepository vmConfigurationLimitsRepository;
+    private TeamVmsResourcesLimitsRepository teamVmsResourcesLimitsRepository;
 
     public Course course(String courseCode) {
         Optional<Course> courseOptional = courseRepository.findById(courseCode);
@@ -84,13 +84,13 @@ public class GetterProxy {
         return vmOptional.get();
     }
 
-    public VmConfigurationLimits vmConfigurationLimits(Long vmConfigurationLimitsId) {
+    /*public VmConfigurationLimits vmConfigurationLimits(Long vmConfigurationLimitsId) {
         Optional<VmConfigurationLimits> vmConfigurationLimitsOptional = vmConfigurationLimitsRepository.findById(vmConfigurationLimitsId);
 
         if(vmConfigurationLimitsOptional.isEmpty())
             throw new VmConfigurationLimitsNotFoundException();
 
         return vmConfigurationLimitsOptional.get();
-    }
+    }*/
 
 }

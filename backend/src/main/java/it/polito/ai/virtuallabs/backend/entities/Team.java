@@ -50,17 +50,20 @@ public class Team {
     private List<Vm> vms = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "vmConfLimit_id", referencedColumnName = "id")
-    private VmConfigurationLimits vmConfigurationLimits;
+    @JoinColumn(name = "team_vms_resources_limits_id", referencedColumnName = "id")
+    private TeamVmsResourcesLimits vmsResourcesLimits;
 
-    public void setCourse(Course c) {
-        this.course = c;
-        c.getTeams().add(this);
+    public TeamVmsResources getVmsResourcesUsed() {
+        return this.getVms().stream()
+                .reduce(new TeamVmsResources(0, 0, 0, 0, 0),
+                        (resources, vm) -> resources.add(TeamVmsResources.fromVm(vm)), TeamVmsResources::add);
     }
 
-    public void setVmConfigurationLimits(VmConfigurationLimits vmConfigurationLimits) {
-        this.vmConfigurationLimits = vmConfigurationLimits;
-        vmConfigurationLimits.setTeam(this);
+    public TeamVmsResources getVmsResourcesLimits() {
+        if(this.vmsResourcesLimits != null)
+            return this.vmsResourcesLimits;
+
+        return TeamVmsResourcesLimits.DEFAULT_VMS_RESOURCES_LIMITS;
     }
 
     public Boolean isComplete() {
@@ -73,6 +76,16 @@ public class Team {
 
     public Boolean isActive() {
         return this.isComplete() || this.isProvisional();
+    }
+
+    public void setCourse(Course c) {
+        this.course = c;
+        c.getTeams().add(this);
+    }
+
+    public void setVmsResourcesLimits(TeamVmsResourcesLimits vmsResourcesLimits) {
+        this.vmsResourcesLimits = vmsResourcesLimits;
+        vmsResourcesLimits.setTeam(this);
     }
 
 }

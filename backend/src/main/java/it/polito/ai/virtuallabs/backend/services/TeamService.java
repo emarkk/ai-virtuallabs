@@ -13,10 +13,11 @@ public interface TeamService {
     List<StudentDTO> getMembers(Long teamId);
     List<TeamMemberStatusDTO> getMembersStatus(Long teamId);
     List<VmDTO> getVms(Long teamId);
+    TeamVmsResourcesDTO getTeamVmsResourceLimits(Long teamId);
     TeamDTO proposeTeam(TeamProposalDTO teamProposalDTO);
     void acceptTeam(Long teamId);
     void declineTeam(Long teamId);
-    VmConfigurationLimitsDTO getVmConfigurationLimits(Long teamId);
+    void setTeamVmsResourceLimits(Long teamId, TeamVmsResourcesDTO limits);
     Boolean studentHasSignalPermission(Long teamId, Long studentId);
     Boolean professorHasSignalPermission(Long teamId, Long professorId);
 }

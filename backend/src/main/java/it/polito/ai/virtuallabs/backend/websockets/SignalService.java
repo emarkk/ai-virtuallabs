@@ -1,11 +1,11 @@
 package it.polito.ai.virtuallabs.backend.websockets;
 
-import it.polito.ai.virtuallabs.backend.dtos.VmConfigurationLimitsDTO;
+import it.polito.ai.virtuallabs.backend.dtos.TeamVmsResourcesDTO;
 import it.polito.ai.virtuallabs.backend.dtos.VmDTO;
+import it.polito.ai.virtuallabs.backend.entities.Team;
 import it.polito.ai.virtuallabs.backend.entities.Vm;
-import it.polito.ai.virtuallabs.backend.entities.VmConfigurationLimits;
+import it.polito.ai.virtuallabs.backend.websockets.signals.TeamVmsResourcesSignal;
 import it.polito.ai.virtuallabs.backend.websockets.signals.VmSignal;
-import it.polito.ai.virtuallabs.backend.websockets.signals.VmsResourcesSignal;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -32,23 +32,23 @@ public class SignalService {
         this.signalVmStateChanged(vm, VmSignal.UpdateType.DELETED);
     }
 
-    //Per team che crea vm
-    public void vmsConfigurationLimitsChanged(VmConfigurationLimits limits) { this.signalVmsResourcesUsageChanged(limits, VmsResourcesSignal.UpdateType.TOTAL); }
-
-    //Per docente che deve creare i limits
-    public void vmsResourcesUsageChanged(VmConfigurationLimits limits) { this.signalVmsResourcesUsageChanged(limits, VmsResourcesSignal.UpdateType.USED); }
-
+    public void teamVmsResourcesLimitsChanged(Team team) {
+        TeamVmsResourcesSignal vmsResourcesSignal = new TeamVmsResourcesSignal(
+                modelMapper.map(team.getVmsResourcesUsed(), TeamVmsResourcesDTO.class),
+                TeamVmsResourcesSignal.UpdateType.TOTAL);
+        messagingTemplate.convertAndSend("/team/" + team.getId() + "vms-resources", vmsResourcesSignal);
+    }
 
     private void signalVmStateChanged(Vm vm, VmSignal.UpdateType updateType) {
         VmSignal vmSignal = new VmSignal(modelMapper.map(vm, VmDTO.class), vm.getTeam().getId(), updateType);
         messagingTemplate.convertAndSend("/vm/" + vm.getId(), vmSignal);
         messagingTemplate.convertAndSend("/team/" + vm.getTeam().getId() + "/vms", vmSignal);
         messagingTemplate.convertAndSend("/course/" + vm.getTeam().getCourse().getCode() + "/vms", vmSignal);
-    }
 
-    private void signalVmsResourcesUsageChanged(VmConfigurationLimits limits, VmsResourcesSignal.UpdateType updateType) {
-        VmsResourcesSignal vmsResourcesSignal = new VmsResourcesSignal(modelMapper.map(limits, VmConfigurationLimitsDTO.class), updateType);
-        messagingTemplate.convertAndSend("/team/" + limits.getTeam().getId() + "/vm-limits", vmsResourcesSignal);
+        TeamVmsResourcesSignal vmsResourcesSignal = new TeamVmsResourcesSignal(
+                modelMapper.map(vm.getTeam().getVmsResourcesUsed(), TeamVmsResourcesDTO.class),
+                TeamVmsResourcesSignal.UpdateType.USED);
+        messagingTemplate.convertAndSend("/team/" + vm.getTeam().getId() + "vms-resources", vmsResourcesSignal);
     }
 
 }

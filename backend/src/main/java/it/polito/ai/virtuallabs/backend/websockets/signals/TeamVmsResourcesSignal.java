@@ -1,19 +1,19 @@
 package it.polito.ai.virtuallabs.backend.websockets.signals;
 
-import it.polito.ai.virtuallabs.backend.dtos.VmConfigurationLimitsDTO;
+import it.polito.ai.virtuallabs.backend.dtos.TeamVmsResourcesDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class VmsResourcesSignal {
+public class TeamVmsResourcesSignal {
 
     public enum UpdateType {
         USED,
         TOTAL
     }
 
-    private VmConfigurationLimitsDTO configurationLimitsDTO;
+    private TeamVmsResourcesDTO teamVmsResources;
 
     private UpdateType updateType;
 

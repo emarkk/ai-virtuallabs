@@ -4,7 +4,7 @@ import it.polito.ai.virtuallabs.backend.dtos.*;
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.TeamStudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.TeamRepository;
-import it.polito.ai.virtuallabs.backend.repositories.VmConfigurationLimitsRepository;
+import it.polito.ai.virtuallabs.backend.repositories.TeamVmsResourcesLimitsRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import org.modelmapper.ModelMapper;
@@ -31,7 +31,7 @@ public class TeamServiceImpl implements TeamService {
     private TeamStudentRepository teamStudentRepository;
 
     @Autowired
-    private VmConfigurationLimitsRepository vmConfigurationLimitsRepository;
+    private TeamVmsResourcesLimitsRepository teamVmsResourcesLimitsRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -73,16 +73,18 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public VmConfigurationLimitsDTO getVmConfigurationLimits(Long teamId) {
+    public TeamVmsResourcesDTO getTeamVmsResourceLimits(Long teamId) {
         Team team = getter.team(teamId);
         AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
+
         if(authenticatedEntity.getClass().equals(Professor.class) && !((Professor) authenticatedEntity).getCourses().contains(team.getCourse()))
             throw new NotAllowedException();
         if(authenticatedEntity.getClass().equals(Student.class) && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(team))
-            throw new StudentNotInTeamException();
-        if(team.getVmConfigurationLimits() == null)
-            throw new VmConfigurationLimitsNotFoundException();
-        return modelMapper.map(team.getVmConfigurationLimits(), VmConfigurationLimitsDTO.class);
+            throw new NotAllowedException();
+
+        return team.getVmsResourcesLimits() == TeamVmsResourcesLimits.DEFAULT_VMS_RESOURCES_LIMITS
+                ? null
+                : modelMapper.map(team.getVmsResourcesLimits(), TeamVmsResourcesDTO.class);
     }
 
     @Override
@@ -193,6 +195,11 @@ public class TeamServiceImpl implements TeamService {
         team.setFormationStatus(Team.FormationStatus.ABORTED);
         team.setLastAction(new Timestamp(System.currentTimeMillis()));
         teamRepository.save(team);
+    }
+
+    @Override
+    public void setTeamVmsResourceLimits(Long teamId, TeamVmsResourcesDTO limits) {
+        // TODO
     }
 
     @Override
