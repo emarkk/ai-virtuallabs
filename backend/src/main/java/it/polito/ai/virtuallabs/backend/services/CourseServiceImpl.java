@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -143,7 +142,7 @@ public class CourseServiceImpl implements CourseService {
                     Optional<Team> team = s.getTeams().stream().map(TeamStudent::getTeam).filter(t -> t.isComplete() && t.getCourse().equals(course)).findFirst();
                     if(team.isPresent())
                         return new CourseStudentDTO(modelMapper.map(s, StudentDTO.class), modelMapper.map(team.get(), TeamDTO.class));
-                    Optional<TeamStudent> ts = s.getTeams().stream().filter(t -> (t.getTeam().isComplete() || t.getTeam().isProvisional()) && (t.getInvitationStatus().equals(TeamStudent.InvitationStatus.ACCEPTED) || t.getInvitationStatus().equals(TeamStudent.InvitationStatus.CREATOR))).findFirst();
+                    Optional<TeamStudent> ts = s.getTeams().stream().filter(t -> (t.getTeam().isActive()) && (t.getInvitationStatus().equals(TeamStudent.InvitationStatus.ACCEPTED) || t.getInvitationStatus().equals(TeamStudent.InvitationStatus.CREATOR))).findFirst();
                     return ts.map(teamStudent -> new CourseStudentDTO(modelMapper.map(s, StudentDTO.class), modelMapper.map(teamStudent.getTeam(), TeamDTO.class))).orElseGet(() -> new CourseStudentDTO(modelMapper.map(s, StudentDTO.class), null));
                 })
                 .collect(Collectors.toList());

@@ -146,7 +146,7 @@ public class TeamServiceImpl implements TeamService {
                 .stream()
                 .filter(ts -> ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.ACCEPTED))
                 .map(TeamStudent::getTeam)
-                .anyMatch(t -> t.isComplete() || t.isProvisional())) {
+                .anyMatch(t -> t.isActive())) {
             throw new IllegalTeamInvitationReplyException();
         }
 

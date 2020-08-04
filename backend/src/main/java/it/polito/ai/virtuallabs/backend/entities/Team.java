@@ -71,12 +71,8 @@ public class Team {
         return this.formationStatus == FormationStatus.PROVISIONAL;
     }
 
-    public Boolean isAborted() {
-        return this.formationStatus == FormationStatus.ABORTED;
-    }
-
-    public Boolean isExpired() {
-        return this.formationStatus == FormationStatus.EXPIRED;
+    public Boolean isActive() {
+        return this.isComplete() || this.isProvisional();
     }
 
 }
