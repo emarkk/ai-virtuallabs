@@ -195,6 +195,22 @@ public class TeamServiceImpl implements TeamService {
         teamRepository.save(team);
     }
 
+    @Override
+    public Boolean studentHasSignalPermission(Long teamId, Long studentId) {
+        Team team = getter.team(teamId);
+        Student student = getter.student(studentId);
+
+        return team.getMembers().stream().anyMatch(ts -> ts.getStudent() == student);
+    }
+
+    @Override
+    public Boolean professorHasSignalPermission(Long teamId, Long professorId) {
+        Team team = getter.team(teamId);
+        Professor professor = getter.professor(professorId);
+
+        return team.getCourse().getProfessors().contains(professor);
+    }
+
     @Scheduled(initialDelay = 2000, fixedRate = 1000 * 60 * 60 * 24)
     public void scheduledExpiredUserClean() {
         long nowMilliseconds = System.currentTimeMillis();
@@ -221,5 +237,6 @@ public class TeamServiceImpl implements TeamService {
         teams = teamRepository.findAllByFormationStatusIsAndLastActionIsBefore(
                 Team.FormationStatus.ABORTED, oneWeekAgo);
         teams.forEach(t -> teamStudentRepository.deleteAll(t.getMembers()));
-        teamRepository.deleteAll(teams);    }
+        teamRepository.deleteAll(teams);
+    }
 }

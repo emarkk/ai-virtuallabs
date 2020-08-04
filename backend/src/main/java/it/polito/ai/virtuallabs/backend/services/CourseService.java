@@ -24,4 +24,5 @@ public interface CourseService {
     void disableCourse(String courseCode);
     List<HomeworkDTO> getHomeworksData(String courseCode);
     void unenrollAllStudents(String courseCode);
+    Boolean professorHasSignalPermission(String courseCode, Long professorId);
 }

@@ -6,15 +6,16 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class VmState {
+public class VmSignal {
 
-    public enum Status {
+    public enum UpdateType {
+        CREATED,
         UPDATED,
         DELETED
     }
 
     private VmDTO vm;
 
-    private Status status;
+    private UpdateType updateType;
 
 }

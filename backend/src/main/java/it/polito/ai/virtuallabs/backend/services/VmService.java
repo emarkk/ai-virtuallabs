@@ -21,4 +21,6 @@ public interface VmService {
     VmConfigurationLimitsDTO addVmConfigurationLimit(Long teamId, Integer maxVCpus, Integer maxDiskSpace, Integer maxRam, Integer maxInstances, Integer maxActiveInstances);
     VmConfigurationLimitsDTO getVmConfigurationLimits(Long vmConfigurationLimitsId);
     VmConfigurationLimitsDTO updateVmConfigurationLimits(Long vmConfigurationLimitsId, Integer maxVCpus, Integer maxDiskSpace, Integer maxRam, Integer maxInstances, Integer maxActiveInstances);
+    Boolean studentHasSignalPermission(Long vmId, Long studentId);
+    Boolean professorHasSignalPermission(Long vmId, Long professorId);
 }

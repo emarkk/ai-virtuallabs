@@ -8,6 +8,7 @@ import it.polito.ai.virtuallabs.backend.repositories.*;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import it.polito.ai.virtuallabs.backend.utils.VmConnectionUtility;
+import it.polito.ai.virtuallabs.backend.websockets.SignalService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,9 +36,6 @@ public class VmServiceImpl implements VmService {
     private CourseRepository courseRepository;
 
     @Autowired
-    private StudentRepository studentRepository;
-
-    @Autowired
     private TeamRepository teamRepository;
 
     @Autowired
@@ -48,6 +46,9 @@ public class VmServiceImpl implements VmService {
 
     @Autowired
     private GetterProxy getter;
+
+    @Autowired
+    private SignalService signalService;
 
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
@@ -141,6 +142,9 @@ public class VmServiceImpl implements VmService {
         vm.addOwner(authenticated);
         vm.setCreator(authenticated);
         vmRepository.save(vm);
+
+        signalService.vmCreated(vm);
+
         return modelMapper.map(vm, VmDTO.class);
     }
 
@@ -148,6 +152,7 @@ public class VmServiceImpl implements VmService {
     @Override
     public List<Boolean> addVmOwners(Long vmId, List<Long> studentIds) {
         Vm vm = getter.vm(vmId);
+
         if(vm.getOnline())
             throw new VmOnlineException();
         HashSet hashSet = new HashSet(studentIds);
@@ -155,6 +160,7 @@ public class VmServiceImpl implements VmService {
             throw new DuplicateParticipantException();
         if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
             throw new IllegalVmOwnerException();
+
         List<Boolean> result = studentIds
                 .stream()
                 .map(id -> {
@@ -168,6 +174,9 @@ public class VmServiceImpl implements VmService {
                 })
                 .collect(Collectors.toList());
         vmRepository.save(vm);
+
+        signalService.vmUpdated(vm);
+
         return result;
     }
 
@@ -221,6 +230,9 @@ public class VmServiceImpl implements VmService {
         vm.setDiskSpace(diskSpace);
         vm.setRam(ram);
         vmRepository.save(vm);
+
+        signalService.vmUpdated(vm);
+
         return modelMapper.map(vm, VmDTO.class);
     }
 
@@ -228,37 +240,52 @@ public class VmServiceImpl implements VmService {
     @Override
     public void deleteVm(Long vmId) {
         Vm vm = getter.vm(vmId);
+
         if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
             throw new IllegalVmOwnerException();
+
         if(vm.getOnline())
             throw new VmOnlineException();
+
         vm.removeAllOwners();
         vmRepository.delete(vm);
+
+        signalService.vmDeleted(vm);
     }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
     public void turnOnVm(Long vmId) {
         Vm vm = getter.vm(vmId);
+
         if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
             throw new IllegalVmOwnerException();
+
         VmConfigurationLimits limits = vm.getTeam().getVmConfigurationLimits();
         if(limits == null)
             limits = VmConfigurationLimits.defaultVmLimits;
+
         if(((int) vm.getTeam().getVms().stream().filter(Vm::getOnline).count()) + 1 > limits.getMaxActiveInstances())
             throw new VmActiveInstancesLimitNumberException();
+
         vm.setOnline(true);
         vmRepository.save(vm);
+
+        signalService.vmUpdated(vm);
     }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
     public void turnOffVm(Long vmId) {
         Vm vm = getter.vm(vmId);
+
         if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
             throw new IllegalVmOwnerException();
+
         vm.setOnline(false);
         vmRepository.save(vm);
+
+        signalService.vmUpdated(vm);
     }
 
     @Override
@@ -350,6 +377,22 @@ public class VmServiceImpl implements VmService {
         vmConfigurationLimits.setMaxActiveInstances(maxActiveInstances);
         vmConfigurationLimitsRepository.save(vmConfigurationLimits);
         return modelMapper.map(vmConfigurationLimits, VmConfigurationLimitsDTO.class);
+    }
+
+    @Override
+    public Boolean studentHasSignalPermission(Long vmId, Long studentId) {
+        Vm vm = getter.vm(vmId);
+        Student student = getter.student(studentId);
+
+        return vm.getTeam().getMembers().stream().anyMatch(ts -> ts.getStudent() == student);
+    }
+
+    @Override
+    public Boolean professorHasSignalPermission(Long vmId, Long professorId) {
+        Vm vm = getter.vm(vmId);
+        Professor professor = getter.professor(professorId);
+
+        return vm.getTeam().getCourse().getProfessors().contains(professor);
     }
 }
 

@@ -17,4 +17,6 @@ public interface TeamService {
     void acceptTeam(Long teamId);
     void declineTeam(Long teamId);
     VmConfigurationLimitsDTO getVmConfigurationLimits(Long teamId);
+    Boolean studentHasSignalPermission(Long teamId, Long studentId);
+    Boolean professorHasSignalPermission(Long teamId, Long professorId);
 }

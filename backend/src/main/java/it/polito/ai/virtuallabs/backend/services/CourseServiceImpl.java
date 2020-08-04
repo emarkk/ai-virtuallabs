@@ -296,4 +296,12 @@ public class CourseServiceImpl implements CourseService {
         course.removeAllStudents();
     }
 
+    @Override
+    public Boolean professorHasSignalPermission(String courseCode, Long professorId) {
+        Course course = getter.course(courseCode);
+        Professor professor = getter.professor(professorId);
+
+        return course.getProfessors().contains(professor);
+    }
+
 }
