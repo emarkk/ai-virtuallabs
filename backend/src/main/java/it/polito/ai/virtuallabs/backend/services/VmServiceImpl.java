@@ -149,8 +149,8 @@ public class VmServiceImpl implements VmService {
                 .maxRam(vmTotalResources.getRam() + ram)
                 .maxDiskSpace(vmTotalResources.getDiskSpace() + diskSpace)
                 .team(team)
-                .maxInstances(team.getVms().size() + 1)
-                .maxActiveInstances(((int) team.getVms().stream().filter(Vm::getOnline).count()) + 1)
+                .maxInstances(team.getVms().size())
+                .maxActiveInstances(((int) team.getVms().stream().filter(Vm::getOnline).count()))
                 .build());
         return modelMapper.map(vm, VmDTO.class);
     }
@@ -244,8 +244,8 @@ public class VmServiceImpl implements VmService {
                 .maxRam(vmTotalResources.getRam() + ram)
                 .maxDiskSpace(vmTotalResources.getDiskSpace() + diskSpace)
                 .team(vm.getTeam())
-                .maxInstances(vm.getTeam().getVms().size() + 1)
-                .maxActiveInstances(((int) vm.getTeam().getVms().stream().filter(Vm::getOnline).count()) + 1)
+                .maxInstances(vm.getTeam().getVms().size())
+                .maxActiveInstances(((int) vm.getTeam().getVms().stream().filter(Vm::getOnline).count()))
                 .build());
         return modelMapper.map(vm, VmDTO.class);
     }
@@ -261,6 +261,7 @@ public class VmServiceImpl implements VmService {
         if(vm.getOnline())
             throw new VmOnlineException();
 
+        //Risorse totali senza la vm da eliminare
         Vm vmTotalResources = vm.getTeam().getVms().stream()
                 .filter(e -> !e.equals(vm))
                 .reduce(Vm.builder().vCpus(0).diskSpace(0).ram(0).online(false).build(), (vmPartial, vmElem) -> Vm.builder()
@@ -273,10 +274,12 @@ public class VmServiceImpl implements VmService {
         vmRepository.delete(vm);
 
         signalService.vmDeleted(vm);
+
+
         signalService.vmsResourcesUsageChanged(VmConfigurationLimits.builder()
-                .maxVCpus(vmTotalResources.getVCpus() - vm.getVCpus())
-                .maxRam(vmTotalResources.getRam() - vm.getRam())
-                .maxDiskSpace(vmTotalResources.getDiskSpace() - vm.getDiskSpace())
+                .maxVCpus(vmTotalResources.getVCpus())
+                .maxRam(vmTotalResources.getRam())
+                .maxDiskSpace(vmTotalResources.getDiskSpace())
                 .team(vm.getTeam())
                 .maxInstances(vm.getTeam().getVms().size())
                 .maxActiveInstances(((int) vm.getTeam().getVms().stream().filter(Vm::getOnline).count()))
@@ -298,18 +301,17 @@ public class VmServiceImpl implements VmService {
         if(((int) vm.getTeam().getVms().stream().filter(Vm::getOnline).count()) + 1 > limits.getMaxActiveInstances())
             throw new VmActiveInstancesLimitNumberException();
 
+        vm.setOnline(true);
+        vmRepository.save(vm);
+
+        signalService.vmUpdated(vm);
+
         Vm vmTotalResources = vm.getTeam().getVms().stream()
-                .filter(e -> !e.equals(vm))
                 .reduce(Vm.builder().vCpus(0).diskSpace(0).ram(0).online(false).build(), (vmPartial, vmElem) -> Vm.builder()
                         .vCpus(vmPartial.getVCpus() + vmElem.getVCpus())
                         .diskSpace(vmPartial.getDiskSpace() + vmElem.getDiskSpace())
                         .ram(vmPartial.getRam() + vmElem.getRam())
                         .build());
-
-        vm.setOnline(true);
-        vmRepository.save(vm);
-
-        signalService.vmUpdated(vm);
         signalService.vmsResourcesUsageChanged(VmConfigurationLimits.builder()
                 .maxVCpus(vmTotalResources.getVCpus())
                 .maxRam(vmTotalResources.getRam())
@@ -328,19 +330,18 @@ public class VmServiceImpl implements VmService {
         if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
             throw new IllegalVmOwnerException();
 
-        Vm vmTotalResources = vm.getTeam().getVms().stream()
-                .filter(e -> !e.equals(vm))
-                .reduce(Vm.builder().vCpus(0).diskSpace(0).ram(0).online(false).build(), (vmPartial, vmElem) -> Vm.builder()
-                        .vCpus(vmPartial.getVCpus() + vmElem.getVCpus())
-                        .diskSpace(vmPartial.getDiskSpace() + vmElem.getDiskSpace())
-                        .ram(vmPartial.getRam() + vmElem.getRam())
-                        .build());
-
 
         vm.setOnline(false);
         vmRepository.save(vm);
 
         signalService.vmUpdated(vm);
+
+        Vm vmTotalResources = vm.getTeam().getVms().stream()
+                .reduce(Vm.builder().vCpus(0).diskSpace(0).ram(0).online(false).build(), (vmPartial, vmElem) -> Vm.builder()
+                        .vCpus(vmPartial.getVCpus() + vmElem.getVCpus())
+                        .diskSpace(vmPartial.getDiskSpace() + vmElem.getDiskSpace())
+                        .ram(vmPartial.getRam() + vmElem.getRam())
+                        .build());
         signalService.vmsResourcesUsageChanged(VmConfigurationLimits.builder()
                 .maxVCpus(vmTotalResources.getVCpus())
                 .maxRam(vmTotalResources.getRam())
