@@ -1,7 +1,7 @@
 import { Observable, BehaviorSubject } from 'rxjs';
 import { CollectionViewer } from '@angular/cdk/collections';
 
-import { EnrolledStudent } from '../models/enrolledstudent.model';
+import { EnrolledStudent } from '../models/enrolled-student.model';
 
 import { CourseService } from '../services/course.service';
 

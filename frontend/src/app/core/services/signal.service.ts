@@ -3,6 +3,7 @@ import { BehaviorSubject, Subject, Observable, of } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
 
 import { VmSignal } from '../models/signals/vm.signal';
+import { TeamVmsResourcesSignal } from '../models/signals/team-vms-resources.signal';
 
 import { serverUrl } from '../utils';
 
@@ -72,8 +73,8 @@ export class SignalService {
   teamVmsUpdates(teamId: number): Observable<SignalObservable<VmSignal>> {
     return this._signal(`/team/${teamId}/vms`, msg => VmSignal.fromMsg(msg));
   }
-  teamVmsLimitsUpdates(teamId: number): Observable<SignalObservable<any>> {
-    return this._signal(`/team/${teamId}/vm-limits`, msg => null);
+  teamVmsLimitsUpdates(teamId: number): Observable<SignalObservable<TeamVmsResourcesSignal>> {
+    return this._signal(`/team/${teamId}/vms-resources`, msg => TeamVmsResourcesSignal.fromMsg(msg));
   }
   courseVmsUpdates(courseCode: string): Observable<SignalObservable<VmSignal>> {
     return this._signal(`/course/${courseCode}/vms`, msg => VmSignal.fromMsg(msg));

@@ -3,9 +3,11 @@
 </div>
 <div *ngIf="joinedTeam">
   <div *ngIf="vms$ | async as vms">
-    <app-vm-list [vms]="vms" (vmOnline)="changeVmState($event)" (vmConnect)="connectToVm($event)" (vmEdit)="editVm($event)" (vmAddOwners)="addVmOwners($event)" (vmDelete)="deleteVm($event)"></app-vm-list>
-    <div class="controls">
-      <button mat-flat-button color="primary" [routerLink]="'/student/course/' + courseCode + '/vms/new'">New VM</button>
+    <div *ngIf="vmsResourcesLimits$ | async as vmsResourcesLimits">
+      <app-vm-list [vms]="vms" [limits]="vmsResourcesLimits" (vmOnline)="changeVmState($event)" (vmConnect)="connectToVm($event)" (vmEdit)="editVm($event)" (vmAddOwners)="addVmOwners($event)" (vmDelete)="deleteVm($event)"></app-vm-list>
+      <div class="controls">
+        <button mat-flat-button color="primary" [routerLink]="'/student/course/' + courseCode + '/vms/new'">New VM</button>
+      </div>
     </div>
   </div>
 </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Vm } from 'src/app/core/models/vm.model';
+import { TeamVmsResources } from 'src/app/core/models/team-vms-resources.model';
 
 @Component({
   selector: 'app-vm-list',
@@ -9,9 +10,14 @@ import { Vm } from 'src/app/core/models/vm.model';
 })
 export class VmListComponent implements OnInit {
   vmList: Vm[] = null;
+  vmsLimits: TeamVmsResources = null;
 
   @Input() set vms(data: Vm[]) {
     this.vmList = data;
+  }
+
+  @Input() set limits(data: TeamVmsResources) {
+    this.vmsLimits = data;
   }
 
   @Output() vmOnline = new EventEmitter<{ vmId: number, online: boolean }>();

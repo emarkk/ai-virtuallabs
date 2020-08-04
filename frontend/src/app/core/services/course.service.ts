@@ -6,7 +6,7 @@ import { map, catchError, concatMap, flatMap, reduce, filter } from 'rxjs/operat
 import { Page } from '../models/page.model';
 import { Course } from '../models/course.model';
 import { Student } from '../models/student.model';
-import { EnrolledStudent } from '../models/enrolledstudent.model';
+import { EnrolledStudent } from '../models/enrolled-student.model';
 import { Team, TeamStatus } from '../models/team.model';
 import { Professor } from '../models/professor.model';
 import { VmModel } from '../models/vmmodel.model';

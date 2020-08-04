@@ -6,6 +6,7 @@ import { switchMap, scan } from 'rxjs/operators';
 
 import { Vm } from 'src/app/core/models/vm.model';
 import { Team } from 'src/app/core/models/team.model';
+import { TeamVmsResources } from 'src/app/core/models/team-vms-resources.model';
 
 import { VmSignal, VmSignalUpdateType } from 'src/app/core/models/signals/vm.signal';
 
@@ -28,6 +29,7 @@ export class StudentVmsDetailComponent implements OnInit {
 
   vms$: Observable<Vm[]>;
   vmsRefreshToken = new BehaviorSubject(undefined);
+  vmsResourcesLimits$: Observable<TeamVmsResources>;
 
   updatesSignal: SignalObservable<VmSignal>;
 
@@ -72,6 +74,10 @@ export class StudentVmsDetailComponent implements OnInit {
         return vms;
       }, [])
     );
+    
+    this.vmsResourcesLimits$ = this.vmsRefreshToken.pipe(
+      switchMap(() => this.joinedTeam ? this.teamService.getVmsResourceLimits(this.joinedTeam.id) : of(null))
+    );
 
     combineLatest(this.route.queryParams, this.vms$).subscribe(([queryParams, vms]) => {
       if(vms && queryParams.edit == 'vm-owners') {
@@ -87,10 +93,9 @@ export class StudentVmsDetailComponent implements OnInit {
           }
         });
         this.vmAddOwnersDialogRef.afterClosed().subscribe(res => {
-          if(res) {
-            this.vmsRefreshToken.next(undefined);
+          if(res)
             this.toastService.show({ type: 'success', text: 'VM owners updated successfully.' });
-          } else if(res === false)
+          else if(res === false)
             this.toastService.show({ type: 'danger', text: 'An error occurred.' });
             
           this.router.navigate([]);
