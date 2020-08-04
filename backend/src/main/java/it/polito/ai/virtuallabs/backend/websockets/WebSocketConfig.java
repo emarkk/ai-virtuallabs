@@ -93,7 +93,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             return user instanceof Student && teamService.studentHasSignalPermission(teamId, ((Student) user).getId());
         }
         if(destination.matches("/team/\\d+/vms-resources")) {
-            Long teamId = Long.parseLong(destination.replaceFirst("/team/(\\d+)/vm-limits", "$1"));
+            Long teamId = Long.parseLong(destination.replaceFirst("/team/(\\d+)/vms-resources", "$1"));
             return (user instanceof Student && teamService.studentHasSignalPermission(teamId, ((Student) user).getId()))
                     || (user instanceof Professor && teamService.professorHasSignalPermission(teamId, ((Professor) user).getId()));
         }
