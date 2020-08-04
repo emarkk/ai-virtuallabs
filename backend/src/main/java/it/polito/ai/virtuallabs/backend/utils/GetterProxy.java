@@ -92,4 +92,5 @@ public class GetterProxy {
 
         return vmConfigurationLimitsOptional.get();
     }
+
 }

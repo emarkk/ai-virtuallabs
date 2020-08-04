@@ -144,7 +144,14 @@ public class VmServiceImpl implements VmService {
         vmRepository.save(vm);
 
         signalService.vmCreated(vm);
-
+        signalService.vmsResourcesUsageChanged(VmConfigurationLimits.builder()
+                .maxVCpus(vmTotalResources.getVCpus() + vCpus)
+                .maxRam(vmTotalResources.getRam() + ram)
+                .maxDiskSpace(vmTotalResources.getDiskSpace() + diskSpace)
+                .team(team)
+                .maxInstances(team.getVms().size() + 1)
+                .maxActiveInstances(((int) team.getVms().stream().filter(Vm::getOnline).count()) + 1)
+                .build());
         return modelMapper.map(vm, VmDTO.class);
     }
 
@@ -232,7 +239,14 @@ public class VmServiceImpl implements VmService {
         vmRepository.save(vm);
 
         signalService.vmUpdated(vm);
-
+        signalService.vmsResourcesUsageChanged(VmConfigurationLimits.builder()
+                .maxVCpus(vmTotalResources.getVCpus() + vCpus)
+                .maxRam(vmTotalResources.getRam() + ram)
+                .maxDiskSpace(vmTotalResources.getDiskSpace() + diskSpace)
+                .team(vm.getTeam())
+                .maxInstances(vm.getTeam().getVms().size() + 1)
+                .maxActiveInstances(((int) vm.getTeam().getVms().stream().filter(Vm::getOnline).count()) + 1)
+                .build());
         return modelMapper.map(vm, VmDTO.class);
     }
 
@@ -247,10 +261,26 @@ public class VmServiceImpl implements VmService {
         if(vm.getOnline())
             throw new VmOnlineException();
 
+        Vm vmTotalResources = vm.getTeam().getVms().stream()
+                .filter(e -> !e.equals(vm))
+                .reduce(Vm.builder().vCpus(0).diskSpace(0).ram(0).online(false).build(), (vmPartial, vmElem) -> Vm.builder()
+                        .vCpus(vmPartial.getVCpus() + vmElem.getVCpus())
+                        .diskSpace(vmPartial.getDiskSpace() + vmElem.getDiskSpace())
+                        .ram(vmPartial.getRam() + vmElem.getRam())
+                        .build());
+
         vm.removeAllOwners();
         vmRepository.delete(vm);
 
         signalService.vmDeleted(vm);
+        signalService.vmsResourcesUsageChanged(VmConfigurationLimits.builder()
+                .maxVCpus(vmTotalResources.getVCpus() - vm.getVCpus())
+                .maxRam(vmTotalResources.getRam() - vm.getRam())
+                .maxDiskSpace(vmTotalResources.getDiskSpace() - vm.getDiskSpace())
+                .team(vm.getTeam())
+                .maxInstances(vm.getTeam().getVms().size())
+                .maxActiveInstances(((int) vm.getTeam().getVms().stream().filter(Vm::getOnline).count()))
+                .build());
     }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
@@ -268,10 +298,26 @@ public class VmServiceImpl implements VmService {
         if(((int) vm.getTeam().getVms().stream().filter(Vm::getOnline).count()) + 1 > limits.getMaxActiveInstances())
             throw new VmActiveInstancesLimitNumberException();
 
+        Vm vmTotalResources = vm.getTeam().getVms().stream()
+                .filter(e -> !e.equals(vm))
+                .reduce(Vm.builder().vCpus(0).diskSpace(0).ram(0).online(false).build(), (vmPartial, vmElem) -> Vm.builder()
+                        .vCpus(vmPartial.getVCpus() + vmElem.getVCpus())
+                        .diskSpace(vmPartial.getDiskSpace() + vmElem.getDiskSpace())
+                        .ram(vmPartial.getRam() + vmElem.getRam())
+                        .build());
+
         vm.setOnline(true);
         vmRepository.save(vm);
 
         signalService.vmUpdated(vm);
+        signalService.vmsResourcesUsageChanged(VmConfigurationLimits.builder()
+                .maxVCpus(vmTotalResources.getVCpus())
+                .maxRam(vmTotalResources.getRam())
+                .maxDiskSpace(vmTotalResources.getDiskSpace())
+                .team(vm.getTeam())
+                .maxInstances(vm.getTeam().getVms().size())
+                .maxActiveInstances(((int) vm.getTeam().getVms().stream().filter(Vm::getOnline).count()))
+                .build());
     }
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
@@ -282,10 +328,27 @@ public class VmServiceImpl implements VmService {
         if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
             throw new IllegalVmOwnerException();
 
+        Vm vmTotalResources = vm.getTeam().getVms().stream()
+                .filter(e -> !e.equals(vm))
+                .reduce(Vm.builder().vCpus(0).diskSpace(0).ram(0).online(false).build(), (vmPartial, vmElem) -> Vm.builder()
+                        .vCpus(vmPartial.getVCpus() + vmElem.getVCpus())
+                        .diskSpace(vmPartial.getDiskSpace() + vmElem.getDiskSpace())
+                        .ram(vmPartial.getRam() + vmElem.getRam())
+                        .build());
+
+
         vm.setOnline(false);
         vmRepository.save(vm);
 
         signalService.vmUpdated(vm);
+        signalService.vmsResourcesUsageChanged(VmConfigurationLimits.builder()
+                .maxVCpus(vmTotalResources.getVCpus())
+                .maxRam(vmTotalResources.getRam())
+                .maxDiskSpace(vmTotalResources.getDiskSpace())
+                .team(vm.getTeam())
+                .maxInstances(vm.getTeam().getVms().size())
+                .maxActiveInstances(((int) vm.getTeam().getVms().stream().filter(Vm::getOnline).count()))
+                .build());
     }
 
     @Override
@@ -336,6 +399,8 @@ public class VmServiceImpl implements VmService {
         vmConfigurationLimitsRepository.save(limits);
         team.setVmConfigurationLimits(limits);
         teamRepository.save(team);
+
+        signalService.vmsConfigurationLimitsChanged(limits);
         return modelMapper.map(limits, VmConfigurationLimitsDTO.class);
     }
 
@@ -376,6 +441,8 @@ public class VmServiceImpl implements VmService {
         vmConfigurationLimits.setMaxInstances(maxInstances);
         vmConfigurationLimits.setMaxActiveInstances(maxActiveInstances);
         vmConfigurationLimitsRepository.save(vmConfigurationLimits);
+
+        signalService.vmsConfigurationLimitsChanged(vmConfigurationLimits);
         return modelMapper.map(vmConfigurationLimits, VmConfigurationLimitsDTO.class);
     }
 
