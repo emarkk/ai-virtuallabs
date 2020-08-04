@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class VmsResourcesSignal {
+
     public enum UpdateType {
         USED,
         TOTAL
@@ -14,6 +15,6 @@ public class VmsResourcesSignal {
 
     private VmConfigurationLimitsDTO configurationLimitsDTO;
 
-    private VmsResourcesSignal.UpdateType updateType;
+    private UpdateType updateType;
 
 }

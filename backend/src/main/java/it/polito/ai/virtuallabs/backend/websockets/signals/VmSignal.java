@@ -16,6 +16,8 @@ public class VmSignal {
 
     private VmDTO vm;
 
+    private Long teamId;
+
     private UpdateType updateType;
 
 }

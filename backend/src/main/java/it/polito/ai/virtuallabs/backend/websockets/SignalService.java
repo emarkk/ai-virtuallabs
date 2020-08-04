@@ -40,7 +40,7 @@ public class SignalService {
 
 
     private void signalVmStateChanged(Vm vm, VmSignal.UpdateType updateType) {
-        VmSignal vmSignal = new VmSignal(modelMapper.map(vm, VmDTO.class), updateType);
+        VmSignal vmSignal = new VmSignal(modelMapper.map(vm, VmDTO.class), vm.getTeam().getId(), updateType);
         messagingTemplate.convertAndSend("/vm/" + vm.getId(), vmSignal);
         messagingTemplate.convertAndSend("/team/" + vm.getTeam().getId() + "/vms", vmSignal);
         messagingTemplate.convertAndSend("/course/" + vm.getTeam().getCourse().getCode() + "/vms", vmSignal);
