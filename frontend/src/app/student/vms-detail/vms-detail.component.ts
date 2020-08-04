@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
-import { switchMap, startWith, map } from 'rxjs/operators';
+import { Observable, BehaviorSubject, combineLatest, of, merge } from 'rxjs';
+import { switchMap, scan } from 'rxjs/operators';
 
 import { Vm } from 'src/app/core/models/vm.model';
 import { Team } from 'src/app/core/models/team.model';
@@ -53,7 +53,24 @@ export class StudentVmsDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.vms$ = this.vmsRefreshToken.pipe(
-      switchMap(() => this.joinedTeam ? this.teamService.getVms(this.joinedTeam.id) : of(null))
+      switchMap(() => merge(
+        this.joinedTeam ? this.teamService.getVms(this.joinedTeam.id) : of(null),
+        this.updatesSignal ? this.updatesSignal.data() : of(null)
+      )),
+      scan((vms: Vm[], update: Vm[] | VmSignal | null) => {
+        if(update == null)
+          return vms;
+        if(!(update instanceof VmSignal))
+          return update;
+          
+        if(update.updateType == VmSignalUpdateType.CREATED)
+          vms = vms.concat(update.vm);
+        else if(update.updateType == VmSignalUpdateType.UPDATED)
+          vms = vms.map(vm => vm.id == update.vm.id ? update.vm : vm);
+        else if(update.updateType == VmSignalUpdateType.DELETED)
+          vms = vms.filter(vm => vm.id != update.vm.id);
+        return vms;
+      }, [])
     );
 
     combineLatest(this.route.queryParams, this.vms$).subscribe(([queryParams, vms]) => {
