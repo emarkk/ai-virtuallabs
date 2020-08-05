@@ -205,6 +205,7 @@ public class VmServiceImpl implements VmService {
         if(vm.getOnline())
             throw new VmOnlineException();
 
+        vm.getTeam().getVms().remove(vm);
         vm.removeAllOwners();
         vmRepository.delete(vm);
         signalService.vmDeleted(vm);
