@@ -34,7 +34,7 @@ public class Homework {
         c.getHomeworks().add(this);
     }
 
-    private void delCourse() {
+    private void removeCourse() {
         course.getHomeworks().remove(this);
         course = null;
     }

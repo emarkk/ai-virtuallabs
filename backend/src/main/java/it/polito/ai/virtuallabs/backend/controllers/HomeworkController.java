@@ -35,12 +35,11 @@ public class HomeworkController {
             homeworkService.storeHomework(file, courseCode, Long.parseLong((String)input.get("homeworkDue")));
         } catch (CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course Not Found");
-        }catch (HomeworkDueDateException e) {
+        } catch (HomeworkDueDateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Due Date is not correct");
-        }catch (NotAllowedException e) {
+        } catch (NotAllowedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
         }
 

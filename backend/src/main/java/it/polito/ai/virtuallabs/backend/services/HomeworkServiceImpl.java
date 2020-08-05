@@ -7,6 +7,7 @@ import it.polito.ai.virtuallabs.backend.entities.Professor;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.HomeworkRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
+import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -31,18 +32,16 @@ public class HomeworkServiceImpl implements HomeworkService {
     CourseRepository courseRepository;
 
     @Autowired
+    GetterProxy getter;
+
+    @Autowired
     AuthenticatedEntityMapper authenticatedEntityMapper;
 
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
     public void storeHomework(MultipartFile file, String courseCode, long dueDate) {
-        Optional<Course> courseOptional = courseRepository.findById(courseCode);
-
-        if(courseOptional.isEmpty()) {
-            throw new CourseNotFoundException();
-        }
-        Course c = courseOptional.get();
-        if(!c.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+        Course course = getter.course(courseCode);
+        if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
         try{
             long now = System.currentTimeMillis();
@@ -60,9 +59,9 @@ public class HomeworkServiceImpl implements HomeworkService {
                     .due(due)
                     .descriptionFilePath("/" + courseCode + "/" + filename)
                     .build();
-            c.addHomework(homework);
+            course.addHomework(homework);
             homeworkRepository.save(homework);
-            courseRepository.save(c);
+            courseRepository.save(course);
         } catch (IOException e) {
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
