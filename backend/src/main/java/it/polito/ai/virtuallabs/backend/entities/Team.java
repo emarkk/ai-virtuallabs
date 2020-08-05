@@ -59,7 +59,7 @@ public class Team {
                         (resources, vm) -> resources.add(TeamVmsResources.fromVm(vm)), TeamVmsResources::add);
     }
 
-    public TeamVmsResources getVmsResourcesLimits() {
+    public TeamVmsResourcesLimits getVmsResourcesLimits() {
         if(this.vmsResourcesLimits != null)
             return this.vmsResourcesLimits;
 

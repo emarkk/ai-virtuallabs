@@ -31,6 +31,15 @@ public class TeamVmsResourcesLimits extends TeamVmsResources {
     @OneToOne(mappedBy = "vmsResourcesLimits")
     private Team team;
 
-    public static final TeamVmsResources DEFAULT_VMS_RESOURCES_LIMITS = new TeamVmsResources(16, 256, 8192, 6, 3);
+    @Override
+    public boolean greaterThan(TeamVmsResources other) {
+        return this.vCpus >= other.getVCpus()
+                && this.diskSpace >= other.getDiskSpace()
+                && this.ram >= other.getRam()
+                && this.instances >= other.getInstances()
+                && this.activeInstances >= other.getActiveInstances();
+    }
+
+    public static final TeamVmsResourcesLimits DEFAULT_VMS_RESOURCES_LIMITS = new TeamVmsResourcesLimits(null, 16, 256, 8192, 6, 3, null);
 
 }

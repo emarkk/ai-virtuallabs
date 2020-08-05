@@ -210,9 +210,32 @@ public class TeamServiceImpl implements TeamService {
         teamRepository.save(team);
     }
 
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
     public void setTeamVmsResourcesLimits(Long teamId, TeamVmsResourcesDTO limits) {
-        // TODO
+        Team team = getter.team(teamId);
+
+        if(!team.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+        TeamVmsResourcesLimits teamVmsResources = TeamVmsResourcesLimits.builder()
+                .vCpus(limits.getVCpus())
+                .ram(limits.getRam())
+                .diskSpace(limits.getDiskSpace())
+                .activeInstances(limits.getActiveInstances())
+                .instances(limits.getInstances())
+                .build();
+
+
+        if(!teamVmsResources.greaterThan(team.getVmsResourcesUsed()))
+            throw new IllegalTeamVmsResourcesLimitsException();
+
+        if(team.getVmsResourcesLimits() != TeamVmsResourcesLimits.DEFAULT_VMS_RESOURCES_LIMITS) {
+            teamVmsResourcesLimitsRepository.delete(team.getVmsResourcesLimits());
+        }
+
+        team.setVmsResourcesLimits(teamVmsResources);
+        teamVmsResourcesLimitsRepository.save(teamVmsResources);
     }
 
     @Override
