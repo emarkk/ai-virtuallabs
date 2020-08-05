@@ -59,10 +59,21 @@ public class TeamController {
         }
     }
 
-    @GetMapping("/{id}/vms/limits")
-    public TeamVmsResourcesDTO getTeamVmsResourceLimits(@PathVariable(name = "id") Long teamId) {
+    @GetMapping("/{id}/vms/resources/used")
+    public TeamVmsResourcesDTO getTeamVmsResourcesUsed(@PathVariable(name = "id") Long teamId) {
         try{
-            return teamService.getTeamVmsResourceLimits(teamId);
+            return teamService.getTeamVmsResourcesUsed(teamId);
+        } catch(TeamNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team '" + teamId + "' not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        }
+    }
+
+    @GetMapping("/{id}/vms/resources/limits")
+    public TeamVmsResourcesDTO getTeamVmsResourcesLimits(@PathVariable(name = "id") Long teamId) {
+        try{
+            return teamService.getTeamVmsResourcesLimits(teamId);
         } catch(TeamNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team '" + teamId + "' not found");
         } catch(NotAllowedException e) {
@@ -130,10 +141,10 @@ public class TeamController {
         }
     }
 
-    @PostMapping("/{id}/vms/limits")
-    public void setTeamVmsResourceLimits(@PathVariable(name = "id") Long teamId, @RequestBody TeamVmsResourcesDTO limits) {
+    @PostMapping("/{id}/vms/resources/limits")
+    public void setTeamVmsResourcesLimits(@PathVariable(name = "id") Long teamId, @RequestBody TeamVmsResourcesDTO limits) {
         try{
-            teamService.setTeamVmsResourceLimits(teamId, limits);
+            teamService.setTeamVmsResourcesLimits(teamId, limits);
         } catch(TeamNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team '" + teamId + "' not found");
         } catch(NotAllowedException e) {

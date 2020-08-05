@@ -73,7 +73,20 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamVmsResourcesDTO getTeamVmsResourceLimits(Long teamId) {
+    public TeamVmsResourcesDTO getTeamVmsResourcesUsed(Long teamId) {
+        Team team = getter.team(teamId);
+        AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
+
+        if(authenticatedEntity.getClass().equals(Professor.class) && !((Professor) authenticatedEntity).getCourses().contains(team.getCourse()))
+            throw new NotAllowedException();
+        if(authenticatedEntity.getClass().equals(Student.class) && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(team))
+            throw new NotAllowedException();
+
+        return modelMapper.map(team.getVmsResourcesUsed(), TeamVmsResourcesDTO.class);
+    }
+
+    @Override
+    public TeamVmsResourcesDTO getTeamVmsResourcesLimits(Long teamId) {
         Team team = getter.team(teamId);
         AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
 
@@ -198,7 +211,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void setTeamVmsResourceLimits(Long teamId, TeamVmsResourcesDTO limits) {
+    public void setTeamVmsResourcesLimits(Long teamId, TeamVmsResourcesDTO limits) {
         // TODO
     }
 
