@@ -36,7 +36,7 @@ public class SignalService {
         TeamVmsResourcesSignal vmsResourcesSignal = new TeamVmsResourcesSignal(
                 modelMapper.map(team.getVmsResourcesUsed(), TeamVmsResourcesDTO.class),
                 TeamVmsResourcesSignal.UpdateType.TOTAL);
-        messagingTemplate.convertAndSend("/team/" + team.getId() + "vms-resources", vmsResourcesSignal);
+        messagingTemplate.convertAndSend("/team/" + team.getId() + "/vms-resources", vmsResourcesSignal);
     }
 
     private void signalVmStateChanged(Vm vm, VmSignal.UpdateType updateType) {
@@ -48,7 +48,7 @@ public class SignalService {
         TeamVmsResourcesSignal vmsResourcesSignal = new TeamVmsResourcesSignal(
                 modelMapper.map(vm.getTeam().getVmsResourcesUsed(), TeamVmsResourcesDTO.class),
                 TeamVmsResourcesSignal.UpdateType.USED);
-        messagingTemplate.convertAndSend("/team/" + vm.getTeam().getId() + "vms-resources", vmsResourcesSignal);
+        messagingTemplate.convertAndSend("/team/" + vm.getTeam().getId() + "/vms-resources", vmsResourcesSignal);
     }
 
 }
