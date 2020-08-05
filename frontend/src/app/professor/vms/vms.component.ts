@@ -7,10 +7,13 @@ import { scan } from 'rxjs/operators';
 import { Course } from 'src/app/core/models/course.model';
 import { Vm } from 'src/app/core/models/vm.model';
 import { Team } from 'src/app/core/models/team.model';
+import { TeamVmsResources } from 'src/app/core/models/team-vms-resources.model';
 
 import { VmSignal, VmSignalUpdateType } from 'src/app/core/models/signals/vm.signal';
+import { TeamVmsResourcesSignal, TeamVmsResourcesSignalUpdateType } from 'src/app/core/models/signals/team-vms-resources.signal';
 
 import { CourseService } from 'src/app/core/services/course.service';
+import { TeamService } from 'src/app/core/services/team.service';
 import { SignalService, SignalObservable } from 'src/app/core/services/signal.service';
 
 import { VmLimitsDialog } from 'src/app/components/dialogs/vm-limits/vm-limits.component';
@@ -30,13 +33,13 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
   columnsToDisplay: string[] = ['team', 'vm', 'creator', 'online', '_connect'];
 
   vmUpdatesSignal: SignalObservable<VmSignal>;
-  teamVmsLimitsSignal: SignalObservable<any>;
+  teamVmsLimitsSignal: SignalObservable<TeamVmsResourcesSignal>;
   
   vmLimitsDialogRef: MatDialogRef<VmLimitsDialog> = null;
 
   navigationData: Array<any>|null = null;
 
-  constructor(private route: ActivatedRoute, private router: Router, private courseService: CourseService, private signalService: SignalService, private dialog: MatDialog) {
+  constructor(private route: ActivatedRoute, private router: Router, private courseService: CourseService, private teamService: TeamService, private signalService: SignalService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -66,33 +69,56 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
           } else if(update.updateType == VmSignalUpdateType.UPDATED)
             teamsVms = teamsVms.map(tv => tv.vm.id == update.vm.id ? { team: tv.team, vm: update.vm } : tv);
           else if(update.updateType == VmSignalUpdateType.DELETED)
-            teamsVms = teamsVms.filter(tv => tv.vm.id != update.vm.id);
+            teamsVms = teamsVms.filter(tv => tv.team.id == update.teamId).length > 1
+              ? teamsVms.filter(tv => tv.vm.id != update.vm.id)
+              : teamsVms.map(tv => tv.team.id == update.teamId ? { team: tv.team, vm: null } : tv);
           return teamsVms;
         }, [])
       );
-    });
 
-    combineLatest(this.route.queryParams, this.teamsVms$).subscribe(([queryParams, teamsVms]) => {
-      if(teamsVms && queryParams.edit == 'vm-limits') {
-        const team = teamsVms.find(tv => tv.team.id == queryParams.team).team;
-        if(!team)
-          this.router.navigate([]);
-
-        this.signalService.teamVmsLimitsUpdates(team.id).subscribe(signal => {
-          this.teamVmsLimitsSignal = signal;
-          this.vmLimitsDialogRef = this.dialog.open(VmLimitsDialog, {
-            data: {
-              teamName: team.name
-            }
+      combineLatest(this.route.queryParams, this.teamsVms$).subscribe(([queryParams, teamsVms]) => {
+        if(teamsVms && queryParams.edit == 'vm-limits') {
+          let resourcesUsed: Observable<TeamVmsResources>;
+          const team = teamsVms.find(tv => tv.team.id == queryParams.team).team;
+          if(!team)
+            this.router.navigate([]);
+  
+          if(!this.vmLimitsDialogRef) {
+            this.signalService.teamVmsLimitsUpdates(team.id).subscribe(signal => {
+              this.teamVmsLimitsSignal = signal;
+              resourcesUsed = merge(this.teamService.getVmsResourcesUsed(team.id), this.teamVmsLimitsSignal.data()).pipe(
+                scan((resources: TeamVmsResources, update: TeamVmsResources | TeamVmsResourcesSignal | null) => {
+                  if(update == null)
+                    return resources;
+                  if(!(update instanceof TeamVmsResourcesSignal))
+                    return update;
+    
+                  if(update.updateType == TeamVmsResourcesSignalUpdateType.USED)
+                    resources = update.vmsResources;
+                  return resources;
+                }, null)
+              );
+    
+              this.vmLimitsDialogRef = this.dialog.open(VmLimitsDialog, {
+                data: {
+                  teamName: team.name,
+                  resourcesUsed$: resourcesUsed,
+                  resourcesLimits$: this.teamService.getVmsResourcesLimits(team.id)
+                }
+              });
+            });
+          }
+  
+          this.vmLimitsDialogRef.afterClosed().subscribe(res => {
+            this.router.navigate([]);
+            this.vmLimitsDialogRef = null;
+            this.teamVmsLimitsSignal.unsubscribe();
           });
-        });
-
-        this.vmLimitsDialogRef.afterClosed().subscribe(res => {
-          this.router.navigate([]);
-          this.teamVmsLimitsSignal.unsubscribe();
-        });
-      } else if(this.vmLimitsDialogRef)
-        this.vmLimitsDialogRef.close();
+        } else if(this.vmLimitsDialogRef) {
+          this.vmLimitsDialogRef.close();
+          this.vmLimitsDialogRef = null;
+        }
+      });
     });
   }
   

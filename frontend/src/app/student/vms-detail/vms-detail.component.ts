@@ -83,7 +83,7 @@ export class StudentVmsDetailComponent implements OnInit {
     
     this.vmsResourcesLimits$ = this.vmsRefreshToken.pipe(
       switchMap(() => merge(
-        this.joinedTeam ? this.teamService.getVmsResourceLimits(this.joinedTeam.id) : of(null),
+        this.joinedTeam ? this.teamService.getVmsResourcesLimits(this.joinedTeam.id) : of(null),
         this.vmsResourcesLimitsUpdatesSignal ? this.vmsResourcesLimitsUpdatesSignal.data() : of(null)
       )),
       scan((limits: TeamVmsResources, update: TeamVmsResources | TeamVmsResourcesSignal | null) => {

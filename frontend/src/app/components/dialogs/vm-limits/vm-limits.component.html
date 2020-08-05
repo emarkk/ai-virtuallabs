@@ -1,41 +1,95 @@
 <div class="dialog">
   <h2>Edit VM limits for "{{ data.teamName }}"</h2>
-  <form [formGroup]="form">
-    <div class="input-container">
-      <mat-form-field class="fraction half first" appearance="legacy">
-        <mat-label>Max vCPU</mat-label>
-        <mat-icon matSuffix>memory</mat-icon>
-        <input matInput placeholder="10" formControlName="maxVcpu" required>
-        <mat-error>{{ getMaxVcpuErrorMessage() }}</mat-error>
-      </mat-form-field>
-      <mat-form-field class="fraction half" appearance="legacy">
-        <mat-label>Max disk space (GB)</mat-label>
-        <mat-icon matSuffix>storage</mat-icon>
-        <input matInput placeholder="10" formControlName="maxDisk" required>
-        <mat-error>{{ getMaxDiskErrorMessage() }}</mat-error>
-      </mat-form-field>
-      <mat-form-field class="fraction half first" appearance="legacy">
-        <mat-label>Max RAM (MB)</mat-label>
-        <mat-icon matSuffix>drag_indicator</mat-icon>
-        <input matInput placeholder="10" formControlName="maxRam" required>
-        <mat-error>{{ getMaxRamErrorMessage() }}</mat-error>
-      </mat-form-field>
-      <mat-form-field class="fraction half" appearance="legacy">
-        <mat-label>Max simultaneous active instances</mat-label>
-        <mat-icon matSuffix>dynamic_feed</mat-icon>
-        <input matInput placeholder="10" formControlName="maxActiveInstances" required>
-        <mat-error>{{ getMaxActiveInstancesErrorMessage() }}</mat-error>
-      </mat-form-field>
-      <mat-form-field class="fraction half first" appearance="legacy">
-        <mat-label>Max total instances</mat-label>
-        <mat-icon matSuffix>personal_video</mat-icon>
-        <input matInput placeholder="10" formControlName="maxInstances" required>
-        <mat-error>{{ getMaxInstancesErrorMessage() }}</mat-error>
-      </mat-form-field>
+  <div *ngIf="data.resourcesUsed$ | async as used">
+    <div *ngIf="data.resourcesLimits$ | async as limits">
+      <form [formGroup]="form">
+        <div class="input-container">
+          <div class="fraction half first">
+            <div class="superinput">
+              <div class="input">
+                <mat-form-field appearance="legacy">
+                  <mat-label>Max vCPU</mat-label>
+                  <mat-icon matSuffix>memory</mat-icon>
+                  <input matInput placeholder="10" formControlName="maxVcpu" required>
+                  <mat-error>{{ getMaxVcpuErrorMessage() }}</mat-error>
+                </mat-form-field>
+              </div>
+              <div class="label">
+                <span>currently used</span>
+                <span>{{ used.vCpus }} vCPU</span>
+              </div>
+            </div>
+          </div>
+          <div class="fraction half">
+            <div class="superinput">
+              <div class="input">
+                <mat-form-field appearance="legacy">
+                  <mat-label>Max disk space (GB)</mat-label>
+                  <mat-icon matSuffix>storage</mat-icon>
+                  <input matInput placeholder="10" formControlName="maxDisk" required>
+                  <mat-error>{{ getMaxDiskErrorMessage() }}</mat-error>
+                </mat-form-field>
+              </div>
+              <div class="label">
+                <span>currently used</span>
+                <span>{{ used.diskSpace }} GB</span>
+              </div>
+            </div>
+          </div>
+          <div class="fraction half first">
+            <div class="superinput">
+              <div class="input">
+                <mat-form-field appearance="legacy">
+                  <mat-label>Max RAM (MB)</mat-label>
+                  <mat-icon matSuffix>drag_indicator</mat-icon>
+                  <input matInput placeholder="10" formControlName="maxRam" required>
+                  <mat-error>{{ getMaxRamErrorMessage() }}</mat-error>
+                </mat-form-field>
+              </div>
+              <div class="label">
+                <span>currently used</span>
+                <span>{{ used.ram }} MB</span>
+              </div>
+            </div>
+          </div>
+          <div class="fraction half">
+            <div class="superinput">
+              <div class="input">
+                <mat-form-field appearance="legacy">
+                  <mat-label>Max simultaneous active instances</mat-label>
+                  <mat-icon matSuffix>dynamic_feed</mat-icon>
+                  <input matInput placeholder="10" formControlName="maxActiveInstances" required>
+                  <mat-error>{{ getMaxActiveInstancesErrorMessage() }}</mat-error>
+                </mat-form-field>
+              </div>
+              <div class="label">
+                <span>currently active</span>
+                <span>{{ used.activeInstances }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="fraction half first">
+            <div class="superinput">
+              <div class="input">
+                <mat-form-field appearance="legacy">
+                  <mat-label>Max total instances</mat-label>
+                  <mat-icon matSuffix>personal_video</mat-icon>
+                  <input matInput placeholder="10" formControlName="maxInstances" required>
+                  <mat-error>{{ getMaxInstancesErrorMessage() }}</mat-error>
+                </mat-form-field>
+              </div>
+              <div class="label">
+                <span>current instances</span>
+                <span>{{ used.instances }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <button mat-flat-button mat-dialog-close>Cancel</button>
+          <app-async-button>Save</app-async-button>
+        </div>
+      </form>
     </div>
-    <div class="actions">
-      <button mat-flat-button mat-dialog-close>Cancel</button>
-      <app-async-button>Save</app-async-button>
-    </div>
-  </form>
+  </div>
 </div>

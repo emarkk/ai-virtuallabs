@@ -2,7 +2,7 @@ mat-icon {
   padding-top: 0;
 }
 .dialog {
-  width: 640px;
+  width: 720px;
 }
 .actions {
   float: right;
@@ -10,4 +10,21 @@ mat-icon {
 }
 .actions button {
   margin: 0 10px;
+}
+.superinput {
+  display: flex;
+}
+.superinput .input {
+  flex: 2;
+}
+.superinput .label {
+  flex: 1;
+  margin: 10px 0 0 20px;
+}
+.superinput .label span {
+  display: block;
+}
+.superinput .label span:nth-child(1) {
+  font-size: 0.65em;
+  text-transform: uppercase;
 }

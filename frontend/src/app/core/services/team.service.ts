@@ -25,9 +25,16 @@ export class TeamService {
       catchError(error => of(null))
     );
   }
+  // get vms resource used by team
+  getVmsResourcesUsed(teamId: number): Observable<TeamVmsResources> {
+    return this.http.get<any>(url(`teams/${teamId}/vms/resources/used`)).pipe(
+      map(x => new TeamVmsResources(x.vcpus, x.diskSpace, x.ram, x.instances, x.activeInstances)),
+      catchError(error => of(null))
+    );
+  }
   // get vms resource limits for team
-  getVmsResourceLimits(teamId: number): Observable<TeamVmsResources> {
-    return this.http.get<any>(url(`teams/${teamId}/vms/limits`)).pipe(
+  getVmsResourcesLimits(teamId: number): Observable<TeamVmsResources> {
+    return this.http.get<any>(url(`teams/${teamId}/vms/resources/limits`)).pipe(
       map(x => x ? new TeamVmsResources(x.vCpus, x.diskSpace, x.ram, x.instances, x.activeInstances) : Team.DEFAULT_VMS_RESOURCES_LIMITS),
       catchError(error => of(null))
     );

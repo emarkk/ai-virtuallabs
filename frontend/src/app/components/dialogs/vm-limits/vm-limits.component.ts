@@ -1,9 +1,14 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+
+import { TeamVmsResources } from 'src/app/core/models/team-vms-resources.model';
 
 export interface VmLimitsDialogData {
-  teamName: string
+  teamName: string,
+  resourcesUsed$: Observable<TeamVmsResources>,
+  resourcesLimits$: Observable<TeamVmsResources>
 }
 
 @Component({

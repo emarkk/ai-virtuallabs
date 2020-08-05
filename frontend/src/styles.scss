@@ -114,13 +114,16 @@ p.list-empty {
 ::-moz-selection {
   background: #ffaa99;
 }
-mat-form-field.half {
+div.fraction {
+  display: inline-block;
+}
+mat-form-field.half, div.half {
   width: 47%;
 }
-mat-form-field.third {
+mat-form-field.third, div.third {
   width: 29.3%;
 }
-mat-form-field.fraction:not(.first) {
+mat-form-field.fraction:not(.first), div.fraction:not(.first) {
   margin-left: 6%;
 }
 mat-form-field {
