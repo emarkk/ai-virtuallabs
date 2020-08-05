@@ -7,6 +7,7 @@ import it.polito.ai.virtuallabs.backend.repositories.TeamRepository;
 import it.polito.ai.virtuallabs.backend.repositories.TeamVmsResourcesLimitsRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
+import it.polito.ai.virtuallabs.backend.websockets.SignalService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -38,6 +39,9 @@ public class TeamServiceImpl implements TeamService {
 
     @Autowired
     private AuthenticatedEntityMapper authenticatedEntityMapper;
+
+    @Autowired
+    private SignalService signalService;
 
     @Autowired
     private GetterProxy getter;
@@ -236,6 +240,7 @@ public class TeamServiceImpl implements TeamService {
 
         team.setVmsResourcesLimits(teamVmsResources);
         teamVmsResourcesLimitsRepository.save(teamVmsResources);
+        signalService.teamVmsResourcesLimitsChanged(team);
     }
 
     @Override
