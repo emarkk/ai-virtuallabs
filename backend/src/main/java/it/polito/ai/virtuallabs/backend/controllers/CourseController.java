@@ -223,9 +223,9 @@ public class CourseController {
     }
 
     @GetMapping("/{code}/homeworks")
-    public List<HomeworkDTO> getCourseHomeworkData(@PathVariable("code") String courseCode) throws CourseNotFoundException {
+    public List<HomeworkDTO> getHomeworks(@PathVariable("code") String courseCode) {
         try{
-            return courseService.getHomeworksData(courseCode);
+            return courseService.getHomeworks(courseCode);
         } catch (CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course " + courseCode + "Not Found");
         }

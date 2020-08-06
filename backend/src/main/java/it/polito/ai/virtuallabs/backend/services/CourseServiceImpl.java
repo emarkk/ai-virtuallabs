@@ -274,9 +274,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<HomeworkDTO> getHomeworksData(String courseCode) {
+    public List<HomeworkDTO> getHomeworks(String courseCode) {
         Course course = getter.course(courseCode);
-            return homeworkRepository.findAllByCourse(course)
+            return course.getHomeworks()
                     .stream()
                     .map(h -> modelMapper.map(h, HomeworkDTO.class))
                     .collect(Collectors.toList());

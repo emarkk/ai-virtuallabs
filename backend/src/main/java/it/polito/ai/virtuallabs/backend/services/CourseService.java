@@ -22,7 +22,7 @@ public interface CourseService {
     List<Boolean> unenrollAll(List<Long> studentsIds, String courseCode);
     void enableCourse(String courseCode);
     void disableCourse(String courseCode);
-    List<HomeworkDTO> getHomeworksData(String courseCode);
+    List<HomeworkDTO> getHomeworks(String courseCode);
     void unenrollAllStudents(String courseCode);
     Boolean professorHasSignalPermission(String courseCode, Long professorId);
 }
