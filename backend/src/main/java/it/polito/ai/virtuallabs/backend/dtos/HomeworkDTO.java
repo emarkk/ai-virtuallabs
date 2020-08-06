@@ -13,10 +13,10 @@ public class HomeworkDTO {
 
     private Long id;
 
-    private Timestamp assigned;
+    private String title;
 
-    private Timestamp due;
+    private Timestamp publicationDate;
 
-    private String descriptionFilePath;
+    private Timestamp dueDate;
 
 }

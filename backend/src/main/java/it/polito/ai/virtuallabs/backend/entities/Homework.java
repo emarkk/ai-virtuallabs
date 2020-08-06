@@ -19,11 +19,11 @@ public class Homework {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Timestamp assigned;
+    private String title;
 
-    private Timestamp due;
+    private Timestamp publicationDate;
 
-    private String descriptionFilePath;
+    private Timestamp dueDate;
 
     @ManyToOne
     @JoinColumn(name = "course_code", nullable = false)
@@ -35,8 +35,8 @@ public class Homework {
     }
 
     private void removeCourse() {
-        course.getHomeworks().remove(this);
-        course = null;
+        this.course.getHomeworks().remove(this);
+        this.course = null;
     }
 
 }
