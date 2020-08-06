@@ -5,5 +5,5 @@ import org.springframework.web.multipart.MultipartFile;
 import java.sql.Timestamp;
 
 public interface HomeworkService {
-    public void storeHomework(MultipartFile file, String courseCode, long dueDate);
+    void addHomework(String courseCode, String title, Long dueDate, MultipartFile file);
 }

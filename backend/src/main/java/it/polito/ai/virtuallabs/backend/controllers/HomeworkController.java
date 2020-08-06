@@ -18,38 +18,37 @@ import java.util.Map;
 public class HomeworkController {
     @Autowired
     HomeworkService homeworkService;
-    @Autowired
-    FilesStorageService storageService;
+//    @Autowired
+//    FilesStorageService storageService;
 
     @PostMapping({ "", "/" })
     @ResponseStatus(HttpStatus.CREATED)
-    public void postHomework(@RequestParam Map<String, Object> input, @RequestParam("file") MultipartFile file) throws CourseNotFoundException, HomeworkDueDateException, RuntimeException, NotAllowedException {
-        String courseCode = "";
+    public void addHomework(@RequestParam Map<String, String> input, @RequestParam("file") MultipartFile file) {
 
-        if(!input.containsKey("courseCode") || !input.containsKey("homeworkDue")){
+        if(!input.containsKey("courseCode") || !input.containsKey("dueDate") || !input.containsKey("title")){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         }
-        courseCode = (String) input.get("courseCode");
-
         try {
-            homeworkService.storeHomework(file, courseCode, Long.parseLong((String)input.get("homeworkDue")));
+            homeworkService.addHomework(input.get("courseCode"), input.get("title"), Long.parseLong(input.get("dueDate")), file);
         } catch (CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course Not Found");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
         } catch (HomeworkDueDateException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Due Date is not correct");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Due Date is not correct");
         } catch (NotAllowedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
-        } catch (RuntimeException e) {
+        } catch (HomeworkUploadException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
         }
 
     }
 
-    @GetMapping("/resource/{courseCode}/{fileName}")
-    @ResponseBody
-    public ResponseEntity<Resource> getFile(@PathVariable("courseCode") String courseCode, @PathVariable("fileName") String fileName) {
-        Resource file = storageService.load("homeworks/" + courseCode + "/" + fileName);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-    }
+//    @GetMapping("/resource/{courseCode}/{fileName}")
+//    @ResponseBody
+//    public ResponseEntity<Resource> getFile(@PathVariable("courseCode") String courseCode, @PathVariable("fileName") String fileName) {
+//        Resource file = storageService.load("homeworks/" + courseCode + "/" + fileName);
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+//    }
 }

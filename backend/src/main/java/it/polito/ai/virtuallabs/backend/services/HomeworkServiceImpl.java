@@ -9,6 +9,7 @@ import it.polito.ai.virtuallabs.backend.repositories.HomeworkRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,31 +40,51 @@ public class HomeworkServiceImpl implements HomeworkService {
 
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
-    public void storeHomework(MultipartFile file, String courseCode, long dueDate) {
+    public void addHomework(String courseCode, String title, Long dueDate, MultipartFile file) {
         Course course = getter.course(courseCode);
         if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
+        if(!course.getEnabled()) {
+            throw new CourseNotEnabledException();
+        }
         try{
-            long now = System.currentTimeMillis();
-            if(dueDate <= now) {
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            Timestamp due = new Timestamp(dueDate);
+            if(due.before(now)) {
                 throw new HomeworkDueDateException();
             }
-            Timestamp due = new Timestamp(dueDate);
-            String filename = now + "_"+ file.getOriginalFilename();
             Path coursePath = Paths.get( "uploads/homeworks/" + courseCode);
             if(!Files.exists(coursePath))
                 Files.createDirectory(coursePath);
-            Files.copy(file.getInputStream(), coursePath.resolve(filename));
             Homework homework = Homework.builder()
-                    .assigned(new Timestamp(System.currentTimeMillis()))
-                    .due(due)
-                    .descriptionFilePath("/" + courseCode + "/" + filename)
+                    .publicationDate(now)
+                    .dueDate(due)
+                    .title(title)
                     .build();
             course.addHomework(homework);
+
             homeworkRepository.save(homework);
             courseRepository.save(course);
+            Files.deleteIfExists(coursePath.resolve(homework.getId().toString() + ".jpg"));
+            Files.copy(file.getInputStream(), coursePath.resolve(homework.getId().toString() + ".jpg"));
         } catch (IOException e) {
-            throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+            throw new HomeworkUploadException();
+        }
+
+    }
+
+    private static final Path root = Paths.get("uploads");
+    private static final Path homeworkDir = Paths.get("uploads/homeworks");
+
+    @Bean
+    public void initDirectory() {
+        try {
+            if(!Files.exists(root))
+                Files.createDirectory(root);
+            if(!Files.exists(homeworkDir))
+                Files.createDirectory(homeworkDir);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not initialize folder for upload!");
         }
     }
 }
