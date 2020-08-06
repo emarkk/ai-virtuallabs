@@ -1,6 +1,5 @@
 package it.polito.ai.virtuallabs.backend.services;
 
-import it.polito.ai.virtuallabs.backend.dtos.HomeworkDTO;
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.HomeworkRepository;
@@ -21,8 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -70,7 +67,7 @@ public class HomeworkServiceImpl implements HomeworkService {
             Files.deleteIfExists(coursePath.resolve(homework.getId().toString() + ".jpg"));
             Files.copy(file.getInputStream(), coursePath.resolve(homework.getId().toString() + ".jpg"));
         } catch (IOException e) {
-            throw new HomeworkUploadException();
+            throw new HomeworkFileHandlingException();
         }
 
     }
@@ -89,6 +86,24 @@ public class HomeworkServiceImpl implements HomeworkService {
             }
         } catch (MalformedURLException e) {
             throw new HomeworkNotFoundException();
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @Override
+    public void deleteHomework(Long homeworkId) {
+        Homework homework = getter.homework(homeworkId);
+        if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+        if(!homework.getCourse().getEnabled()) {
+            throw new CourseNotEnabledException();
+        }
+        Path file = root.resolve("homeworks/" + homework.getCourse().getCode() + "/" + homework.getId() + ".jpg");
+        try {
+            Files.deleteIfExists(file);
+            homeworkRepository.delete(homework);
+        } catch (IOException e) {
+            throw new HomeworkFileHandlingException();
         }
     }
 

@@ -8,4 +8,5 @@ import java.sql.Timestamp;
 public interface HomeworkService {
     void addHomework(String courseCode, String title, Long dueDate, MultipartFile file);
     Resource getHomework(Long homeworkId);
+    void deleteHomework(Long homeworkId);
 }

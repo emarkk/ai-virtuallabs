@@ -1,6 +1,5 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
-import it.polito.ai.virtuallabs.backend.dtos.HomeworkDTO;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -22,7 +21,6 @@ public class HomeworkController {
     @PostMapping({ "", "/" })
     @ResponseStatus(HttpStatus.CREATED)
     public void addHomework(@RequestParam Map<String, String> input, @RequestParam("file") MultipartFile file) {
-
         if(!input.containsKey("courseCode") || !input.containsKey("dueDate") || !input.containsKey("title")){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         }
@@ -36,7 +34,7 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Due Date is not correct");
         } catch (NotAllowedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
-        } catch (HomeworkUploadException e) {
+        } catch (HomeworkFileHandlingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
         }
 
@@ -55,6 +53,21 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
         } catch (RuntimeException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal error");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteHomework(@PathVariable(name = "id") Long homeworkId) {
+        try{
+            homeworkService.deleteHomework(homeworkId);
+        } catch (HomeworkNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
+        } catch (HomeworkFileHandlingException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
         }
     }
 }
