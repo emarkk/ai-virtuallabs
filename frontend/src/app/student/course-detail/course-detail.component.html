@@ -20,10 +20,17 @@
         </td>
       </tr>
     </table>
-    <app-student-course-team-detail [course]="courseCode" (completeTeam)="joinedTeam($event)"></app-student-course-team-detail>
-    <app-tile text="VMs" [textLink]="'/student/course/' + courseCode + '/vms'" icon="dns">
-      <app-student-vms-detail [course]="courseCode" [team]="team"></app-student-vms-detail>
-    </app-tile>    
+    <div class="content" [class.course-disabled]="!course.enabled">
+      <div *ngIf="team">
+        <app-tile text="Homeworks" [textLink]="'/student/course/' + courseCode + '/homeworks'" icon="perm_media">
+            
+        </app-tile>
+        <app-tile text="VMs" [textLink]="'/student/course/' + courseCode + '/vms'" icon="dns">
+          <app-student-vms-detail [course]="courseCode" [team]="team"></app-student-vms-detail>
+        </app-tile>
+      </div>
+      <app-student-course-team-detail [course]="courseCode" (completeTeam)="joinedTeam($event)"></app-student-course-team-detail>
+    </div>
   </app-page>
 </div>
 <ng-template #loading>

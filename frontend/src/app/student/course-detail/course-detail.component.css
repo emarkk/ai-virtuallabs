@@ -1,50 +1,5 @@
-.team {
-  display: flex;
-  align-items: center;
-  margin: 1em 0;
-}
-.team-name, .team-members {
-  flex: 1;
-}
-.team-expiration {
-  flex: 0.5;
-  font-size: 0.8em;
-  text-align: center;
-}
-.team-name h3 {
-  margin: 0;
-  font-weight: 300;
-  text-align: center;
-}
-.team-member {
-  display: flex;
-  margin: 0.4em 0;
-}
-.team-member mat-icon {
-  margin-right: 8px;
-  padding-top: 3px;
-  font-size: 1em;
-}
-mat-icon.icon-creator, mat-icon.icon-accepted {
-  color: #34b7f1;
-}
-.provisional {
-  display: block;
-  width: 100%;
-  color: #da3125;
-  text-align: center;
-  text-transform: uppercase;
-  font-size: 0.6em;
-}
-.expiration-time {
-  display: block;
-  font-size: 1.2em;
-}
-.invitations {
-  margin-top: 2.2em;
-}
-.autodelete {
-  color: #888;
-  font-size: 0.8em;
-  font-weight: 300;
+.course-disabled {
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.5;
 }

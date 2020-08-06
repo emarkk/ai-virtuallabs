@@ -124,8 +124,10 @@ export class StudentVmsDetailComponent implements OnInit {
     });
   }
   ngOnDestroy(): void {
-    this.vmUpdatesSignal.unsubscribe();
-    this.vmsResourcesUpdatesSignal.unsubscribe();
+    if(this.vmUpdatesSignal)
+      this.vmUpdatesSignal.unsubscribe();
+    if(this.vmsResourcesUpdatesSignal)
+      this.vmsResourcesUpdatesSignal.unsubscribe();
   }
 
   changeVmState(data: { vmId: number, online: boolean }) {

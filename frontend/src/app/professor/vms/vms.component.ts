@@ -48,7 +48,8 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
     this.init();
   }
   ngOnDestroy(): void {
-    this.vmUpdatesSignal.unsubscribe();
+    if(this.vmUpdatesSignal)
+      this.vmUpdatesSignal.unsubscribe();
   }
   init(): void {
     this.course$ = this.courseService.get(this.courseCode);
@@ -119,7 +120,8 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
 
             this.router.navigate([]);
             this.vmLimitsDialogRef = null;
-            this.teamVmsResourcesUpdatesSignal.unsubscribe();
+            if(this.teamVmsResourcesUpdatesSignal)
+              this.teamVmsResourcesUpdatesSignal.unsubscribe();
           });
         } else if(this.vmLimitsDialogRef) {
           this.vmLimitsDialogRef.close();

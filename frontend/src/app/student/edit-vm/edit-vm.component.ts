@@ -121,8 +121,10 @@ export class StudentEditVmComponent implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy(): void {
-    this.vmUpdatesSignal.unsubscribe();
-    this.teamVmsResourcesUpdatesSignal.unsubscribe();
+    if(this.vmUpdatesSignal)
+      this.vmUpdatesSignal.unsubscribe();
+    if(this.teamVmsResourcesUpdatesSignal)
+      this.teamVmsResourcesUpdatesSignal.unsubscribe();
   }
 
   saveVm(vmData) {

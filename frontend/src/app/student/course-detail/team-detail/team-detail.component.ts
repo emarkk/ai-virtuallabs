@@ -49,14 +49,12 @@ export class StudentCourseTeamDetailComponent implements OnInit {
     );
 
     this.teams$.subscribe(teams => {
-      if(!teams.length)
-        return;
-      
       this.team = teams.find(t => t.status == TeamStatus.COMPLETE);
 
       if(this.team) {
         this.completeTeam.emit(this.team);
       } else {
+        this.completeTeam.emit(null);
         this.acceptedTeam = teams.find(t => t.status == TeamStatus.PROVISIONAL && this.isAccepted(t));
         if(this.acceptedTeam) {
           setInterval(() => {

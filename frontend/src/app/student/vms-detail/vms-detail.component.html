@@ -1,6 +1,3 @@
-<div *ngIf="joinedTeam === null">
-  This section will only be available once you are part of a complete team (that is, whose proposal has been accepted by all members).
-</div>
 <div *ngIf="joinedTeam">
   <div *ngIf="vms$ | async as vms">
     <div *ngIf="vmsResourcesLimits$ | async as vmsResourcesLimits">

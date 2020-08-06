@@ -3,6 +3,7 @@ import { BehaviorSubject, Subject, Observable, of } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
 
 import { VmSignal } from '../models/signals/vm.signal';
+import { VmScreenSignal } from '../models/signals/vm-screen.signal';
 import { TeamVmsResourcesSignal } from '../models/signals/team-vms-resources.signal';
 
 import { serverUrl } from '../utils';
@@ -59,26 +60,36 @@ export class SignalService {
     this.connected.next(false);
   }
 
-  private _signal(url, map): Observable<SignalObservable<any>> {
+  private _subscribeTo(url, map): Observable<SignalObservable<any>> {
     return this.connected.pipe(
       first(c => c),
       switchMap(() => of(new SignalObservable(cb => this.stompClient.subscribe(url, cb, { token: this.token }), map)))
     );
   }
+  private _sendTo(url, data, token): void {
+    this.connected.pipe(
+      first(c => c),
+      switchMap(() => this.stompClient.send(url, { token }, JSON.stringify(data)))
+    );
+  }
 
   vmUpdates(vmId: number): Observable<SignalObservable<VmSignal>> {
-    return this._signal(`/vm/${vmId}`, msg => VmSignal.fromMsg(msg));
+    return this._subscribeTo(`/vm/${vmId}`, msg => VmSignal.fromMsg(msg));
   }
-  vmScreenUpdates(vmId: number): Observable<SignalObservable<any>> {
-    return this._signal(`/vm/${vmId}/screen`, msg => null);
+  vmScreenUpdates(vmId: number): Observable<SignalObservable<VmScreenSignal>> {
+    return this._subscribeTo(`/vm/${vmId}/screen`, msg => VmScreenSignal.fromMsg(msg));
   }
   teamVmsUpdates(teamId: number): Observable<SignalObservable<VmSignal>> {
-    return this._signal(`/team/${teamId}/vms`, msg => VmSignal.fromMsg(msg));
+    return this._subscribeTo(`/team/${teamId}/vms`, msg => VmSignal.fromMsg(msg));
   }
   teamVmsResourcesUpdates(teamId: number): Observable<SignalObservable<TeamVmsResourcesSignal>> {
-    return this._signal(`/team/${teamId}/vms-resources`, msg => TeamVmsResourcesSignal.fromMsg(msg));
+    return this._subscribeTo(`/team/${teamId}/vms-resources`, msg => TeamVmsResourcesSignal.fromMsg(msg));
   }
   courseVmsUpdates(courseCode: string): Observable<SignalObservable<VmSignal>> {
-    return this._signal(`/course/${courseCode}/vms`, msg => VmSignal.fromMsg(msg));
+    return this._subscribeTo(`/course/${courseCode}/vms`, msg => VmSignal.fromMsg(msg));
+  }
+
+  sendScreenSignal(vmId: number, token: string, signal: VmScreenSignal): void {
+    this._sendTo(`/signal/vm/${vmId}/screen`, signal, token);
   }
 }
