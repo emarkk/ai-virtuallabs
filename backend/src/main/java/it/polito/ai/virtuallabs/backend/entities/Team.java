@@ -49,9 +49,10 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private List<Vm> vms = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "team_vms_resources_limits_id", referencedColumnName = "id")
-    private TeamVmsResourcesLimits vmsResourcesLimits;
+    @Embedded
+    private TeamVmsResources vmsResourcesLimits;
+
+    public static final TeamVmsResources DEFAULT_VMS_RESOURCES_LIMITS = new TeamVmsResources(16, 256, 8192, 6, 3);
 
     public TeamVmsResources getVmsResourcesUsed() {
         return this.getVms().stream()
@@ -59,11 +60,11 @@ public class Team {
                         (resources, vm) -> resources.add(TeamVmsResources.fromVm(vm)), TeamVmsResources::add);
     }
 
-    public TeamVmsResourcesLimits getVmsResourcesLimits() {
+    public TeamVmsResources getVmsResourcesLimits() {
         if(this.vmsResourcesLimits != null)
             return this.vmsResourcesLimits;
 
-        return TeamVmsResourcesLimits.DEFAULT_VMS_RESOURCES_LIMITS;
+        return DEFAULT_VMS_RESOURCES_LIMITS;
     }
 
     public Boolean isComplete() {
@@ -81,11 +82,6 @@ public class Team {
     public void setCourse(Course c) {
         this.course = c;
         c.getTeams().add(this);
-    }
-
-    public void setVmsResourcesLimits(TeamVmsResourcesLimits vmsResourcesLimits) {
-        this.vmsResourcesLimits = vmsResourcesLimits;
-        vmsResourcesLimits.setTeam(this);
     }
 
 }

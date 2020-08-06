@@ -21,11 +21,11 @@ public class VmController {
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
     public VmDTO addVm(@RequestBody Map<String, String> input) {
-        if(!input.containsKey("teamId") || !input.containsKey("vCpus") || !input.containsKey("diskSpace") || !input.containsKey("ram")) {
+        if(!input.containsKey("teamId") || !input.containsKey("vcpus") || !input.containsKey("diskSpace") || !input.containsKey("ram")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         }
         try{
-            return vmService.addVm(Long.parseLong(input.get("teamId")), Integer.parseInt(input.get("vCpus")), Integer.parseInt(input.get("diskSpace")), Integer.parseInt(input.get("ram")));
+            return vmService.addVm(Long.parseLong(input.get("teamId")), Integer.parseInt(input.get("vcpus")), Integer.parseInt(input.get("diskSpace")), Integer.parseInt(input.get("ram")));
         } catch (TeamNotActiveException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is not active");
         } catch (StudentNotInTeamException e) {
@@ -57,9 +57,9 @@ public class VmController {
     @PutMapping("/{id}")
     public VmDTO updateVm(@PathVariable(name = "id") Long vmId, @RequestBody Map<String, Integer> input) {
         try{
-            if(!input.containsKey("diskSpace") || !input.containsKey("ram") || !input.containsKey("vCpus"))
+            if(!input.containsKey("diskSpace") || !input.containsKey("ram") || !input.containsKey("vcpus"))
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
-            return vmService.updateVm(vmId, input.get("vCpus"), input.get("diskSpace"), input.get("ram"));
+            return vmService.updateVm(vmId, input.get("vcpus"), input.get("diskSpace"), input.get("ram"));
         } catch (VmNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
         } catch (StudentNotInTeamException e) {

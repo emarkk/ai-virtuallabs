@@ -149,8 +149,8 @@ public class TeamController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team '" + teamId + "' not found");
         } catch(NotAllowedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
-        } catch (IllegalTeamVmsResourcesLimitsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team vms resources limits must be higher than used used resources");
+        } catch(IllegalTeamVmsResourcesLimitsException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team VMs resources limits must be higher than used resources");
         }
     }
 

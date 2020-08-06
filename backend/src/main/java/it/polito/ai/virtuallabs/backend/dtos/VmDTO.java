@@ -15,7 +15,7 @@ public class VmDTO {
 
     private Long id;
 
-    private Integer vCpus;
+    private Integer vcpus;
 
     private Integer diskSpace;
 

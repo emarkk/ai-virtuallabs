@@ -4,7 +4,6 @@ import it.polito.ai.virtuallabs.backend.dtos.*;
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.TeamStudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.TeamRepository;
-import it.polito.ai.virtuallabs.backend.repositories.TeamVmsResourcesLimitsRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import it.polito.ai.virtuallabs.backend.websockets.SignalService;
@@ -30,9 +29,6 @@ public class TeamServiceImpl implements TeamService {
 
     @Autowired
     private TeamStudentRepository teamStudentRepository;
-
-    @Autowired
-    private TeamVmsResourcesLimitsRepository teamVmsResourcesLimitsRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -99,9 +95,7 @@ public class TeamServiceImpl implements TeamService {
         if(authenticatedEntity.getClass().equals(Student.class) && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(team))
             throw new NotAllowedException();
 
-        return team.getVmsResourcesLimits() == TeamVmsResourcesLimits.DEFAULT_VMS_RESOURCES_LIMITS
-                ? null
-                : modelMapper.map(team.getVmsResourcesLimits(), TeamVmsResourcesDTO.class);
+        return modelMapper.map(team.getVmsResourcesLimits(), TeamVmsResourcesDTO.class);
     }
 
     @Override
@@ -218,28 +212,16 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void setTeamVmsResourcesLimits(Long teamId, TeamVmsResourcesDTO limits) {
         Team team = getter.team(teamId);
+        TeamVmsResources newLimits = modelMapper.map(limits, TeamVmsResources.class);
+
+        System.out.println(limits.getVcpus());
 
         if(!team.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
-
-        TeamVmsResourcesLimits teamVmsResources = TeamVmsResourcesLimits.builder()
-                .vCpus(limits.getVCpus())
-                .ram(limits.getRam())
-                .diskSpace(limits.getDiskSpace())
-                .activeInstances(limits.getActiveInstances())
-                .instances(limits.getInstances())
-                .build();
-
-
-        if(!teamVmsResources.greaterThan(team.getVmsResourcesUsed()))
+        if(!newLimits.greaterThan(team.getVmsResourcesUsed()))
             throw new IllegalTeamVmsResourcesLimitsException();
 
-        if(team.getVmsResourcesLimits() != TeamVmsResourcesLimits.DEFAULT_VMS_RESOURCES_LIMITS) {
-            teamVmsResourcesLimitsRepository.delete(team.getVmsResourcesLimits());
-        }
-
-        team.setVmsResourcesLimits(teamVmsResources);
-        teamVmsResourcesLimitsRepository.save(teamVmsResources);
+        team.setVmsResourcesLimits(newLimits);
         signalService.teamVmsResourcesLimitsChanged(team);
     }
 

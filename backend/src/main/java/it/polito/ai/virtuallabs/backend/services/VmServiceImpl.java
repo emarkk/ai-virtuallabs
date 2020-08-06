@@ -93,7 +93,7 @@ public class VmServiceImpl implements VmService {
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
-    public VmDTO addVm(Long teamId, Integer vCpus, Integer diskSpace, Integer ram) {
+    public VmDTO addVm(Long teamId, Integer vcpus, Integer diskSpace, Integer ram) {
         Team team = getter.team(teamId);
         Student authenticated = (Student) authenticatedEntityMapper.get();
 
@@ -101,12 +101,12 @@ public class VmServiceImpl implements VmService {
             throw new TeamNotActiveException();
         if(!team.getMembers().stream().map(TeamStudent::getStudent).collect(Collectors.toList()).contains(authenticated))
             throw new StudentNotInTeamException();
-        if(vCpus < 0 || diskSpace < 0 || ram < 0)
+        if(vcpus < 0 || diskSpace < 0 || ram < 0)
             throw new IllegalVmConfigurationException();
 
         Vm vm = Vm.builder()
                 .diskSpace(diskSpace)
-                .vCpus(vCpus)
+                .vcpus(vcpus)
                 .ram(ram)
                 .online(false)
                 .build();
@@ -172,17 +172,17 @@ public class VmServiceImpl implements VmService {
 
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
-    public VmDTO updateVm(Long vmId, Integer vCpus, Integer diskSpace, Integer ram) {
+    public VmDTO updateVm(Long vmId, Integer vcpus, Integer diskSpace, Integer ram) {
         Vm vm = getter.vm(vmId);
 
         if(vm.getOnline())
             throw new VmOnlineException();
         if(!((Student) authenticatedEntityMapper.get()).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(vm.getTeam()))
             throw new StudentNotInTeamException();
-        if(vCpus < 0 || diskSpace < 0 || ram < 0)
+        if(vcpus < 0 || diskSpace < 0 || ram < 0)
             throw new IllegalVmConfigurationException();
 
-        vm.setVCpus(vCpus);
+        vm.setVcpus(vcpus);
         vm.setDiskSpace(diskSpace);
         vm.setRam(ram);
 

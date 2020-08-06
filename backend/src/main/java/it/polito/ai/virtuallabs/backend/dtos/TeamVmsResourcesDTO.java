@@ -5,10 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class TeamVmsResourcesDTO {
 
-    private Integer vCpus;
+    private Integer vcpus;
 
     private Integer diskSpace;
 

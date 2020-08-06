@@ -20,7 +20,7 @@ public class Vm {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Integer vCpus;
+    private Integer vcpus;
 
     private Integer diskSpace;
 

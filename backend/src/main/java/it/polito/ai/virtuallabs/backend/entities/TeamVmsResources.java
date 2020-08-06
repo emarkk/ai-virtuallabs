@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Embeddable;
+
 @Data
-@NoArgsConstructor
+@Embeddable@NoArgsConstructor
 @AllArgsConstructor
 public class TeamVmsResources {
 
-    private Integer vCpus;
+    private Integer vcpus;
 
     private Integer diskSpace;
 
@@ -20,12 +22,12 @@ public class TeamVmsResources {
     private Integer activeInstances;
 
     public static TeamVmsResources fromVm(Vm vm) {
-        return new TeamVmsResources(vm.getVCpus(), vm.getDiskSpace(), vm.getRam(), 1, vm.getOnline() ? 1 : 0);
+        return new TeamVmsResources(vm.getVcpus(), vm.getDiskSpace(), vm.getRam(), 1, vm.getOnline() ? 1 : 0);
     }
 
     public TeamVmsResources add(TeamVmsResources other) {
         return new TeamVmsResources(
-                this.vCpus + other.getVCpus(),
+                this.vcpus + other.getVcpus(),
                 this.diskSpace + other.getDiskSpace(),
                 this.ram + other.getRam(),
                 this.instances + other.getInstances(),
@@ -34,7 +36,7 @@ public class TeamVmsResources {
     }
 
     public boolean greaterThan(TeamVmsResources other) {
-        return this.vCpus >= other.getVCpus()
+        return this.vcpus >= other.getVcpus()
                 && this.diskSpace >= other.getDiskSpace()
                 && this.ram >= other.getRam()
                 && this.instances >= other.getInstances()

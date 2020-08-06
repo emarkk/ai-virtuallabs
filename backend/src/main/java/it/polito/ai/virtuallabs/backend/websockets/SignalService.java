@@ -34,7 +34,7 @@ public class SignalService {
 
     public void teamVmsResourcesLimitsChanged(Team team) {
         TeamVmsResourcesSignal vmsResourcesSignal = new TeamVmsResourcesSignal(
-                modelMapper.map(team.getVmsResourcesUsed(), TeamVmsResourcesDTO.class),
+                modelMapper.map(team.getVmsResourcesLimits(), TeamVmsResourcesDTO.class),
                 TeamVmsResourcesSignal.UpdateType.TOTAL);
         messagingTemplate.convertAndSend("/team/" + team.getId() + "/vms-resources", vmsResourcesSignal);
     }
