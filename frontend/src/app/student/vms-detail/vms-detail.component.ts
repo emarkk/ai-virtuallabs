@@ -33,7 +33,7 @@ export class StudentVmsDetailComponent implements OnInit {
   vmsResourcesLimits$: Observable<TeamVmsResources>;
 
   vmUpdatesSignal: SignalObservable<VmSignal>;
-  vmsResourcesLimitsUpdatesSignal: SignalObservable<TeamVmsResourcesSignal>;
+  vmsResourcesUpdatesSignal: SignalObservable<TeamVmsResourcesSignal>;
 
   vmAddOwnersDialogRef: MatDialogRef<VmAddOwnersDialog> = null;
   
@@ -46,10 +46,10 @@ export class StudentVmsDetailComponent implements OnInit {
     if(this.joinedTeam) {
       forkJoin(
         this.signalService.teamVmsUpdates(this.joinedTeam.id),
-        this.signalService.teamVmsLimitsUpdates(this.joinedTeam.id)
+        this.signalService.teamVmsResourcesUpdates(this.joinedTeam.id)
       ).subscribe(([vmSignal, vmsLimitsSignal]) => {
         this.vmUpdatesSignal = vmSignal;
-        this.vmsResourcesLimitsUpdatesSignal = vmsLimitsSignal;
+        this.vmsResourcesUpdatesSignal = vmsLimitsSignal;
         this.vmsRefreshToken.next(undefined);
       });
     }
@@ -84,7 +84,7 @@ export class StudentVmsDetailComponent implements OnInit {
     this.vmsResourcesLimits$ = this.vmsRefreshToken.pipe(
       switchMap(() => merge(
         this.joinedTeam ? this.teamService.getVmsResourcesLimits(this.joinedTeam.id) : of(null),
-        this.vmsResourcesLimitsUpdatesSignal ? this.vmsResourcesLimitsUpdatesSignal.data() : of(null)
+        this.vmsResourcesUpdatesSignal ? this.vmsResourcesUpdatesSignal.data() : of(null)
       )),
       scan((limits: TeamVmsResources, update: TeamVmsResources | TeamVmsResourcesSignal | null) => {
         if(update == null)
@@ -125,7 +125,7 @@ export class StudentVmsDetailComponent implements OnInit {
   }
   ngOnDestroy(): void {
     this.vmUpdatesSignal.unsubscribe();
-    this.vmsResourcesLimitsUpdatesSignal.unsubscribe();
+    this.vmsResourcesUpdatesSignal.unsubscribe();
   }
 
   changeVmState(data: { vmId: number, online: boolean }) {

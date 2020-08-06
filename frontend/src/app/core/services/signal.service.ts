@@ -75,7 +75,7 @@ export class SignalService {
   teamVmsUpdates(teamId: number): Observable<SignalObservable<VmSignal>> {
     return this._signal(`/team/${teamId}/vms`, msg => VmSignal.fromMsg(msg));
   }
-  teamVmsLimitsUpdates(teamId: number): Observable<SignalObservable<TeamVmsResourcesSignal>> {
+  teamVmsResourcesUpdates(teamId: number): Observable<SignalObservable<TeamVmsResourcesSignal>> {
     return this._signal(`/team/${teamId}/vms-resources`, msg => TeamVmsResourcesSignal.fromMsg(msg));
   }
   courseVmsUpdates(courseCode: string): Observable<SignalObservable<VmSignal>> {

@@ -1,8 +1,11 @@
-import { Component, OnInit, Input, ViewChild, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
+import { switchMap, filter } from 'rxjs/operators';
 
 import { Vm } from 'src/app/core/models/vm.model';
 import { VmModel } from 'src/app/core/models/vmmodel.model';
+import { TeamVmsResources } from 'src/app/core/models/team-vms-resources.model';
 
 import { numberValidator } from '../../core/validators/core.validator';
 
@@ -14,6 +17,10 @@ import { numberValidator } from '../../core/validators/core.validator';
 export class VmFormComponent implements OnInit {
   // link to go to when cancel button is clicked
   cancelButtonLink: string;
+  // available vms resources
+  resourcesAvailable: TeamVmsResources;
+  // updates on vm and on resources used/limits
+  updates = new BehaviorSubject<{ vm: Observable<Vm>, resourcesUsed: Observable<TeamVmsResources>, resourcesLimits: Observable<TeamVmsResources> }>(null);
 
   // whether it is possible to edit the form or not
   locked: boolean = false;
@@ -25,18 +32,16 @@ export class VmFormComponent implements OnInit {
     ram: new FormControl({ value: '', disabled: false }, [Validators.required, numberValidator, Validators.min(1)]),
   });
 
-  // used with vm edit, to show current vm information in the form
-  @Input() set data(value: Vm) {
-    console.log(value);
-    this.form.get('vcpu').setValue(value.vcpus);
-    this.form.get('disk').setValue(value.diskSpace);
-    this.form.get('ram').setValue(value.ram);
-  }
   // used to pass vm model
   @Input() set model(value: VmModel) {
-    this.form.get('model').setValue(value.name);
+    if(value)
+      this.form.get('model').setValue(value.name);
   }
-
+  // used to pass vms info (vm updates, resources used and limits)
+  @Input() set vmInfo$(value: { vm: Observable<Vm>, resourcesUsed: Observable<TeamVmsResources>, resourcesLimits: Observable<TeamVmsResources> }) {
+    this.updates.next(value);
+  }
+  // used to set cancel link
   @Input() set cancelLink(value: string) {
     this.cancelButtonLink = value;
   }
@@ -48,6 +53,31 @@ export class VmFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.updates.pipe(
+      filter(value => !!value),
+      switchMap(value => combineLatest(value.vm, value.resourcesUsed, value.resourcesLimits))
+    ).subscribe(([vm, used, limits]) => {
+      if(vm) {
+        this.form.get('vcpu').setValue(vm.vcpus);
+        this.form.get('disk').setValue(vm.diskSpace);
+        this.form.get('ram').setValue(vm.ram);
+      }
+      if(used && limits) {
+        this.resourcesAvailable = new TeamVmsResources(
+          limits.vcpus - used.vcpus + (vm ? vm.vcpus : 0),
+          limits.diskSpace - used.diskSpace + (vm ? vm.diskSpace : 0),
+          limits.ram - used.ram + (vm ? vm.ram : 0),
+          null,
+          null
+        );
+        this.form.get('vcpu').setValidators([Validators.required, numberValidator, Validators.min(1), Validators.max(this.resourcesAvailable.vcpus)]);
+        this.form.get('disk').setValidators([Validators.required, numberValidator, Validators.min(1), Validators.max(this.resourcesAvailable.diskSpace)]);
+        this.form.get('ram').setValidators([Validators.required, numberValidator, Validators.min(1), Validators.max(this.resourcesAvailable.ram)]);
+      }
+      this.form.get('vcpu').updateValueAndValidity();
+      this.form.get('disk').updateValueAndValidity();
+      this.form.get('ram').updateValueAndValidity();
+    });
   }
 
   getVcpuErrorMessage() {
@@ -55,18 +85,24 @@ export class VmFormComponent implements OnInit {
       return 'You must enter the number of virtual CPUs';
     if(this.form.get('vcpu').hasError('number') || this.form.get('vcpu').hasError('min'))
       return 'Please enter a positive number here';
+    if(this.form.get('vcpu').hasError('max'))
+      return 'This value cannot be greater than maximum available';
   }
   getDiskErrorMessage() {
     if(this.form.get('disk').hasError('required'))
       return 'You must enter the amount of disk space';
     if(this.form.get('disk').hasError('number') || this.form.get('disk').hasError('min'))
       return 'Please enter a positive number here';
+    if(this.form.get('disk').hasError('max'))
+      return 'This value cannot be greater than maximum available';
   }
   getRamErrorMessage() {
     if(this.form.get('ram').hasError('required'))
       return 'You must enter the amount of RAM';
     if(this.form.get('ram').hasError('number') || this.form.get('ram').hasError('min'))
       return 'Please enter a positive number here';
+    if(this.form.get('ram').hasError('max'))
+      return 'This value cannot be greater than maximum available';
   }
   lock() {
     this.locked = true;

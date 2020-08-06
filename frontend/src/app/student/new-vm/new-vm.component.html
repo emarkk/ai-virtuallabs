@@ -14,7 +14,7 @@
         <div *ngIf="vmModel.id">
           <p>Enter the required VM information in the form below. Note that the following configuration parameters may be subject to limitations established by the course professors. By creating a new VM, you are automatically promoted to <i>owner</i> of the VM itself.</p>
           <div class="info">
-            <app-vm-form [model]="vmModel" [cancelLink]="'/student/course/' + courseCode" (update)="saveVm($event.data)"></app-vm-form>
+            <app-vm-form [model]="vmModel" [vmInfo$]="vmInfo" [cancelLink]="'/student/course/' + courseCode" (update)="saveVm($event.data)"></app-vm-form>
           </div>
         </div>
       </div>

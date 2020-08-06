@@ -1,13 +1,10 @@
-<div class="container" *ngIf="vm$ | async as vm; else loading">
+<div class="container">
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <h1>Edit VM info</h1>
     <p>Enter the required VM information in the form below.</p>
     <div class="info">
-      <app-vm-form [data]="vm" [model]="vmModel" [cancelLink]="'/student/course/' + courseCode" (update)="saveVm($event.data)"></app-vm-form>
+      <app-vm-form [model]="vmModel" [vmInfo$]="vmInfo" [cancelLink]="'/student/course/' + courseCode" (update)="saveVm($event.data)"></app-vm-form>
     </div>
   </app-page>
 </div>
-<ng-template #loading>
-  <app-data-placeholder></app-data-placeholder>
-</ng-template>

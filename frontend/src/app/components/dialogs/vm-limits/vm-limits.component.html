@@ -86,7 +86,7 @@
       </div>
       <div class="actions">
         <button mat-flat-button mat-dialog-close>Cancel</button>
-        <app-async-button (aclick)="saveButtonClicked()" [locked]="loading">Save</app-async-button>
+        <app-async-button (aclick)="saveButtonClicked()" [loading]="locked">Save</app-async-button>
       </div>
     </form>
   </div>

@@ -221,3 +221,23 @@ table.info td {
 table.info td:first-child {
   width: 25%;
 }
+.superinput {
+  display: flex;
+  margin-bottom: 15px;
+}
+.superinput .input {
+  flex: 2;
+}
+.superinput .label {
+  flex: 1;
+  margin: 10px 0 0 20px;
+  opacity: 0.8;
+}
+.superinput .label span {
+  display: block;
+}
+.superinput .label span:nth-child(1) {
+  color: #3f51b5;
+  font-size: 0.65em;
+  text-transform: uppercase;
+}

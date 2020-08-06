@@ -34,7 +34,7 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
   columnsToDisplay: string[] = ['team', 'vm', 'creator', 'online', '_connect'];
 
   vmUpdatesSignal: SignalObservable<VmSignal>;
-  teamVmsLimitsSignal: SignalObservable<TeamVmsResourcesSignal>;
+  teamVmsResourcesUpdatesSignal: SignalObservable<TeamVmsResourcesSignal>;
   
   vmLimitsDialogRef: MatDialogRef<VmLimitsDialog> = null;
 
@@ -85,9 +85,9 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
             this.router.navigate([]);
   
           if(!this.vmLimitsDialogRef) {
-            this.signalService.teamVmsLimitsUpdates(team.id).subscribe(signal => {
-              this.teamVmsLimitsSignal = signal;
-              resourcesUsed = merge(this.teamService.getVmsResourcesUsed(team.id), this.teamVmsLimitsSignal.data()).pipe(
+            this.signalService.teamVmsResourcesUpdates(team.id).subscribe(signal => {
+              this.teamVmsResourcesUpdatesSignal = signal;
+              resourcesUsed = merge(this.teamService.getVmsResourcesUsed(team.id), this.teamVmsResourcesUpdatesSignal.data()).pipe(
                 scan((resources: TeamVmsResources, update: TeamVmsResources | TeamVmsResourcesSignal | null) => {
                   if(update == null)
                     return resources;
@@ -119,7 +119,7 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
 
             this.router.navigate([]);
             this.vmLimitsDialogRef = null;
-            this.teamVmsLimitsSignal.unsubscribe();
+            this.teamVmsResourcesUpdatesSignal.unsubscribe();
           });
         } else if(this.vmLimitsDialogRef) {
           this.vmLimitsDialogRef.close();
