@@ -1,12 +1,12 @@
 export class TeamVmsResources {
-  vCpus: number;
+  vcpus: number;
   diskSpace: number;
   ram: number;
   instances: number;
   activeInstances: number;
 
-  constructor(vCpus: number, diskSpace: number, ram: number, instances: number, activeInstances: number) {
-    this.vCpus = vCpus;
+  constructor(vcpus: number, diskSpace: number, ram: number, instances: number, activeInstances: number) {
+    this.vcpus = vcpus;
     this.diskSpace = diskSpace;
     this.ram = ram;
     this.instances = instances;

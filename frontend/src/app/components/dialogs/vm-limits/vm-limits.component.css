@@ -13,6 +13,7 @@ mat-icon {
 }
 .superinput {
   display: flex;
+  margin-bottom: 15px;
 }
 .superinput .input {
   flex: 2;
@@ -25,6 +26,7 @@ mat-icon {
   display: block;
 }
 .superinput .label span:nth-child(1) {
+  color: #3f51b5;
   font-size: 0.65em;
   text-transform: uppercase;
 }

@@ -35,7 +35,7 @@ export class TeamService {
   // get vms resource limits for team
   getVmsResourcesLimits(teamId: number): Observable<TeamVmsResources> {
     return this.http.get<any>(url(`teams/${teamId}/vms/resources/limits`)).pipe(
-      map(x => x ? new TeamVmsResources(x.vCpus, x.diskSpace, x.ram, x.instances, x.activeInstances) : Team.DEFAULT_VMS_RESOURCES_LIMITS),
+      map(x => x ? new TeamVmsResources(x.vcpus, x.diskSpace, x.ram, x.instances, x.activeInstances) : Team.DEFAULT_VMS_RESOURCES_LIMITS),
       catchError(error => of(null))
     );
   }
@@ -56,6 +56,13 @@ export class TeamService {
   // decline an invitation to a team
   declineTeamInvitation(teamId: number): Observable<boolean> {
     return this.http.post(url(`teams/${teamId}/decline`), null, httpOptions).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
+  // update vms resource limits for team
+  updateVmsResourcesLimits(teamId: number, vcpus: number, diskSpace: number, ram: number, activeInstances: number, instances: number): Observable<boolean> {
+    return this.http.post(url(`teams/${teamId}/vms/resources/limits`), { vcpus, diskSpace, ram, activeInstances, instances }, httpOptions).pipe(
       map(_ => true),
       catchError(error => of(false))
     );

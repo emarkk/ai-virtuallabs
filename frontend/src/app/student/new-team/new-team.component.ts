@@ -132,7 +132,7 @@ export class StudentNewTeamComponent implements OnInit {
       return;
 
     const name = this.form.get('name').value;
-    const timeout = this.form.get('timeout').value;
+    const timeout = +this.form.get('timeout').value;
     const membersIds = this.members.map(m => m.id).concat(this.authService.getId());
 
     this.lock();

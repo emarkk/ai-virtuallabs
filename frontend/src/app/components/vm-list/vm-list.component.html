@@ -15,8 +15,8 @@
       <span class="footer h-id" [class.danger]="resourcesUsage.instances.available == 0">
         <span class="num">{{ resourcesUsage.instances.available }}</span> /{{ resourcesUsage.instances.total }}
       </span>
-      <span class="footer h-vcpu" [class.danger]="resourcesUsage.vCpus.available == 0">
-        <span class="num">{{ resourcesUsage.vCpus.available }}</span> /{{ resourcesUsage.vCpus.total }}
+      <span class="footer h-vcpu" [class.danger]="resourcesUsage.vcpus.available == 0">
+        <span class="num">{{ resourcesUsage.vcpus.available }}</span> /{{ resourcesUsage.vcpus.total }}
       </span>
       <span class="footer h-disk" [class.danger]="resourcesUsage.diskSpace.available == 0">
           <span class="num">{{ resourcesUsage.diskSpace.available }}</span> /{{ resourcesUsage.diskSpace.total }}

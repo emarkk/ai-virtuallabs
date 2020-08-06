@@ -98,8 +98,8 @@ export class CourseFormComponent implements OnInit {
     const code = this.form.get('code').value;
     const name = this.form.get('name').value;
     const acronym = this.form.get('acronym').value;
-    const minTeamMembers = this.form.get('minTeamMembers').value;
-    const maxTeamMembers = this.form.get('maxTeamMembers').value;
+    const minTeamMembers = +this.form.get('minTeamMembers').value;
+    const maxTeamMembers = +this.form.get('maxTeamMembers').value;
     const enabled = this.form.get('enabled').value;
 
     // emit course information to parent

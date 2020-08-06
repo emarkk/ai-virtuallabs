@@ -15,6 +15,7 @@ import { TeamVmsResourcesSignal, TeamVmsResourcesSignalUpdateType } from 'src/ap
 import { CourseService } from 'src/app/core/services/course.service';
 import { TeamService } from 'src/app/core/services/team.service';
 import { SignalService, SignalObservable } from 'src/app/core/services/signal.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 import { VmLimitsDialog } from 'src/app/components/dialogs/vm-limits/vm-limits.component';
 
@@ -39,7 +40,7 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
 
   navigationData: Array<any>|null = null;
 
-  constructor(private route: ActivatedRoute, private router: Router, private courseService: CourseService, private teamService: TeamService, private signalService: SignalService, private dialog: MatDialog) {
+  constructor(private route: ActivatedRoute, private router: Router, private courseService: CourseService, private teamService: TeamService, private signalService: SignalService, private dialog: MatDialog, private toastService: ToastService) {
   }
 
   ngOnInit(): void {
@@ -101,6 +102,7 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
     
               this.vmLimitsDialogRef = this.dialog.open(VmLimitsDialog, {
                 data: {
+                  teamId: team.id,
                   teamName: team.name,
                   resourcesUsed$: resourcesUsed,
                   resourcesLimits$: this.teamService.getVmsResourcesLimits(team.id)
@@ -110,6 +112,11 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
           }
   
           this.vmLimitsDialogRef.afterClosed().subscribe(res => {
+            if(res)
+              this.toastService.show({ type: 'success', text: 'VMs resource limits saved successfully.' });
+            else if(res === false)
+              this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+
             this.router.navigate([]);
             this.vmLimitsDialogRef = null;
             this.teamVmsLimitsSignal.unsubscribe();

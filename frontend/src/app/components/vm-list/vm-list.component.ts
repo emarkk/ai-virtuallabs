@@ -35,7 +35,7 @@ export class VmListComponent implements OnInit {
   getResourcesUsage() {
     return {
       instances: { available: this.vmsLimits.instances - this.vmList.length, total: this.vmsLimits.instances },
-      vCpus: { available: this.vmsLimits.vCpus - this.vmList.map(vm => vm.vCpus).reduce((a, b) => a + b), total: this.vmsLimits.vCpus },
+      vcpus: { available: this.vmsLimits.vcpus - this.vmList.map(vm => vm.vcpus).reduce((a, b) => a + b), total: this.vmsLimits.vcpus },
       diskSpace: { available: this.vmsLimits.diskSpace - this.vmList.map(vm => vm.diskSpace).reduce((a, b) => a + b), total: this.vmsLimits.diskSpace },
       ram: { available: this.vmsLimits.ram - this.vmList.map(vm => vm.ram).reduce((a, b) => a + b), total: this.vmsLimits.ram },
       activeInstances: { available: this.vmsLimits.activeInstances - this.vmList.filter(vm => vm.online).length, total: this.vmsLimits.activeInstances },

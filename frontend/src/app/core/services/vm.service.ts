@@ -48,15 +48,15 @@ export class VmService {
     );
   }
   // add vm
-  add(vCpus: number, diskSpace: number, ram: number, teamId: number): Observable<boolean> {
-    return this.http.post(url('vms'), { vCpus, diskSpace, ram, teamId }, httpOptions).pipe(
+  add(vcpus: number, diskSpace: number, ram: number, teamId: number): Observable<boolean> {
+    return this.http.post(url('vms'), { vcpus, diskSpace, ram, teamId }, httpOptions).pipe(
       map(_ => true),
       catchError(error => of(false))
     );
   }
   // update vm
-  update(id: number, vCpus: number, diskSpace: number, ram: number): Observable<boolean> {
-    return this.http.put(url(`vms/${id}`), { vCpus, diskSpace, ram }, httpOptions).pipe(
+  update(id: number, vcpus: number, diskSpace: number, ram: number): Observable<boolean> {
+    return this.http.put(url(`vms/${id}`), { vcpus, diskSpace, ram }, httpOptions).pipe(
       map(_ => true),
       catchError(error => of(false))
     );

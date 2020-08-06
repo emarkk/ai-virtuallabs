@@ -28,7 +28,7 @@ export class VmFormComponent implements OnInit {
   // used with vm edit, to show current vm information in the form
   @Input() set data(value: Vm) {
     console.log(value);
-    this.form.get('vcpu').setValue(value.vCpus);
+    this.form.get('vcpu').setValue(value.vcpus);
     this.form.get('disk').setValue(value.diskSpace);
     this.form.get('ram').setValue(value.ram);
   }
@@ -83,9 +83,9 @@ export class VmFormComponent implements OnInit {
       return;
     
     // collect form data
-    const vcpu = this.form.get('vcpu').value;
-    const disk = this.form.get('disk').value;
-    const ram = this.form.get('ram').value;
+    const vcpu = +this.form.get('vcpu').value;
+    const disk = +this.form.get('disk').value;
+    const ram = +this.form.get('ram').value;
 
     // emit vm information to parent
     this.update.emit({ data: { vcpu, disk, ram } });

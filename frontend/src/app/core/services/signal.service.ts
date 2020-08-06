@@ -53,7 +53,9 @@ export class SignalService {
       return;
 
     this.token = null;
-    this.stompClient.disconnect();
+    this.stompClient.disconnect(() => {
+      this.stompClient = null;
+    });
     this.connected.next(false);
   }
 
