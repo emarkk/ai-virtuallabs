@@ -18,8 +18,6 @@ import java.util.Map;
 public class HomeworkController {
     @Autowired
     HomeworkService homeworkService;
-//    @Autowired
-//    FilesStorageService storageService;
 
     @PostMapping({ "", "/" })
     @ResponseStatus(HttpStatus.CREATED)
@@ -44,11 +42,19 @@ public class HomeworkController {
 
     }
 
-//    @GetMapping("/resource/{courseCode}/{fileName}")
-//    @ResponseBody
-//    public ResponseEntity<Resource> getFile(@PathVariable("courseCode") String courseCode, @PathVariable("fileName") String fileName) {
-//        Resource file = storageService.load("homeworks/" + courseCode + "/" + fileName);
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-//    }
+    @GetMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<Resource> getHomework(@PathVariable(name = "id") Long homeworkId) {
+        try {
+            Resource file = homeworkService.getHomework(homeworkId);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+        } catch (HomeworkNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal error");
+        }
+    }
 }

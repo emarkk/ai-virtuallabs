@@ -27,6 +27,9 @@ public class GetterProxy {
     @Autowired
     private VmRepository vmRepository;
 
+    @Autowired
+    private HomeworkRepository homeworkRepository;
+
     public Course course(String courseCode) {
         Optional<Course> courseOptional = courseRepository.findById(courseCode);
 
@@ -79,6 +82,15 @@ public class GetterProxy {
             throw new VmNotFoundException();
 
         return vmOptional.get();
+    }
+
+    public Homework homework(Long homeworkId) {
+        Optional<Homework> homeworkOptional = homeworkRepository.findById(homeworkId);
+
+        if(homeworkOptional.isEmpty())
+            throw new HomeworkNotFoundException();
+
+        return homeworkOptional.get();
     }
 
 }
