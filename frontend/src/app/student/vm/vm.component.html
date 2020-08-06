@@ -2,7 +2,6 @@
   <app-page>
     <div *ngIf="vmId | zeroPad as vmName">
       <app-navigation [navigationData]="navigationData?.concat({ name: 'VM-' + vmName })"></app-navigation>
-      <h1>VM-{{ vmName }}</h1>
       <div *ngIf="team$ | async as team">
         <table class="info main">
           <tr>
@@ -17,6 +16,7 @@
           </tr>
         </table>
       </div>
+      <div class="vm-screen"></div>
     </div>
   </app-page>
 </div>
