@@ -34,7 +34,7 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Due Date is not correct");
         } catch (NotAllowedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
-        } catch (HomeworkFileHandlingException e) {
+        } catch (FileHandlingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
         }
 
@@ -66,7 +66,7 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
         } catch (CourseNotEnabledException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
-        } catch (HomeworkFileHandlingException e) {
+        } catch (FileHandlingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
         }
     }

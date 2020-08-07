@@ -3,15 +3,21 @@ package it.polito.ai.virtuallabs.backend.services;
 import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
 import it.polito.ai.virtuallabs.backend.dtos.ProfessorDTO;
 import it.polito.ai.virtuallabs.backend.entities.Professor;
+import it.polito.ai.virtuallabs.backend.entities.Student;
 import it.polito.ai.virtuallabs.backend.repositories.ProfessorRepository;
 import it.polito.ai.virtuallabs.backend.repositories.specifications.ProfessorSpecifications;
+import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
+import it.polito.ai.virtuallabs.backend.utils.ProfilePicturesUtility;
 import it.polito.ai.virtuallabs.backend.utils.UserSearchEngine;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,7 +33,13 @@ public class ProfessorServiceImpl implements ProfessorService {
     private ModelMapper modelMapper;
 
     @Autowired
+    private AuthenticatedEntityMapper authenticatedEntityMapper;
+
+    @Autowired
     private GetterProxy getter;
+
+    @Autowired
+    private ProfilePicturesUtility picturesUtility;
 
     @Override
     public Optional<ProfessorDTO> getProfessor(Long professorId) {
@@ -65,5 +77,24 @@ public class ProfessorServiceImpl implements ProfessorService {
                 .limit(3)
                 .map(p -> modelMapper.map(p, ProfessorDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @Override
+    public void addPicture(Long id, MultipartFile file) {
+        Professor professor = getter.professor(id);
+        if(!((Professor) authenticatedEntityMapper.get()).equals(professor))
+            throw new NotAllowedException();
+        picturesUtility.postProfilePicture(id, ProfilePicturesUtility.ProfileType.PROFESSOR, file);
+        professor.setHasPicture(true);
+        professorRepository.save(professor);
+    }
+
+    @Override
+    public Resource getPicture(Long id) {
+        Professor professor = getter.professor(id);
+        if(!professor.getHasPicture())
+            throw new ProfilePictureNotFoundException();
+        return picturesUtility.getProfilePicture(id, ProfilePicturesUtility.ProfileType.PROFESSOR);
     }
 }

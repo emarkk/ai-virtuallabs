@@ -39,8 +39,12 @@ public class Student extends AuthenticatedEntity {
     @OneToMany(mappedBy = "creator")
     private List<Vm> createdVms = new ArrayList<>();
 
-    public void removeAllCreatedVms(){
+    public void removeAllCreatedVms() {
         this.createdVms.forEach(cVm -> cVm.setCreator(null));
         this.createdVms.clear();
+    }
+
+    public Boolean getHasPicture() {
+        return hasPicture;
     }
 }

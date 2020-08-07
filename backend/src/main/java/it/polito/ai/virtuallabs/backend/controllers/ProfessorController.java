@@ -3,12 +3,15 @@ package it.polito.ai.virtuallabs.backend.controllers;
 import it.polito.ai.virtuallabs.backend.dtos.CourseDTO;
 import it.polito.ai.virtuallabs.backend.dtos.ProfessorDTO;
 import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
-import it.polito.ai.virtuallabs.backend.services.CourseNotFoundException;
-import it.polito.ai.virtuallabs.backend.services.ProfessorNotFoundException;
-import it.polito.ai.virtuallabs.backend.services.ProfessorService;
+import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -54,6 +57,37 @@ public class ProfessorController {
             return professorService.getCoursesForProfessor(id);
         } catch(ProfessorNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor '" + id + "' not found");
+        }
+    }
+
+    @PostMapping("/{id}/picture")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addPicture(@PathVariable(name = "id") Long id, @RequestParam("file") MultipartFile file) {
+        try {
+            professorService.addPicture(id, file);
+        } catch (FileHandlingException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+        } catch (ProfessorNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor '" + id + "' not found");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
+        }
+    }
+
+    @GetMapping("/{id}/picture")
+    @ResponseBody
+    public ResponseEntity<Resource> getPicture(@PathVariable(name = "id") Long id) {
+        try {
+            Resource file = professorService.getPicture(id);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+        } catch (FileHandlingException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+        } catch (ProfessorNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor '" + id + "' not found");
+        } catch (ProfilePictureNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile picture Not Found");
         }
     }
 

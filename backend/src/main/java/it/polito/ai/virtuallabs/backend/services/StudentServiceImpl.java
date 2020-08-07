@@ -7,13 +7,18 @@ import it.polito.ai.virtuallabs.backend.entities.Course;
 import it.polito.ai.virtuallabs.backend.entities.Student;
 import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.specifications.StudentSpecifications;
+import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
+import it.polito.ai.virtuallabs.backend.utils.ProfilePicturesUtility;
 import it.polito.ai.virtuallabs.backend.utils.UserSearchEngine;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,7 +34,13 @@ public class StudentServiceImpl implements StudentService {
     private ModelMapper modelMapper;
 
     @Autowired
+    private AuthenticatedEntityMapper authenticatedEntityMapper;
+
+    @Autowired
     private GetterProxy getter;
+
+    @Autowired
+    private ProfilePicturesUtility picturesUtility;
 
     @Override
     public Optional<StudentDTO> getStudent(Long studentId) {
@@ -93,5 +104,24 @@ public class StudentServiceImpl implements StudentService {
                 .limit(3)
                 .map(e -> modelMapper.map(e.getKey(), StudentDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @Override
+    public void addPicture(Long id, MultipartFile file) {
+        Student student = getter.student(id);
+        if(!((Student) authenticatedEntityMapper.get()).equals(student))
+            throw new NotAllowedException();
+        picturesUtility.postProfilePicture(id, ProfilePicturesUtility.ProfileType.STUDENT, file);
+        student.setHasPicture(true);
+        studentRepository.save(student);
+    }
+
+    @Override
+    public Resource getPicture(Long id) {
+        Student student = getter.student(id);
+        if(!student.getHasPicture())
+            throw new ProfilePictureNotFoundException();
+        return picturesUtility.getProfilePicture(id, ProfilePicturesUtility.ProfileType.STUDENT);
     }
 }

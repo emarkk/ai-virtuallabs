@@ -67,7 +67,7 @@ public class HomeworkServiceImpl implements HomeworkService {
             Files.deleteIfExists(coursePath.resolve(homework.getId().toString() + ".jpg"));
             Files.copy(file.getInputStream(), coursePath.resolve(homework.getId().toString() + ".jpg"));
         } catch (IOException e) {
-            throw new HomeworkFileHandlingException();
+            throw new FileHandlingException();
         }
 
     }
@@ -103,20 +103,26 @@ public class HomeworkServiceImpl implements HomeworkService {
             Files.deleteIfExists(file);
             homeworkRepository.delete(homework);
         } catch (IOException e) {
-            throw new HomeworkFileHandlingException();
+            throw new FileHandlingException();
         }
     }
 
     private static final Path root = Paths.get("uploads");
-    private static final Path homeworkDir = Paths.get("uploads/homeworks");
+    private static final Path homeworkDirectory = Paths.get("uploads/homeworks");
+    private static final Path profilePictureDirectory = Paths.get("uploads/profile_pictures");
 
     @Bean
     public void initDirectory() {
         try {
             if(!Files.exists(root))
                 Files.createDirectory(root);
-            if(!Files.exists(homeworkDir))
-                Files.createDirectory(homeworkDir);
+            if(!Files.exists(homeworkDirectory))
+                Files.createDirectory(homeworkDirectory);
+            if(!Files.exists(profilePictureDirectory)) {
+                Files.createDirectory(profilePictureDirectory);
+                Files.createDirectory(profilePictureDirectory.resolve("student"));
+                Files.createDirectory(profilePictureDirectory.resolve("professor"));
+            }
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize folder for upload!");
         }

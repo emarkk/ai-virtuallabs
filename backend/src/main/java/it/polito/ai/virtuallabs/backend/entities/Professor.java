@@ -28,4 +28,8 @@ public class Professor extends AuthenticatedEntity {
     @JoinTable(name = "professor_course", joinColumns = @JoinColumn(name = "professor_id"), inverseJoinColumns = @JoinColumn(name = "course_code"))
     private List<Course> courses = new ArrayList<>();
 
+    public Boolean getHasPicture() {
+        return hasPicture;
+    }
+
 }

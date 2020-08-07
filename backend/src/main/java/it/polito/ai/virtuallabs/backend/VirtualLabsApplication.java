@@ -2,6 +2,7 @@ package it.polito.ai.virtuallabs.backend;
 
 import it.polito.ai.virtuallabs.backend.services.MockDataService;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
+import it.polito.ai.virtuallabs.backend.utils.ProfilePicturesUtility;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -35,6 +36,9 @@ public class VirtualLabsApplication {
     GetterProxy getter() {
         return new GetterProxy();
     }
+
+    @Bean
+    ProfilePicturesUtility picturesUtility() { return new ProfilePicturesUtility(); }
 
     @Bean
     CommandLineRunner commandLineRunner() {
