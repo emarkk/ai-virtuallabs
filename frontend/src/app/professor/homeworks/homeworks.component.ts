@@ -16,6 +16,7 @@ import { navHome, navCourses, nav } from '../professor.navdata';
 export class ProfessorHomeworksComponent implements OnInit {
   courseCode: string;
   course$: Observable<Course>;
+  
   navigationData: Array<any>|null = null;
 
   constructor(private route: ActivatedRoute, private courseService: CourseService) {

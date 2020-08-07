@@ -1,0 +1,29 @@
+<div class="container">
+  <app-page>
+    <app-navigation [navigationData]="navigationData"></app-navigation>
+    <h1>New homework assignment</h1>
+    <p>Enter the required homework information in the form below. Please note that <u>it is not possible</u> to edit homework information after creation. In addition, you will be able to delete a homework from the system only if no students have submitted a solution for that assignment.</p>
+    <div class="info">
+      <form [formGroup]="form">
+        <div class="input-container">
+          <mat-form-field class="fraction half first" appearance="legacy">
+            <mat-label>Title</mat-label>
+            <input matInput placeholder="The Big Bang Theory" maxlength="28" formControlName="title" required>
+            <mat-error>{{ getTitleErrorMessage() }}</mat-error>
+          </mat-form-field>
+          <mat-form-field class="fraction half" appearance="legacy">
+            <mat-label>Due date</mat-label>
+            <input matInput placeholder="mm/dd/aaaa" [matDatepicker]="picker" formControlName="dueDate" required>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error>{{ getDueDateErrorMessage() }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="actions">
+          <button mat-flat-button [routerLink]="'/professor/course/' + courseCode + '/homeworks'">Cancel</button>
+          <app-async-button (aclick)="createButtonClicked()" [loading]="locked">Create</app-async-button>
+        </div>
+      </form>
+    </div>
+  </app-page>
+</div>

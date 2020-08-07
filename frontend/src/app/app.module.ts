@@ -26,6 +26,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 import { AppComponent } from './app.component';
 import { PageComponent } from './components/page/page.component';
@@ -68,6 +70,7 @@ import { ProfessorTeamsComponent } from './professor/teams/teams.component';
 import { ProfessorVmsComponent } from './professor/vms/vms.component';
 import { ProfessorVmComponent } from './professor/vm/vm.component';
 import { ProfessorHomeworksComponent } from './professor/homeworks/homeworks.component';
+import { ProfessorNewHomeworkComponent } from './professor/new-homework/new-homework.component';
 import { StudentContainerComponent } from './student/container/container.component';
 import { StudentHomeComponent } from './student/home/home.component';
 import { StudentCoursesComponent } from './student/courses/courses.component';
@@ -122,6 +125,7 @@ import { StudentVmComponent } from './student/vm/vm.component';
     ProfessorVmsComponent,
     ProfessorVmComponent,
     ProfessorHomeworksComponent,
+    ProfessorNewHomeworkComponent,
     StudentContainerComponent,
     StudentHomeComponent,
     StudentCoursesComponent,
@@ -161,7 +165,9 @@ import { StudentVmComponent } from './student/vm/vm.component';
     MatDialogModule,
     MatProgressSpinnerModule,
     MatSlideToggleModule,
-    MatChipsModule
+    MatChipsModule,
+    MatNativeDateModule,
+    MatDatepickerModule
   ],
   providers: [
     SignalService,

@@ -12,6 +12,7 @@ import { ProfessorTeamsComponent } from './teams/teams.component';
 import { ProfessorVmsComponent } from './vms/vms.component';
 import { ProfessorVmComponent } from './vm/vm.component';
 import { ProfessorHomeworksComponent } from './homeworks/homeworks.component';
+import { ProfessorNewHomeworkComponent } from './new-homework/new-homework.component';
 
 export const professorRouting = [
   {
@@ -64,6 +65,10 @@ export const professorRouting = [
       {
         path: 'course/:code/homeworks',
         component: ProfessorHomeworksComponent,
+      },
+      {
+        path: 'course/:code/homeworks/new',
+        component: ProfessorNewHomeworkComponent,
       }
     ]
   }

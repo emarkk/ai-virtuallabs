@@ -2,6 +2,9 @@
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <h1>{{ course.name }} <span class="bar"></span><span>Homeworks</span></h1>
+    <div class="controls">
+      <button mat-flat-button color="brand" [routerLink]="'/professor/course/' + course.code + '/homeworks/new'">New assignment</button>
+    </div>
   </app-page>
 </div>
 <ng-template #loading>
