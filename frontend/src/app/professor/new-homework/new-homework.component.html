@@ -11,12 +11,24 @@
             <input matInput placeholder="The Big Bang Theory" maxlength="28" formControlName="title" required>
             <mat-error>{{ getTitleErrorMessage() }}</mat-error>
           </mat-form-field>
-          <mat-form-field class="fraction half" appearance="legacy">
-            <mat-label>Due date</mat-label>
-            <input matInput placeholder="mm/dd/aaaa" [matDatepicker]="picker" formControlName="dueDate" required>
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-error>{{ getDueDateErrorMessage() }}</mat-error>
+          <div class="fraction half">
+            <mat-form-field class="fraction twothirds first" appearance="legacy">
+              <mat-label>Due date</mat-label>
+              <input matInput placeholder="mm/dd/aaaa" [matDatepicker]="picker" [matDatepickerFilter]="dueDateFilter" formControlName="dueDate" required>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error>{{ getDueDateErrorMessage() }}</mat-error>
+            </mat-form-field>
+            <div class="fraction third">
+              <span>23:59:59</span>
+            </div>
+          </div>
+          <mat-form-field class="fraction half first" appearance="legacy">
+            <ngx-mat-file-input #removableInput formControlName="file" placeholder="Assignment file" [accept]="'image/*'" required></ngx-mat-file-input>
+            <button mat-icon-button matSuffix *ngIf="!removableInput.empty" (click)="removableInput.clear($event)">
+              <mat-icon>clear</mat-icon>
+            </button>
+            <mat-error>{{ getFileErrorMessage() }}</mat-error>
           </mat-form-field>
         </div>
         <div class="actions">

@@ -123,6 +123,9 @@ mat-form-field.half, div.half {
 mat-form-field.third, div.third {
   width: 29.3%;
 }
+mat-form-field.twothirds, div.twothirds {
+  width: 64.6%;
+}
 mat-form-field.fraction:not(.first), div.fraction:not(.first) {
   margin-left: 6%;
 }
@@ -247,4 +250,8 @@ table.info td:first-child {
   height: 600px;
   background-image: url('/assets/img/vm.png');
   background-size: contain;
+}
+mat-form-field .filename {
+  position: relative;
+  top: 6px;
 }

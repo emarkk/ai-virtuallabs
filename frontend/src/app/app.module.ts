@@ -28,6 +28,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MaterialFileInputModule } from 'ngx-material-file-input';
 
 import { AppComponent } from './app.component';
 import { PageComponent } from './components/page/page.component';
@@ -167,7 +168,8 @@ import { StudentVmComponent } from './student/vm/vm.component';
     MatSlideToggleModule,
     MatChipsModule,
     MatNativeDateModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MaterialFileInputModule
   ],
   providers: [
     SignalService,
