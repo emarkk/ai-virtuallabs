@@ -24,8 +24,8 @@
             </div>
           </div>
           <mat-form-field class="fraction half first" appearance="legacy">
-            <ngx-mat-file-input #removableInput formControlName="file" placeholder="Assignment file" [accept]="'image/*'" required></ngx-mat-file-input>
-            <button mat-icon-button matSuffix *ngIf="!removableInput.empty" (click)="removableInput.clear($event)">
+            <ngx-mat-file-input #fileInput formControlName="file" placeholder="Assignment file" [accept]="'image/*'" required></ngx-mat-file-input>
+            <button mat-icon-button matSuffix *ngIf="!fileInput.empty && !fileInput.disabled" (click)="fileInput.clear($event)">
               <mat-icon>clear</mat-icon>
             </button>
             <mat-error>{{ getFileErrorMessage() }}</mat-error>
