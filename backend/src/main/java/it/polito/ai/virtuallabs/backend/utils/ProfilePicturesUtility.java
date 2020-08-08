@@ -6,6 +6,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -39,11 +41,12 @@ public class ProfilePicturesUtility {
     public void postProfilePicture(Long userId, ProfileType profileType, MultipartFile file) {
         String path = profileType == ProfileType.STUDENT ? "student/" : "professor/";
         Path filePath = Paths.get("uploads/profile_pictures/" + path + userId + ".jpg");
-        if(!Objects.equals(file.getContentType(), "image/jpeg"))
-            throw new FileHandlingException();
+
         try {
+            BufferedImage converted = ImageConverterEngine.convert(file);
             Files.deleteIfExists(filePath);
-            Files.copy(file.getInputStream(), filePath);
+            ImageIO.write(converted, "jpg", filePath.toFile());
+
         } catch (IOException e) {
             throw new FileHandlingException();
         }

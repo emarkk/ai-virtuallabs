@@ -5,6 +5,7 @@ import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.HomeworkRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
+import it.polito.ai.virtuallabs.backend.utils.ImageConverterEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
@@ -14,6 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -48,10 +53,9 @@ public class HomeworkServiceImpl implements HomeworkService {
         if(!course.getEnabled())
             throw new CourseNotEnabledException();
 
-        if(!Objects.equals(file.getContentType(), "image/jpeg"))
-            throw new FileHandlingException();
-
         try{
+            BufferedImage converted = ImageConverterEngine.convert(file);
+
             Timestamp now = new Timestamp(System.currentTimeMillis());
             Timestamp due = new Timestamp(dueDate);
             if(due.before(now)) {
@@ -70,7 +74,7 @@ public class HomeworkServiceImpl implements HomeworkService {
             homeworkRepository.save(homework);
             courseRepository.save(course);
             Files.deleteIfExists(coursePath.resolve(homework.getId().toString() + ".jpg"));
-            Files.copy(file.getInputStream(), coursePath.resolve(homework.getId().toString() + ".jpg"));
+            ImageIO.write(converted, "jpg", coursePath.resolve(homework.getId().toString() + ".jpg").toFile());
         } catch (IOException e) {
             throw new FileHandlingException();
         }
