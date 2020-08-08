@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Transactional
 @Service
@@ -41,11 +42,15 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     public void addHomework(String courseCode, String title, Long dueDate, MultipartFile file) {
         Course course = getter.course(courseCode);
+        
         if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
-        if(!course.getEnabled()) {
+        if(!course.getEnabled())
             throw new CourseNotEnabledException();
-        }
+
+        if(!Objects.equals(file.getContentType(), "image/jpeg"))
+            throw new FileHandlingException();
+
         try{
             Timestamp now = new Timestamp(System.currentTimeMillis());
             Timestamp due = new Timestamp(dueDate);
