@@ -45,8 +45,7 @@ public class ProfilePicturesUtility {
         try {
             BufferedImage converted = ImageConverterEngine.convert(file);
             Files.deleteIfExists(filePath);
-            ImageIO.write(converted, "jpg", filePath.toFile());
-
+            ImageConverterEngine.compressAndSave(converted, filePath.toString());
         } catch (IOException e) {
             throw new FileHandlingException();
         }
