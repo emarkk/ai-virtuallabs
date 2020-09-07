@@ -60,7 +60,7 @@ public class MockDataService {
 
     public void addStudent(Long id, String email, String password, String firstName, String lastName) {
         String username = "s" + id;
-        Student student = new Student(id, email, firstName, lastName, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        Student student = new Student(id, email, firstName, lastName, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
         User user = new User(id, username, email, passwordEncoder.encode(password), true, new Timestamp(System.currentTimeMillis()), null, List.of("ROLE_STUDENT"));
         userRepository.save(user);
         studentRepository.save(student);

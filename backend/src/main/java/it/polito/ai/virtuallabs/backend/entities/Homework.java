@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -28,6 +30,10 @@ public class Homework {
     @ManyToOne
     @JoinColumn(name = "course_code", nullable = false)
     private Course course;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "homework")
+    private List<HomeworkAction> homeworkActions = new ArrayList<>();
 
     private void assignCourse(Course c) {
         this.course = c;

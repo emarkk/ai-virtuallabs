@@ -39,6 +39,10 @@ public class Student extends AuthenticatedEntity {
     @OneToMany(mappedBy = "creator")
     private List<Vm> createdVms = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "student")
+    private List<HomeworkAction> homeworkActions = new ArrayList<>();
+
     public void removeAllCreatedVms() {
         this.createdVms.forEach(cVm -> cVm.setCreator(null));
         this.createdVms.clear();
