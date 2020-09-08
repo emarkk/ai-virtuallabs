@@ -14,7 +14,7 @@ public class HomeworkActionDTO {
 
     private Long id;
 
-    private Timestamp creationDate;
+    private Timestamp date;
 
     private HomeworkAction.ActionType actionType;
 

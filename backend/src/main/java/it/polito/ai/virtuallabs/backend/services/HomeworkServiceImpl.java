@@ -2,6 +2,7 @@ package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
+import it.polito.ai.virtuallabs.backend.repositories.HomeworkActionRepository;
 import it.polito.ai.virtuallabs.backend.repositories.HomeworkRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
@@ -36,6 +37,9 @@ public class HomeworkServiceImpl implements HomeworkService {
 
     @Autowired
     CourseRepository courseRepository;
+
+    @Autowired
+    HomeworkActionRepository homeworkActionRepository;
 
     @Autowired
     GetterProxy getter;
@@ -88,10 +92,23 @@ public class HomeworkServiceImpl implements HomeworkService {
         Path file = root.resolve("homeworks/" + homework.getCourse().getCode() + "/" + homework.getId() + ".jpg");
         try{
             Resource resource = new UrlResource(file.toUri());
-            if (resource.exists() || resource.isReadable()) {
-                return resource;
-            } else {
+            if (!resource.exists() || !resource.isReadable())
                 throw new RuntimeException("Could not read the file!");
+
+            try {
+                Student authenticated = (Student) authenticatedEntityMapper.get();
+                if(homeworkActionRepository.findByHomeworkAndStudent(homework, authenticated).isEmpty()) {
+                    HomeworkAction homeworkAction = new HomeworkAction();
+                    homeworkAction.setDate(new Timestamp(System.currentTimeMillis()));
+                    homeworkAction.setActionType(HomeworkAction.ActionType.READ);
+                    homeworkAction.assignStudent(authenticated);
+                    homeworkAction.assignHomework(homework);
+                    homeworkActionRepository.save(homeworkAction);
+                }
+                return resource;
+            } catch (ClassCastException e) {
+                //Nel caso di un Professor
+                return resource;
             }
         } catch (MalformedURLException e) {
             throw new HomeworkNotFoundException();

@@ -26,8 +26,9 @@ public class HomeworkAction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Timestamp creationDate;
+    private Timestamp date;
 
+    @Enumerated(EnumType.STRING)
     private ActionType actionType;
 
     @ManyToOne
@@ -38,22 +39,22 @@ public class HomeworkAction {
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
-    private void assignHomework(Homework h) {
+    public void assignHomework(Homework h) {
         this.homework = h;
         h.getHomeworkActions().add(this);
     }
 
-    private void removeHomework() {
+    public void removeHomework() {
         this.homework.getHomeworkActions().remove(this);
         this.homework = null;
     }
 
-    private void assignStudent(Student s) {
+    public void assignStudent(Student s) {
         this.student = s;
         s.getHomeworkActions().add(this);
     }
 
-    private void removeStudent() {
+    public void removeStudent() {
         this.student.getHomeworkActions().remove(this);
         this.student = null;
     }
