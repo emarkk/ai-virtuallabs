@@ -18,7 +18,8 @@ public class HomeworkAction {
     public enum ActionType {
         READ,
         DELIVERY,
-        REVIEW
+        REVIEW,
+        REVIEW_FINAL
     }
 
     @Id
