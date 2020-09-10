@@ -53,6 +53,8 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
         } catch (NotAllowedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
         } catch (RuntimeException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal error");
         }

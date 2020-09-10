@@ -89,6 +89,10 @@ public class HomeworkServiceImpl implements HomeworkService {
     public Resource getHomework(Long homeworkId) {
         Homework homework = getter.homework(homeworkId);
 
+        if(!homework.getCourse().getEnabled()) {
+            throw new CourseNotEnabledException();
+        }
+
         Path file = root.resolve("homeworks/" + homework.getCourse().getCode() + "/" + homework.getId() + ".jpg");
         try{
             Resource resource = new UrlResource(file.toUri());
@@ -97,6 +101,10 @@ public class HomeworkServiceImpl implements HomeworkService {
 
             try {
                 Student authenticated = (Student) authenticatedEntityMapper.get();
+
+                if(!authenticated.getCourses().contains(homework.getCourse()))
+                    throw new NotAllowedException();
+
                 if(homeworkActionRepository.findByHomeworkAndStudent(homework, authenticated).isEmpty()) {
                     HomeworkAction homeworkAction = new HomeworkAction();
                     homeworkAction.setDate(new Timestamp(System.currentTimeMillis()));
@@ -108,6 +116,9 @@ public class HomeworkServiceImpl implements HomeworkService {
                 return resource;
             } catch (ClassCastException e) {
                 //Nel caso di un Professor
+                if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+                    throw new NotAllowedException();
+
                 return resource;
             }
         } catch (MalformedURLException e) {
