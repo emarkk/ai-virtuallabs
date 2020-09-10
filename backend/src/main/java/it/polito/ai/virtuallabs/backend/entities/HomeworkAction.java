@@ -59,4 +59,12 @@ public class HomeworkAction {
         this.student = null;
     }
 
+    public Boolean isReviewFinal() {
+        return this.actionType == ActionType.REVIEW_FINAL;
+    }
+
+    public Boolean isDelivery() {
+        return this.actionType == ActionType.DELIVERY;
+    }
+
 }

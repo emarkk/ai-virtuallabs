@@ -74,4 +74,21 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
         }
     }
+
+    @PostMapping("/{id}/delivery")
+    public void addHomeworkDelivery(@PathVariable(name = "id") Long homeworkId, @RequestParam("file") MultipartFile file) {
+        try{
+            homeworkService.addHomeworkDelivery(homeworkId, file);
+        } catch (HomeworkNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
+        } catch (HomeworkActionNotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Homework Action Not Allowed");
+        } catch (FileHandlingException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
+        }
+    }
 }

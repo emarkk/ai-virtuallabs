@@ -17,16 +17,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.Objects;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -144,8 +146,59 @@ public class HomeworkServiceImpl implements HomeworkService {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @Override
+    public void addHomeworkDelivery(Long homeworkId, MultipartFile file) {
+        Homework homework = getter.homework(homeworkId);
+
+        if(!homework.getCourse().getEnabled()) {
+            throw new CourseNotEnabledException();
+        }
+        Student authenticated = (Student) authenticatedEntityMapper.get();
+
+        if(!authenticated.getCourses().contains(homework.getCourse()))
+            throw new NotAllowedException();
+
+        List<HomeworkAction> homeworkActions = authenticated.getHomeworkActions().stream().filter(ha -> ha.getHomework().equals(homework)).sorted(byDate).collect(Collectors.toList());
+
+        if(homeworkActions.isEmpty())
+            throw new HomeworkActionNotAllowedException();
+
+        HomeworkAction lastAction = homeworkActions.get(homeworkActions.size() - 1);
+
+        if(lastAction.isReviewFinal() || lastAction.isDelivery())
+            throw new HomeworkActionNotAllowedException();
+
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
+        if(now.after(homework.getDueDate()))
+            throw new HomeworkActionNotAllowedException();
+
+        HomeworkAction homeworkAction = new HomeworkAction();
+        homeworkAction.setDate(now);
+        homeworkAction.setActionType(HomeworkAction.ActionType.DELIVERY);
+        homeworkAction.assignHomework(homework);
+        homeworkAction.assignStudent(authenticated);
+        homeworkActionRepository.save(homeworkAction);
+
+        try{
+            Path coursePath = Paths.get( "uploads/homeworks/deliveries/" + homework.getId());
+            if(!Files.exists(coursePath))
+                Files.createDirectory(coursePath);
+
+            BufferedImage converted = ImageConverterEngine.convert(file);
+            Files.deleteIfExists(coursePath.resolve(homeworkAction.getId().toString() + ".jpg"));
+            ImageIO.write(converted, "jpg", coursePath.resolve(homeworkAction.getId().toString() + ".jpg").toFile());
+
+        } catch (IOException e) {
+            throw new FileHandlingException();
+        }
+
+    }
+
     private static final Path root = Paths.get("uploads");
     private static final Path homeworkDirectory = Paths.get("uploads/homeworks");
+    private static final Path homeworkDeliveriesDirectory = Paths.get("uploads/homeworks/deliveries");
     private static final Path profilePictureDirectory = Paths.get("uploads/profile_pictures");
 
     @Bean
@@ -155,6 +208,8 @@ public class HomeworkServiceImpl implements HomeworkService {
                 Files.createDirectory(root);
             if(!Files.exists(homeworkDirectory))
                 Files.createDirectory(homeworkDirectory);
+            if(!Files.exists(homeworkDeliveriesDirectory))
+                Files.createDirectory(homeworkDeliveriesDirectory);
             if(!Files.exists(profilePictureDirectory)) {
                 Files.createDirectory(profilePictureDirectory);
                 Files.createDirectory(profilePictureDirectory.resolve("student"));
@@ -164,4 +219,11 @@ public class HomeworkServiceImpl implements HomeworkService {
             throw new RuntimeException("Could not initialize folder for upload!");
         }
     }
+
+    private Comparator<HomeworkAction> byDate = new Comparator<HomeworkAction>() {
+        public int compare(HomeworkAction a1, HomeworkAction a2) {
+            return Long.valueOf(a1.getDate().getTime()).compareTo(a2.getDate().getTime());
+        }
+    };
+
 }
