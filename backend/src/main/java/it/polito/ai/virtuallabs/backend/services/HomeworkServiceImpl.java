@@ -196,6 +196,39 @@ public class HomeworkServiceImpl implements HomeworkService {
 
     }
 
+    @Override
+    public Resource getHomeworkDelivery(Long homeworkDeliveryId) {
+        HomeworkAction homeworkDelivery = getter.homeworkAction(homeworkDeliveryId);
+
+        if(homeworkDelivery.isRead())
+            throw new HomeworkActionNotAllowedException();
+
+        if(!homeworkDelivery.getHomework().getCourse().getEnabled()) {
+            throw new CourseNotEnabledException();
+        }
+
+        try{
+            Student authenticated = (Student) authenticatedEntityMapper.get();
+            if(!authenticated.equals(homeworkDelivery.getStudent()))
+                throw new NotAllowedException();
+        } catch (ClassCastException e) {
+            Professor authenticated = (Professor) authenticatedEntityMapper.get();
+            if(!authenticated.getCourses().contains(homeworkDelivery.getHomework().getCourse()))
+                throw new NotAllowedException();
+        }
+
+        Path file = root.resolve("homeworks/deliveries/" + homeworkDelivery.getHomework().getId() + "/" + homeworkDelivery.getId() + ".jpg");
+        try{
+            Resource resource = new UrlResource(file.toUri());
+            if (!resource.exists() || !resource.isReadable())
+                throw new RuntimeException("Could not read the file!");
+            return  resource;
+        } catch (MalformedURLException e) {
+            throw new FileHandlingException();
+        }
+
+    }
+
     private static final Path root = Paths.get("uploads");
     private static final Path homeworkDirectory = Paths.get("uploads/homeworks");
     private static final Path homeworkDeliveriesDirectory = Paths.get("uploads/homeworks/deliveries");

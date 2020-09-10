@@ -8,4 +8,5 @@ public interface HomeworkService {
     Resource getHomework(Long homeworkId);
     void deleteHomework(Long homeworkId);
     void addHomeworkDelivery(Long homeworkId, MultipartFile file);
+    Resource getHomeworkDelivery(Long homeworkDeliveryId);
 }

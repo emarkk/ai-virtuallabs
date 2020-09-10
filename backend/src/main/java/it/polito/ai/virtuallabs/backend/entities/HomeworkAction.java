@@ -67,4 +67,9 @@ public class HomeworkAction {
         return this.actionType == ActionType.DELIVERY;
     }
 
+    public Boolean isRead() {
+        return this.actionType == ActionType.READ;
+    }
+
+
 }

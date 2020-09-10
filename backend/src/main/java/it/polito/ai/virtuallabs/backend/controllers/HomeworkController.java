@@ -1,5 +1,6 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
+import it.polito.ai.virtuallabs.backend.entities.HomeworkAction;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -89,6 +90,27 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Homework Action Not Allowed");
         } catch (FileHandlingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
+        }
+    }
+
+    @GetMapping("/deliveries/{id}")
+    @ResponseBody
+    public ResponseEntity<Resource> getHomeworkDelivery(@PathVariable(name = "id") Long homeworkDeliveryId) {
+        try {
+            Resource file = homeworkService.getHomeworkDelivery(homeworkDeliveryId);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+        } catch (HomeworkActionNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
+        } catch (HomeworkActionNotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Homework Action Not Allowed");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal error");
         }
     }
 }

@@ -27,6 +27,9 @@ public class GetterProxy {
     private TeamRepository teamRepository;
 
     @Autowired
+    private HomeworkActionRepository homeworkActionRepository;
+
+    @Autowired
     private VmModelRepository vmModelRepository;
 
     @Autowired
@@ -96,6 +99,15 @@ public class GetterProxy {
             throw new HomeworkNotFoundException();
 
         return homeworkOptional.get();
+    }
+
+    public HomeworkAction homeworkAction(Long homeworkActionId) {
+        Optional<HomeworkAction> homeworkActionOptional = homeworkActionRepository.findById(homeworkActionId);
+
+        if(homeworkActionOptional.isEmpty())
+            throw new HomeworkActionNotFoundException();
+
+        return homeworkActionOptional.get();
     }
 
 }
