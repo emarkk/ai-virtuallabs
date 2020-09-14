@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Team } from 'src/app/core/models/team.model';
@@ -22,22 +23,21 @@ export class StudentVmsComponent implements OnInit {
   course$: Observable<Course>;
   team$: Observable<Team>;
   
-  navigationData: Array<any>|null = null;
+  navigationData$: Observable<Array<any>>;
 
   constructor(private route: ActivatedRoute, private courseService: CourseService, private studentService: StudentService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.courseCode = params.code;
-      this.course$ = this.courseService.get(this.courseCode);
-      this.team$ = this.studentService.getJoinedTeamForCourse(this.authService.getId(), this.courseCode);
-      
-      this.course$.subscribe(course => {
-        this.courseName = course.name;
-        this.navigationData = [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('VMs')];
-      });
-    });
+    this.courseCode = this.route.snapshot.params.code;
+    this.init();
+  }
+  init(): void {
+    this.course$ = this.courseService.get(this.courseCode);
+    this.team$ = this.studentService.getJoinedTeamForCourse(this.authService.getId(), this.courseCode);
+    this.navigationData$ = this.course$.pipe(
+      map(course => [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('VMs')])
+    );
   }
 
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 
@@ -19,7 +20,7 @@ import { navHome, navCourses, nav } from '../professor.navdata';
 export class ProfessorEditCourseComponent implements OnInit {
   courseCode: string;
   course$: Observable<Course>;
-  navigationData: Array<any>|null = null;
+  navigationData$: Observable<Array<any>>;
   
   @ViewChild(CourseFormComponent)
   formComponent: CourseFormComponent;
@@ -28,14 +29,14 @@ export class ProfessorEditCourseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.courseCode = params.code;
-      this.course$ = this.courseService.get(this.courseCode);
-
-      this.course$.subscribe(course => {
-        this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Edit')];
-      });
-    });
+    this.courseCode = this.route.snapshot.params.code;
+    this.init();
+  }
+  init() {
+    this.course$ = this.courseService.get(this.courseCode);
+    this.navigationData$ = this.course$.pipe(
+      map(course => [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Edit')])
+    );
   }
 
   saveCourse(courseData) {

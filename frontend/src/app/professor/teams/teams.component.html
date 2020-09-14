@@ -1,6 +1,6 @@
 <div class="container" *ngIf="course$ | async as course; else loading">
   <app-page>
-    <app-navigation [navigationData]="navigationData"></app-navigation>
+    <app-navigation [navigationData]="navigationData$ | async"></app-navigation>
     <h1>{{ course.name }} <span class="bar"></span><span>Teams<span *ngIf="teamFilter"> ({{ teamFilter }})</span></span></h1>
     <p *ngIf="!teamFilter">All active teams (completed teams and active team proposals) for this course are shown below. You can choose to select only <a [routerLink]="[]" [queryParams]="{ filter: 'complete' }">complete teams</a>, or you can have a look at (old) <a [routerLink]="[]" [queryParams]="{ filter: 'inactive' }">inactive team proposals</a>.</p>
     <p *ngIf="teamFilter == 'complete'">Only completed teams (that is, accepted by all members) for this course are shown below. You may want to see a list of all <a [routerLink]="[]" [queryParams]="{}">active teams</a> instead, or you can have a look at (old) <a [routerLink]="[]" [queryParams]="{ filter: 'inactive' }">inactive team proposals</a>.</p>

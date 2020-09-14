@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription, Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 
@@ -27,7 +27,7 @@ import { navHome, navCourses, nav } from '../professor.navdata';
 export class ProfessorStudentsComponent implements OnInit {
   courseCode: string;
   course$: Observable<Course>;
-  navigationData: Array<any>|null = null;
+  navigationData$: Observable<Array<any>>;
   
   showSearch: boolean = false;
   studentMatches: any[] = [];
@@ -55,28 +55,28 @@ export class ProfessorStudentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.courseCode = params.code;
-      this.course$ = this.courseService.get(this.courseCode);
-      this.enrolledStudentsDataSource = new EnrolledStudentsDataSource(this.courseService, this.courseCode);
+    this.courseCode = this.route.snapshot.params.code;
+    this.init();
+  }
+  init(): void {
+    this.course$ = this.courseService.get(this.courseCode);
+    this.enrolledStudentsDataSource = new EnrolledStudentsDataSource(this.courseService, this.courseCode);
+    this.navigationData$ = this.course$.pipe(
+      map(course => [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Students')])
+    );
 
-      this.course$.subscribe(course => {
-        this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Students')];
-      });
+    this.searchSubject.pipe(
+      debounceTime(250),
+    ).subscribe(input => {
+      if(this.searchSubscription)
+        this.searchSubscription.unsubscribe();
 
-      this.searchSubject.pipe(
-        debounceTime(250),
-      ).subscribe(input => {
-        if(this.searchSubscription)
-          this.searchSubscription.unsubscribe();
-
-        if(input.length > 0) {
-          this.searchSubscription = this.studentService.search(input, new StudentSearchFilters({ excludeCourse: this.courseCode })).subscribe(students => {
-            this.studentMatches = students.map(s => Object.assign(s, { username: `s${s.id}` }));
-          });
-        } else
-          this.studentMatches = [];
-      });
+      if(input.length > 0) {
+        this.searchSubscription = this.studentService.search(input, new StudentSearchFilters({ excludeCourse: this.courseCode })).subscribe(students => {
+          this.studentMatches = students.map(s => Object.assign(s, { username: `s${s.id}` }));
+        });
+      } else
+        this.studentMatches = [];
     });
   }
 

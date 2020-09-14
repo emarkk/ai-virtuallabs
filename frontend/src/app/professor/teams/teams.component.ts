@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Team, TeamStatus } from 'src/app/core/models/team.model';
@@ -29,21 +30,21 @@ export class ProfessorTeamsComponent implements OnInit {
   filterFunction = filters.active;
   columnsToDisplay: string[] = ['id', 'name', 'status'];
 
-  navigationData: Array<any>|null = null;
+  navigationData$: Observable<Array<any>>;
 
   constructor(private route: ActivatedRoute, private courseService: CourseService) {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.courseCode = params.code;
-      this.course$ = this.courseService.get(this.courseCode);
-      this.teams$ = this.courseService.getTeams(this.courseCode);
-
-      this.course$.subscribe(course => {
-        this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Teams')];
-      });
-    });
+    this.courseCode = this.route.snapshot.params.code;
+    this.init();
+  }
+  init(): void {
+    this.course$ = this.courseService.get(this.courseCode);
+    this.teams$ = this.courseService.getTeams(this.courseCode);
+    this.navigationData$ = this.course$.pipe(
+      map(course => [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Teams')])
+    );
 
     this.route.queryParams.subscribe(queryParams => {
       if(queryParams.filter && ['complete', 'inactive'].includes(queryParams.filter)) {

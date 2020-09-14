@@ -1,6 +1,6 @@
 <div class="container" *ngIf="course$ | async as course; else loading">
     <app-page>
-      <app-navigation [navigationData]="navigationData"></app-navigation>
+      <app-navigation [navigationData]="navigationData$ | async"></app-navigation>
       <h1>Team proposal</h1>
       <p>Enter the required team information in the form below. By submitting a proposal, you automatically join the newborn team.</p>
       <div class="form">

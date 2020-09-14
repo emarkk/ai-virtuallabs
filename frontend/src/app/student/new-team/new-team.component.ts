@@ -3,7 +3,7 @@ import { MatChipList } from '@angular/material/chips';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable, Subscription, Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Student } from 'src/app/core/models/student.model';
@@ -29,7 +29,7 @@ export class StudentNewTeamComponent implements OnInit {
   minMembers: number;
   maxMembers: number;
   course$: Observable<Course>;
-  navigationData: Array<any>|null = null;
+  navigationData$: Observable<Array<any>>;
   
   locked: boolean = false;
   members: Student[] = [];
@@ -53,34 +53,37 @@ export class StudentNewTeamComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.courseCode = params.code;
-      this.course$ = this.courseService.get(this.courseCode);
+    this.courseCode = this.route.snapshot.params.code;
+    this.init();
+  }
+  init(): void {
+    this.course$ = this.courseService.get(this.courseCode);
+    this.navigationData$ = this.course$.pipe(
+      map(course => [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('Teams', `/student/course/${course.code}/teams`), nav('New')])
+    );
+    
+    this.course$.subscribe(course => {
+      this.courseName = course.name;
+      this.minMembers = course.minTeamMembers;
+      this.maxMembers = course.maxTeamMembers;
+    });
 
-      this.course$.subscribe(course => {
-        this.courseName = course.name;
-        this.minMembers = course.minTeamMembers;
-        this.maxMembers = course.maxTeamMembers;
-        this.navigationData = [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('Teams', `/student/course/${course.code}/teams`), nav('New')];
-      });
+    this.searchSubject.pipe(
+      debounceTime(250),
+    ).subscribe(input => {
+      if(this.searchSubscription)
+        this.searchSubscription.unsubscribe();
 
-      this.searchSubject.pipe(
-        debounceTime(250),
-      ).subscribe(input => {
-        if(this.searchSubscription)
-          this.searchSubscription.unsubscribe();
-
-        if(input.length > 0) {
-          this.searchSubscription = this.studentService.search(input, new StudentSearchFilters({
-            course: this.courseCode,
-            excludeIds: this.members.map(m => m.id).concat(this.authService.getId()),
-            teamed: false
-          })).subscribe(students => {
-            this.studentMatches = students.map(s => Object.assign(s, { username: `s${s.id}` }));
-          });
-        } else
-          this.studentMatches = [];
-      });
+      if(input.length > 0) {
+        this.searchSubscription = this.studentService.search(input, new StudentSearchFilters({
+          course: this.courseCode,
+          excludeIds: this.members.map(m => m.id).concat(this.authService.getId()),
+          teamed: false
+        })).subscribe(students => {
+          this.studentMatches = students.map(s => Object.assign(s, { username: `s${s.id}` }));
+        });
+      } else
+        this.studentMatches = [];
     });
   }
 

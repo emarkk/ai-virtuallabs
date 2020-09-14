@@ -1,0 +1,11 @@
+<div class="container" *ngIf="{ course: course$ | async, homework: homework$ | async} as info">
+  <ng-container *ngIf="info.course && info.homework">
+    <app-page>
+      <app-navigation [navigationData]="navigationData$ | async"></app-navigation>
+      <h1>{{ info.homework.title }}</h1>
+    </app-page>
+  </ng-container>
+</div>
+<ng-template #loading>
+  <app-data-placeholder></app-data-placeholder>
+</ng-template>

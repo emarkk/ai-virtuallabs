@@ -1,6 +1,6 @@
 <div class="container" *ngIf="course$ | async as course; else loading">
   <app-page>
-    <app-navigation [navigationData]="navigationData"></app-navigation>
+    <app-navigation [navigationData]="navigationData$ | async"></app-navigation>
     <h1>Edit course info</h1>
     <p>Enter the required course information in the form below.</p>
     <div class="info">

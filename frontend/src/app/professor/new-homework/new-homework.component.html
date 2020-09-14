@@ -1,6 +1,6 @@
 <div class="container">
   <app-page>
-    <app-navigation [navigationData]="navigationData"></app-navigation>
+    <app-navigation [navigationData]="navigationData$ | async"></app-navigation>
     <h1>New homework assignment</h1>
     <p>Enter the required homework information in the form below. Please note that <u>it is not possible</u> to edit homework information after creation. In addition, you will be able to delete a homework from the system only if no students have submitted a solution for that assignment.</p>
     <div class="info">

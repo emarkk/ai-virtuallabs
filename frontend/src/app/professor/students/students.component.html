@@ -1,6 +1,6 @@
 <div class="container" *ngIf="course$ | async as course; else loading">
   <app-page>
-    <app-navigation [navigationData]="navigationData"></app-navigation>
+    <app-navigation [navigationData]="navigationData$ | async"></app-navigation>
     <h1>{{ course.name }} <span class="bar"></span><span>Students</span></h1>
     <div>
       <app-selectable-table [dataSource]="enrolledStudentsDataSource" (select)="selectedStudentsChanged($event)" [columns]="enrolledStudentColumns"></app-selectable-table>

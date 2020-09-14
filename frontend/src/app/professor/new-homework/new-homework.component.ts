@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators'
 
 import { Course } from 'src/app/core/models/course.model';
 
@@ -24,7 +25,7 @@ export class ProfessorNewHomeworkComponent implements OnInit {
   courseCode: string;
   course$: Observable<Course>;
   
-  navigationData: Array<any>|null = null;
+  navigationData$: Observable<Array<any>>;
   
   locked: boolean = false;
   form = new FormGroup({
@@ -42,9 +43,9 @@ export class ProfessorNewHomeworkComponent implements OnInit {
   }
   init(): void {
     this.course$ = this.courseService.get(this.courseCode);
-    this.course$.subscribe(course => {
-      this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Homeworks', `/professor/course/${course.code}/homeworks`), nav('New')];
-    });
+    this.navigationData$ = this.course$.pipe(
+      map(course => [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Homeworks', `/professor/course/${course.code}/homeworks`), nav('New')])
+    );
   }
 
   getTitleErrorMessage() {

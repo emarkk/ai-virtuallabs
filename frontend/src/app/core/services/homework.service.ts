@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+import { Homework } from '../models/homework.model';
+
 import { url, httpOptions } from '../utils';
 
 @Injectable({
@@ -13,6 +15,11 @@ export class HomeworkService {
   constructor(private http: HttpClient) {
   }
   
+  get(id: number): Observable<Homework> {
+    return this.http.get<Homework>(url(`homeworks/${id}`)).pipe(
+      catchError(error => of(null))
+    );
+  }
   add(title: string, dueDate: number, file: File, courseCode: string): Observable<boolean> {      
     const formData: FormData = new FormData();
     formData.append('title', title);
