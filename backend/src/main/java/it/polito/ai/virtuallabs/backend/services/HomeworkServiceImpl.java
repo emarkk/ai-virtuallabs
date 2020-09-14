@@ -1,6 +1,7 @@
 package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.dtos.HomeworkActionDTO;
+import it.polito.ai.virtuallabs.backend.dtos.HomeworkDTO;
 import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
@@ -91,7 +92,26 @@ public class HomeworkServiceImpl implements HomeworkService {
     }
 
     @Override
-    public Resource getHomework(Long homeworkId) {
+    public HomeworkDTO getHomework(Long homeworkId) {
+        Homework homework = getter.homework(homeworkId);
+        if(!homework.getCourse().getEnabled()) {
+            throw new CourseNotEnabledException();
+        }
+        try{
+
+            Student authenticated = (Student) authenticatedEntityMapper.get();
+            if(!authenticated.getCourses().contains(homework.getCourse()))
+                throw new NotAllowedException();
+
+        } catch (ClassCastException e) {
+            if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+                throw new NotAllowedException();
+        }
+        return modelMapper.map(homework, HomeworkDTO.class);
+    }
+
+    @Override
+    public Resource getHomeworkResource(Long homeworkId) {
         Homework homework = getter.homework(homeworkId);
 
         if(!homework.getCourse().getEnabled()) {
@@ -276,7 +296,7 @@ public class HomeworkServiceImpl implements HomeworkService {
 
         if(!homework.getCourse().getStudents().contains(student))
             throw new StudentNotEnrolledException();
-        
+
         return student.getHomeworkActions().stream()
                 .filter(ha -> ha.getHomework().equals(homework))
                 .sorted(byDate)

@@ -1,6 +1,7 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
 import it.polito.ai.virtuallabs.backend.dtos.HomeworkActionDTO;
+import it.polito.ai.virtuallabs.backend.dtos.HomeworkDTO;
 import it.polito.ai.virtuallabs.backend.entities.HomeworkAction;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +46,24 @@ public class HomeworkController {
     }
 
     @GetMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity<Resource> getHomework(@PathVariable(name = "id") Long homeworkId) {
+    public HomeworkDTO getHomework(@PathVariable(name = "id") Long homeworkId) {
         try {
-            Resource file = homeworkService.getHomework(homeworkId);
+            return homeworkService.getHomework(homeworkId);
+        } catch (HomeworkNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
+        }
+    }
+
+
+    @GetMapping("/{id}/resource")
+    @ResponseBody
+    public ResponseEntity<Resource> getHomeworkResource(@PathVariable(name = "id") Long homeworkId) {
+        try {
+            Resource file = homeworkService.getHomeworkResource(homeworkId);
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_JPEG)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
