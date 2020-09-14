@@ -90,8 +90,8 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
         }
     }
-
-    @PostMapping("/{id}/delivery")
+    
+    @PostMapping("/{id}/actions/delivery")
     public void addHomeworkDelivery(@PathVariable(name = "id") Long homeworkId, @RequestParam("file") MultipartFile file) {
         try{
             homeworkService.addHomeworkDelivery(homeworkId, file);
@@ -108,7 +108,7 @@ public class HomeworkController {
         }
     }
 
-    @GetMapping("/deliveries/{id}")
+    @GetMapping("actions/deliveries/{id}")
     @ResponseBody
     public ResponseEntity<Resource> getHomeworkDelivery(@PathVariable(name = "id") Long homeworkDeliveryId) {
         try {
