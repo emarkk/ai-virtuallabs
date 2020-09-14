@@ -2,11 +2,13 @@ package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.dtos.HomeworkActionDTO;
 import it.polito.ai.virtuallabs.backend.dtos.HomeworkDTO;
+import it.polito.ai.virtuallabs.backend.dtos.PageDTO;
 import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.HomeworkActionRepository;
 import it.polito.ai.virtuallabs.backend.repositories.HomeworkRepository;
+import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import it.polito.ai.virtuallabs.backend.utils.ImageConverterEngine;
@@ -15,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +45,9 @@ public class HomeworkServiceImpl implements HomeworkService {
 
     @Autowired
     CourseRepository courseRepository;
+
+    @Autowired
+    StudentRepository studentRepository;
 
     @Autowired
     HomeworkActionRepository homeworkActionRepository;
@@ -182,14 +190,14 @@ public class HomeworkServiceImpl implements HomeworkService {
         if(!authenticated.getCourses().contains(homework.getCourse()))
             throw new NotAllowedException();
 
-        List<HomeworkAction> homeworkActions = authenticated.getHomeworkActions().stream().filter(ha -> ha.getHomework().equals(homework)).sorted(byDate).collect(Collectors.toList());
+        List<HomeworkAction> homeworkActions = authenticated.getHomeworkActions().stream().filter(ha -> ha.getHomework().equals(homework)).sorted(byHomeworkActionDate).collect(Collectors.toList());
 
         if(homeworkActions.isEmpty())
             throw new HomeworkActionNotAllowedException();
 
         HomeworkAction lastAction = homeworkActions.get(homeworkActions.size() - 1);
 
-        if(lastAction.isReviewFinal() || lastAction.isDelivery())
+        if(lastAction.getMark() != null || lastAction.isDelivery())
             throw new HomeworkActionNotAllowedException();
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -287,7 +295,7 @@ public class HomeworkServiceImpl implements HomeworkService {
 
             return authenticated.getHomeworkActions().stream()
                     .filter(ha -> ha.getHomework().equals(homework))
-                    .sorted(byDate)
+                    .sorted(byHomeworkActionDate)
                     .map(ha -> {
                         HomeworkActionDTO homeworkActionDTO = new HomeworkActionDTO();
                         homeworkActionDTO.setId(ha.getId());
@@ -301,10 +309,9 @@ public class HomeworkServiceImpl implements HomeworkService {
             if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
                 throw new NotAllowedException();
 
-
-            return homework.getCourse().getStudents().stream()
+                return homework.getCourse().getStudents().stream()
                     .map(s -> {
-                        List<HomeworkAction> actions = homework.getHomeworkActions().stream().filter(ha -> ha.getStudent().equals(s)).sorted(byDate).collect(Collectors.toList());
+                        List<HomeworkAction> actions = homework.getHomeworkActions().stream().filter(ha -> ha.getStudent().equals(s)).sorted(byHomeworkActionDate).collect(Collectors.toList());
                         HomeworkActionDTO actionDTO = new HomeworkActionDTO();
                         if(!actions.isEmpty()) {
                             actionDTO.setActionType(actions.get(actions.size() - 1).getActionType());
@@ -338,7 +345,7 @@ public class HomeworkServiceImpl implements HomeworkService {
 
         return student.getHomeworkActions().stream()
                 .filter(ha -> ha.getHomework().equals(homework))
-                .sorted(byDate)
+                .sorted(byHomeworkActionDate)
                 .map(ha -> {
                     HomeworkActionDTO action = new HomeworkActionDTO();
                     action.setStudent(modelMapper.map(student, StudentDTO.class));
@@ -374,7 +381,7 @@ public class HomeworkServiceImpl implements HomeworkService {
         }
     }
 
-    private Comparator<HomeworkAction> byDate = new Comparator<HomeworkAction>() {
+    private Comparator<HomeworkAction> byHomeworkActionDate = new Comparator<HomeworkAction>() {
         public int compare(HomeworkAction a1, HomeworkAction a2) {
             return Long.valueOf(a1.getDate().getTime()).compareTo(a2.getDate().getTime());
         }

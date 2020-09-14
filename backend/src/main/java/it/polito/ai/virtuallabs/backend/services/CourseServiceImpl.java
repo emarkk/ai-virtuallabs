@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -125,7 +126,7 @@ public class CourseServiceImpl implements CourseService {
         try {
             Student.class.getDeclaredField(sortField);
         } catch (NoSuchFieldException e) {
-            throw new StudentClassFieldNotFoundException();
+            throw new SortingFieldNotFoundException();
         }
 
         if(page < 0 || pageSize < 0)
@@ -279,6 +280,7 @@ public class CourseServiceImpl implements CourseService {
             return course.getHomeworks()
                     .stream()
                     .map(h -> modelMapper.map(h, HomeworkDTO.class))
+                    .sorted(byDueDate)
                     .collect(Collectors.toList());
     }
 
@@ -302,5 +304,11 @@ public class CourseServiceImpl implements CourseService {
 
         return course.getProfessors().contains(professor);
     }
+
+    private Comparator<HomeworkDTO> byDueDate = new Comparator<HomeworkDTO>() {
+        public int compare(HomeworkDTO h1, HomeworkDTO h2) {
+            return Long.valueOf(h1.getDueDate().getTime()).compareTo(h2.getDueDate().getTime());
+        }
+    };
 
 }

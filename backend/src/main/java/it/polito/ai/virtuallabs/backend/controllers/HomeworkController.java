@@ -2,7 +2,7 @@ package it.polito.ai.virtuallabs.backend.controllers;
 
 import it.polito.ai.virtuallabs.backend.dtos.HomeworkActionDTO;
 import it.polito.ai.virtuallabs.backend.dtos.HomeworkDTO;
-import it.polito.ai.virtuallabs.backend.entities.HomeworkAction;
+import it.polito.ai.virtuallabs.backend.dtos.PageDTO;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;

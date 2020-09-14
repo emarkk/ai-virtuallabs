@@ -19,7 +19,6 @@ public class HomeworkAction {
         READ,
         DELIVERY,
         REVIEW,
-        REVIEW_FINAL
     }
 
     @Id
@@ -27,6 +26,8 @@ public class HomeworkAction {
     private Long id;
 
     private Timestamp date;
+
+    private Integer mark;
 
     @Enumerated(EnumType.STRING)
     private ActionType actionType;
@@ -59,16 +60,16 @@ public class HomeworkAction {
         this.student = null;
     }
 
-    public Boolean isReviewFinal() {
-        return this.actionType == ActionType.REVIEW_FINAL;
-    }
-
     public Boolean isDelivery() {
         return this.actionType == ActionType.DELIVERY;
     }
 
     public Boolean isRead() {
         return this.actionType == ActionType.READ;
+    }
+
+    public Boolean isReview() {
+        return this.actionType == ActionType.REVIEW;
     }
 
 
