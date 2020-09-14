@@ -287,6 +287,7 @@ public class HomeworkServiceImpl implements HomeworkService {
 
             return authenticated.getHomeworkActions().stream()
                     .filter(ha -> ha.getHomework().equals(homework))
+                    .sorted(byDate)
                     .map(ha -> {
                         HomeworkActionDTO homeworkActionDTO = new HomeworkActionDTO();
                         homeworkActionDTO.setId(ha.getId());

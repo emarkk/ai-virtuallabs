@@ -106,7 +106,7 @@ public class HomeworkController {
         }
     }
 
-    @GetMapping("/{id}/actions/student/{studentId}")
+    @GetMapping("/{id}/actions/history/{studentId}")
     public List<HomeworkActionDTO> getStudentHomeworkActions(@PathVariable(name = "id") Long homeworkId, @PathVariable(name = "studentId") Long studentId) {
         try{
             return homeworkService.getStudentHomeworkActions(homeworkId, studentId);
