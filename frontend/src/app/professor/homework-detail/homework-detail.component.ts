@@ -21,6 +21,7 @@ export class ProfessorHomeworkDetailComponent implements OnInit {
   homeworkId: number;
   course$: Observable<Course>;
   homework$: Observable<Homework>;
+  homeworkText$: Observable<string>;
   
   navigationData$: Observable<Array<any>>;
 
@@ -34,6 +35,7 @@ export class ProfessorHomeworkDetailComponent implements OnInit {
 
       this.course$ = this.courseService.get(this.courseCode);
       this.homework$ = this.homeworkService.get(this.homeworkId);
+      this.homeworkText$ = this.homeworkService.getText(this.homeworkId);
       this.navigationData$ = forkJoin([this.course$, this.homework$]).pipe(
         map(([course, homework]) => [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Homeworks', `/professor/course/${course.code}/homeworks`), nav(homework.title)])
       );

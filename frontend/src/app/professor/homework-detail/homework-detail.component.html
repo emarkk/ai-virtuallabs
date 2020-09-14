@@ -3,6 +3,17 @@
     <app-page>
       <app-navigation [navigationData]="navigationData$ | async"></app-navigation>
       <h1>{{ info.homework.title }}</h1>
+      <div class="info">
+        <div class="info-dates">
+          <p>
+            Published: <b>{{ info.homework.publicationDate.toLocaleString() }}</b><br />
+            Due: <b>{{ info.homework.dueDate.toLocaleString() }}</b>
+          </p>
+        </div>
+        <div class="info-text">
+          <a><mat-icon>assignment</mat-icon> Read the assignment text</a>
+        </div>
+      </div>
     </app-page>
   </ng-container>
 </div>

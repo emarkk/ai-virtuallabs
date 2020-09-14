@@ -1,22 +1,30 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import { Homework } from '../models/homework.model';
 
-import { url, httpOptions } from '../utils';
+import { url } from '../utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HomeworkService {
   
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private domSanitizer: DomSanitizer) {
   }
   
   get(id: number): Observable<Homework> {
-    return this.http.get<Homework>(url(`homeworks/${id}`)).pipe(
+    return this.http.get<any>(url(`homeworks/${id}`)).pipe(
+      map(x => new Homework(x.id, x.title, new Date(x.publicationDate), new Date(x.dueDate))),
+      catchError(error => of(null))
+    );
+  }
+  getText(id: number): Observable<string> {
+    return this.http.get(url(`homeworks/${id}/text`), { responseType: 'blob' }).pipe(
+      map(image => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(image))),
       catchError(error => of(null))
     );
   }
