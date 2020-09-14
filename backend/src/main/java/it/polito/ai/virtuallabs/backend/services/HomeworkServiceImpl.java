@@ -220,7 +220,7 @@ public class HomeworkServiceImpl implements HomeworkService {
     }
 
     @Override
-    public Resource getHomeworkDelivery(Long homeworkDeliveryId) {
+    public Resource getHomeworkDeliveryResource(Long homeworkDeliveryId) {
         HomeworkAction homeworkDelivery = getter.homeworkAction(homeworkDeliveryId);
 
         if(homeworkDelivery.isRead())
@@ -252,7 +252,25 @@ public class HomeworkServiceImpl implements HomeworkService {
 
     }
 
-    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @Override
+    public HomeworkActionDTO getHomeworkAction(Long homeworkActionId) {
+        HomeworkAction homeworkAction = getter.homeworkAction(homeworkActionId);
+
+        if(!homeworkAction.getHomework().getCourse().getEnabled()) {
+            throw new CourseNotEnabledException();
+        }
+
+        try{
+            Student authenticated = (Student) authenticatedEntityMapper.get();
+            if(!authenticated.equals(homeworkAction.getStudent()))
+                throw new NotAllowedException();
+        } catch (ClassCastException e) {
+            if(!((Professor) authenticatedEntityMapper.get()).getCourses().contains(homeworkAction.getHomework().getCourse()))
+                throw new NotAllowedException();
+        }
+        return modelMapper.map(homeworkAction, HomeworkActionDTO.class);
+    }
+
     @Override
     public List<HomeworkActionDTO> getHomeworkActions(Long homeworkId) {
         Homework homework = getter.homework(homeworkId);
@@ -261,28 +279,48 @@ public class HomeworkServiceImpl implements HomeworkService {
             throw new CourseNotEnabledException();
         }
 
-        if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
-            throw new NotAllowedException();
+        try {
+            Student authenticated = (Student) authenticatedEntityMapper.get();
+
+            if(!authenticated.getCourses().contains(homework.getCourse()))
+                throw new NotAllowedException();
+
+            return authenticated.getHomeworkActions().stream()
+                    .filter(ha -> ha.getHomework().equals(homework))
+                    .map(ha -> {
+                        HomeworkActionDTO homeworkActionDTO = new HomeworkActionDTO();
+                        homeworkActionDTO.setId(ha.getId());
+                        homeworkActionDTO.setActionType(ha.getActionType());
+                        homeworkActionDTO.setDate(ha.getDate());
+                        homeworkActionDTO.setStudent(modelMapper.map(authenticated, StudentDTO.class));
+                        return homeworkActionDTO;
+                    })
+                    .collect(Collectors.toList());
+        } catch (ClassCastException e) {
+            if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+                throw new NotAllowedException();
 
 
-        return homework.getCourse().getStudents().stream()
-                .map(s -> {
-                    List<HomeworkAction> actions = homework.getHomeworkActions().stream().filter(ha -> ha.getStudent().equals(s)).sorted(byDate).collect(Collectors.toList());
-                    HomeworkActionDTO actionDTO = new HomeworkActionDTO();
-                    if(!actions.isEmpty()) {
-                      actionDTO.setActionType(actions.get(actions.size() - 1).getActionType());
-                      actionDTO.setDate(actions.get(actions.size() - 1).getDate());
-                      actionDTO.setId(actions.get(actions.size() - 1).getId());
-                    }
-                    actionDTO.setStudent(modelMapper.map(s, StudentDTO.class));
-                    return actionDTO;
-                })
-                .collect(Collectors.toList());
+            return homework.getCourse().getStudents().stream()
+                    .map(s -> {
+                        List<HomeworkAction> actions = homework.getHomeworkActions().stream().filter(ha -> ha.getStudent().equals(s)).sorted(byDate).collect(Collectors.toList());
+                        HomeworkActionDTO actionDTO = new HomeworkActionDTO();
+                        if(!actions.isEmpty()) {
+                            actionDTO.setActionType(actions.get(actions.size() - 1).getActionType());
+                            actionDTO.setDate(actions.get(actions.size() - 1).getDate());
+                            actionDTO.setId(actions.get(actions.size() - 1).getId());
+                        }
+                        actionDTO.setStudent(modelMapper.map(s, StudentDTO.class));
+                        return actionDTO;
+                    })
+                    .collect(Collectors.toList());
+        }
+
     }
 
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
-    public List<HomeworkActionDTO> gerStudentHomeworkActions(Long homeworkId, Long studentId) {
+    public List<HomeworkActionDTO> getStudentHomeworkActions(Long homeworkId, Long studentId) {
         Homework homework = getter.homework(homeworkId);
 
         if(!homework.getCourse().getEnabled()) {

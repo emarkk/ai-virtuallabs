@@ -109,7 +109,7 @@ public class HomeworkController {
     @GetMapping("/{id}/actions/student/{studentId}")
     public List<HomeworkActionDTO> getStudentHomeworkActions(@PathVariable(name = "id") Long homeworkId, @PathVariable(name = "studentId") Long studentId) {
         try{
-            return homeworkService.gerStudentHomeworkActions(homeworkId, studentId);
+            return homeworkService.getStudentHomeworkActions(homeworkId, studentId);
         } catch (HomeworkNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
         } catch (CourseNotEnabledException e) {
@@ -140,11 +140,24 @@ public class HomeworkController {
         }
     }
 
-    @GetMapping("actions/deliveries/{id}")
-    @ResponseBody
-    public ResponseEntity<Resource> getHomeworkDelivery(@PathVariable(name = "id") Long homeworkDeliveryId) {
+    @GetMapping("/actions/{id}")
+    public HomeworkActionDTO getHomeworkAction(@PathVariable(name = "id") Long homeworkActionId) {
         try {
-            Resource file = homeworkService.getHomeworkDelivery(homeworkDeliveryId);
+            return homeworkService.getHomeworkAction(homeworkActionId);
+        } catch (HomeworkActionNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
+        }
+    }
+
+    @GetMapping("actions/deliveries/{id}/resource")
+    @ResponseBody
+    public ResponseEntity<Resource> getHomeworkDeliveryResource(@PathVariable(name = "id") Long homeworkDeliveryId) {
+        try {
+            Resource file = homeworkService.getHomeworkDeliveryResource(homeworkDeliveryId);
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_JPEG)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
