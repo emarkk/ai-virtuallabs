@@ -1,0 +1,7 @@
+<div class="container">
+  <app-page>
+    <app-navigation [navigationData]="navigationData$ | async"></app-navigation>
+    <h1>Homeworks</h1>    
+    <app-homework-list [homeworks]="homeworks$ | async"></app-homework-list>
+  </app-page>
+</div>

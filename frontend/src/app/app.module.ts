@@ -87,6 +87,8 @@ import { StudentNewVmComponent } from './student/new-vm/new-vm.component';
 import { StudentEditVmComponent } from './student/edit-vm/edit-vm.component';
 import { StudentVmsComponent } from './student/vms/vms.component';
 import { StudentVmComponent } from './student/vm/vm.component';
+import { StudentHomeworksComponent } from './student/homeworks/homeworks.component';
+import { StudentHomeworkDetailComponent } from './student/homework-detail/homework-detail.component';
 
 @NgModule({
   declarations: [
@@ -146,6 +148,8 @@ import { StudentVmComponent } from './student/vm/vm.component';
     StudentEditVmComponent,
     StudentVmsComponent,
     StudentVmComponent,
+    StudentHomeworksComponent,
+    StudentHomeworkDetailComponent,
     ZeroPadPipe,
     TeamCreatorPipe,
     TeamGuestsPipe

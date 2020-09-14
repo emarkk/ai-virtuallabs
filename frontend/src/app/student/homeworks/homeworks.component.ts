@@ -5,28 +5,23 @@ import { map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Homework } from 'src/app/core/models/homework.model';
-import { Professor } from 'src/app/core/models/professor.model';
-import { Team } from 'src/app/core/models/team.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
 
 import { navHome, navCourses, nav } from '../student.navdata';
 
 @Component({
-  selector: 'app-student-course-detail',
-  templateUrl: './course-detail.component.html',
-  styleUrls: ['./course-detail.component.css']
+  selector: 'app-student-homeworks',
+  templateUrl: './homeworks.component.html',
+  styleUrls: ['./homeworks.component.css']
 })
-export class StudentCourseDetailComponent implements OnInit {
+export class StudentHomeworksComponent implements OnInit {
   courseCode: string;
+
   course$: Observable<Course>;
-  professors$: Observable<Professor[]>;
   homeworks$: Observable<Homework[]>;
-
+  
   navigationData$: Observable<Array<any>>;
-
-  team: Team;
-  vmAction: { edit: string, vm: number };
 
   constructor(private route: ActivatedRoute, private courseService: CourseService) {
   }
@@ -37,14 +32,12 @@ export class StudentCourseDetailComponent implements OnInit {
   }
   init(): void {
     this.course$ = this.courseService.get(this.courseCode);
-    this.professors$ = this.courseService.getProfessors(this.courseCode);
-    this.homeworks$ = this.courseService.getHomeworks(this.courseCode);
+    this.homeworks$ = this.courseService.getHomeworks(this.courseCode).pipe(
+      map(homeworks => homeworks.map(h => { h.link = `/student/course/${this.courseCode}/homework/${h.id}`; return h; }))
+    );
     this.navigationData$ = this.course$.pipe(
-      map(course => [navHome, navCourses, nav(course.name)])
+      map(course => [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('Homeworks')])
     );
   }
 
-  joinedTeam(team: Team) {
-    this.team = team;
-  }
 }

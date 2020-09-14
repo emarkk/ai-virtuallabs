@@ -21,10 +21,14 @@
       </tr>
     </table>
     <div class="content" [class.course-disabled]="!course.enabled">
-      <div *ngIf="team">
-        <app-tile text="Homeworks" [textLink]="'/student/course/' + courseCode + '/homeworks'" icon="perm_media">
+      <div *ngIf="homeworks$ | async as homeworks">
+        <div *ngIf="homeworks.length">
+          <app-tile text="Homeworks" [textLink]="'/student/course/' + courseCode + '/homeworks'" icon="perm_media">
             
-        </app-tile>
+          </app-tile>
+        </div>
+      </div>
+      <div *ngIf="team">
         <app-tile text="VMs" [textLink]="'/student/course/' + courseCode + '/vms'" icon="dns">
           <app-student-vms-detail [course]="courseCode" [team]="team"></app-student-vms-detail>
         </app-tile>

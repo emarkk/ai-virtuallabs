@@ -10,6 +10,8 @@ import { StudentVmsComponent } from './vms/vms.component';
 import { StudentNewVmComponent } from './new-vm/new-vm.component';
 import { StudentVmComponent } from './vm/vm.component';
 import { StudentEditVmComponent } from './edit-vm/edit-vm.component';
+import { StudentHomeworksComponent } from './homeworks/homeworks.component';
+import { StudentHomeworkDetailComponent } from './homework-detail/homework-detail.component';
 
 export const studentRouting = [
   {
@@ -54,6 +56,14 @@ export const studentRouting = [
       {
         path: 'course/:code/vm/:id/edit',
         component: StudentEditVmComponent,
+      },
+      {
+        path: 'course/:code/homeworks',
+        component: StudentHomeworksComponent,
+      },
+      {
+        path: 'course/:code/homework/:id',
+        component: StudentHomeworkDetailComponent,
       }
     ]
   }
