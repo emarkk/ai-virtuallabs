@@ -55,7 +55,7 @@ export class VmFormComponent implements OnInit {
   ngOnInit(): void {
     this.updates.pipe(
       filter(value => !!value),
-      switchMap(value => combineLatest(value.vm, value.resourcesUsed, value.resourcesLimits))
+      switchMap(value => combineLatest([value.vm, value.resourcesUsed, value.resourcesLimits]))
     ).subscribe(([vm, used, limits]) => {
       if(vm) {
         this.form.get('vcpu').setValue(vm.vcpus);

@@ -33,6 +33,7 @@ import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { AppComponent } from './app.component';
 import { PageComponent } from './components/page/page.component';
 import { ConfirmDialog } from './components/dialogs/confirm/confirm.component';
+import { ImageDialog } from './components/dialogs/image/image.component';
 import { VmModelDialog } from './components/dialogs/vm-model/vm-model.component';
 import { VmAddOwnersDialog } from './components/dialogs/vm-add-owners/vm-add-owners.component';
 import { VmLimitsDialog } from './components/dialogs/vm-limits/vm-limits.component';
@@ -92,6 +93,7 @@ import { StudentVmComponent } from './student/vm/vm.component';
     AppComponent,
     PageComponent,
     ConfirmDialog,
+    ImageDialog,
     VmModelDialog,
     VmAddOwnersDialog,
     VmLimitsDialog,

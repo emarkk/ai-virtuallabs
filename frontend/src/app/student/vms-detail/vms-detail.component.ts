@@ -98,7 +98,7 @@ export class StudentVmsDetailComponent implements OnInit {
       }, null)
     );
 
-    combineLatest(this.route.queryParams, this.vms$).subscribe(([queryParams, vms]) => {
+    combineLatest([this.route.queryParams, this.vms$]).subscribe(([queryParams, vms]) => {
       if(vms && queryParams.edit == 'vm-owners') {
         const vm = vms.find(vm => vm.id == queryParams.vm);
         if(!vm || vm.online)

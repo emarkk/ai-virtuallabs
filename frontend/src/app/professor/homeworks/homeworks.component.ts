@@ -18,7 +18,6 @@ import { navHome, navCourses, nav } from '../professor.navdata';
 export class ProfessorHomeworksComponent implements OnInit {
   courseCode: string;
   course$: Observable<Course>;
-
   homeworks$: Observable<Homework[]>;
 
   navigationData$: Observable<Array<any>>;
@@ -27,17 +26,17 @@ export class ProfessorHomeworksComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.courseCode = params.code;
-      
-      this.course$ = this.courseService.get(this.courseCode);
-      this.homeworks$ = this.courseService.getHomeworks(this.courseCode).pipe(
-        map(arr => arr.map(h => { h.link = `/professor/course/${this.courseCode}/homework/${h.id}`; return h; }))
-      );
-      this.navigationData$ = this.course$.pipe(
-        map(course => [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Homeworks')])
-      );
-    });
+    this.courseCode = this.route.snapshot.params.code;
+    this.init();
+  }
+  init(): void {
+    this.course$ = this.courseService.get(this.courseCode);
+    this.homeworks$ = this.courseService.getHomeworks(this.courseCode).pipe(
+      map(homeworks => homeworks.map(h => { h.link = `/professor/course/${this.courseCode}/homework/${h.id}`; return h; }))
+    );
+    this.navigationData$ = this.course$.pipe(
+      map(course => [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Homeworks')])
+    );
   }
 
 }

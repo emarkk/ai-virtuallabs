@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { forkJoin, Observable } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { combineLatest, forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Homework } from 'src/app/core/models/homework.model';
+import { HomeworkAction } from 'src/app/core/models/homework-action.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
 import { HomeworkService } from 'src/app/core/services/homework.service';
+
+import { ImageDialog } from 'src/app/components/dialogs/image/image.component';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
 
@@ -19,26 +23,43 @@ import { navHome, navCourses, nav } from '../professor.navdata';
 export class ProfessorHomeworkDetailComponent implements OnInit {
   courseCode: string;
   homeworkId: number;
+
   course$: Observable<Course>;
   homework$: Observable<Homework>;
-  homeworkText$: Observable<string>;
+  homeworkStudentsOverview$: Observable<HomeworkAction[]>;
+  
+  imageDialogRef: MatDialogRef<ImageDialog> = null;
   
   navigationData$: Observable<Array<any>>;
 
-  constructor(private route: ActivatedRoute, private courseService: CourseService, private homeworkService: HomeworkService) {
+  constructor(private router: Router, private route: ActivatedRoute, private courseService: CourseService, private homeworkService: HomeworkService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.courseCode = params.code;
-      this.homeworkId = params.id;
+    this.courseCode = this.route.snapshot.params.code;
+    this.homeworkId = this.route.snapshot.params.id;
+    this.init();
+  }
+  init(): void {
+    this.course$ = this.courseService.get(this.courseCode);
+    this.homework$ = this.homeworkService.get(this.homeworkId);
+    this.homeworkStudentsOverview$ = this.homeworkService.getStudentsOverview(this.homeworkId);
+    this.navigationData$ = forkJoin([this.course$, this.homework$]).pipe(
+      map(([course, homework]) => [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Homeworks', `/professor/course/${course.code}/homeworks`), nav(homework.title)])
+    );
 
-      this.course$ = this.courseService.get(this.courseCode);
-      this.homework$ = this.homeworkService.get(this.homeworkId);
-      this.homeworkText$ = this.homeworkService.getText(this.homeworkId);
-      this.navigationData$ = forkJoin([this.course$, this.homework$]).pipe(
-        map(([course, homework]) => [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Homeworks', `/professor/course/${course.code}/homeworks`), nav(homework.title)])
-      );
+    combineLatest([this.route.queryParams, this.homeworkService.getText(this.homeworkId)]).subscribe(([queryParams, homeworkText]) => {
+      if(queryParams.show == 'text') {
+        this.imageDialogRef = this.dialog.open(ImageDialog, {
+          data: {
+            imageUrl: homeworkText
+          }
+        });
+        this.imageDialogRef.afterClosed().subscribe(_ => {
+          this.router.navigate([]);
+        });
+      } else if(this.imageDialogRef)
+        this.imageDialogRef.close();
     });
   }
 

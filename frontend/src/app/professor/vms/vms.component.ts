@@ -78,7 +78,7 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
         }, [])
       );
 
-      combineLatest(this.route.queryParams, this.teamsVms$).subscribe(([queryParams, teamsVms]) => {
+      combineLatest([this.route.queryParams, this.teamsVms$]).subscribe(([queryParams, teamsVms]) => {
         if(teamsVms && queryParams.edit == 'vm-limits') {
           let resourcesUsed: Observable<TeamVmsResources>;
           const team = teamsVms.find(tv => tv.team.id == queryParams.team).team;

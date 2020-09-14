@@ -64,7 +64,7 @@ export class ProfessorCourseDetailComponent implements OnInit {
         switchMap(x => this.vmService.getModel(x.id))
       );
 
-      combineLatest(this.route.queryParams, this.vmModel$).subscribe(([queryParams, vmModel]) => {
+      combineLatest([this.route.queryParams, this.vmModel$]).subscribe(([queryParams, vmModel]) => {
         if(queryParams.edit == 'vm-model') {
           this.vmModelDialogRef = this.dialog.open(VmModelDialog, {
             data: {
@@ -82,7 +82,7 @@ export class ProfessorCourseDetailComponent implements OnInit {
             } else if(res === false)
               this.toastService.show({ type: 'danger', text: 'An error occurred.' });
               
-            this.router.navigate([`professor/course/${this.courseCode}`]);
+            this.router.navigate([]);
           });
         } else if(this.vmModelDialogRef)
           this.vmModelDialogRef.close();

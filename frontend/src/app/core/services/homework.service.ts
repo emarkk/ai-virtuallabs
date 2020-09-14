@@ -5,6 +5,8 @@ import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import { Homework } from '../models/homework.model';
+import { Student } from '../models/student.model';
+import { HomeworkAction, HomeworkActionType } from '../models/homework-action.model';
 
 import { url } from '../utils';
 
@@ -25,6 +27,12 @@ export class HomeworkService {
   getText(id: number): Observable<string> {
     return this.http.get(url(`homeworks/${id}/text`), { responseType: 'blob' }).pipe(
       map(image => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(image))),
+      catchError(error => of(null))
+    );
+  }
+  getStudentsOverview(id: number): Observable<HomeworkAction[]> {
+    return this.http.get<any>(url(`homeworks/${id}/actions`)).pipe(
+      map(x => new HomeworkAction(x.id, x.date ? new Date(x.date) : null, x.actionType as HomeworkActionType, new Student(x.student.id, x.student.firstName, x.student.lastName, x.student.email, x.student.hasPicture))),
       catchError(error => of(null))
     );
   }
