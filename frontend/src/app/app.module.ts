@@ -50,6 +50,8 @@ import { CourseListComponent } from './components/course-list/course-list.compon
 import { CourseFormComponent } from './components/course-form/course-form.component';
 import { TeamInvitationItemComponent } from './components/team-invitation-item/team-invitation-item.component';
 import { TeamInvitationListComponent } from './components/team-invitation-list/team-invitation-list.component';
+import { HomeworkItemComponent } from './components/homework-item/homework-item.component';
+import { HomeworkListComponent } from './components/homework-list/homework-list.component';
 import { VmItemComponent } from './components/vm-item/vm-item.component';
 import { VmListComponent } from './components/vm-list/vm-list.component';
 import { VmFormComponent } from './components/vm-form/vm-form.component';
@@ -106,6 +108,8 @@ import { StudentVmComponent } from './student/vm/vm.component';
     CourseFormComponent,
     TeamInvitationItemComponent,
     TeamInvitationListComponent,
+    HomeworkItemComponent,
+    HomeworkListComponent,
     VmItemComponent,
     VmListComponent,
     VmFormComponent,

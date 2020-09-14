@@ -10,6 +10,7 @@ import { EnrolledStudent } from '../models/enrolled-student.model';
 import { Team, TeamStatus } from '../models/team.model';
 import { Professor } from '../models/professor.model';
 import { VmModel } from '../models/vmmodel.model';
+import { Homework } from '../models/homework.model';
 import { Vm } from '../models/vm.model';
 
 import { url, httpOptions } from '../utils';
@@ -82,6 +83,13 @@ export class CourseService {
       }),
       flatMap((teamVms: { team: Team, vms: Vm[] }) => of(teamVms.vms.length ? teamVms.vms.map(vm => ({ team: teamVms.team, vm })) : { team: teamVms.team, vm: null })),
       reduce((a, t) => a.concat(t), [])
+    );
+  }
+  //
+  getHomeworks(code: string): Observable<Homework[]> {
+    return this.http.get<any[]>(url(`courses/${code}/homeworks`)).pipe(
+      map(arr => arr.map(x => new Homework(x.id, x.title, new Date(x.publicationDate), new Date(x.dueDate)))),
+      catchError(error => of(null))
     );
   }
   // create new course

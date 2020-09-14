@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
+import { Homework } from 'src/app/core/models/homework.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
 
@@ -16,6 +18,8 @@ import { navHome, navCourses, nav } from '../professor.navdata';
 export class ProfessorHomeworksComponent implements OnInit {
   courseCode: string;
   course$: Observable<Course>;
+
+  homeworks$: Observable<Homework[]>;
   
   navigationData: Array<any>|null = null;
 
@@ -26,6 +30,10 @@ export class ProfessorHomeworksComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.courseCode = params.code;
       this.course$ = this.courseService.get(this.courseCode);
+
+      this.homeworks$ = this.courseService.getHomeworks(this.courseCode).pipe(
+        map(arr => arr.map(h => { h.link = `/professor/course/${this.courseCode}/homework/${h.id}`; return h; }))
+      );
 
       this.course$.subscribe(course => {
         this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Homeworks')];

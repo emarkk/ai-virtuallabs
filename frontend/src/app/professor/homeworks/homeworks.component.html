@@ -2,6 +2,7 @@
   <app-page>
     <app-navigation [navigationData]="navigationData"></app-navigation>
     <h1>{{ course.name }} <span class="bar"></span><span>Homeworks</span></h1>
+    <app-homework-list [homeworks]="homeworks$ | async"></app-homework-list>
     <div class="controls">
       <button mat-flat-button color="brand" [routerLink]="'/professor/course/' + course.code + '/homeworks/new'">New assignment</button>
     </div>

@@ -1,0 +1,14 @@
+<div class="item" [routerLink]="homework.link">
+  <div class="col col-i">
+    <mat-icon>assignment</mat-icon>
+  </div>
+  <div class="col col-title">
+    <span class="title">{{ homework.title }}</span>
+  </div>
+  <div class="col col-publication">
+    <span>{{ homework.publicationDate.toLocaleString() }}</span>
+  </div>
+  <div class="col col-due">
+    <span>{{ homework.dueDate.toLocaleString() }}</span>
+  </div>
+</div>

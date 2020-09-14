@@ -8,28 +8,24 @@ span {
   cursor: pointer;
   display: flex;
   align-items: center;
-  padding: 20px 40px;
+  padding: 14px 40px;
   border: 1px solid #fff;
   box-shadow: 0 0 1px rgba(34, 25, 25, 0.4);
   border-radius: 6px;
   outline: none;
 }
-.item.disabled {
-  opacity: 0.6;
-}
 .item:hover {
   border: 1px solid #ff6647;
 }
 .col-i {
-  flex: 3;
+  flex: 0.5;
 }
-.col-code {
-  flex: 4;
+.col-title {
+  flex: 2;
 }
-.col-info {
-  flex: 14;
+.col-publication, .col-due {
+  flex: 1;
 }
-.name {
-  font-size: 1.2em;
-  font-weight: 500;
+.title {
+  font-size: 1.15em;
 }

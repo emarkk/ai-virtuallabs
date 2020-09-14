@@ -1,0 +1,14 @@
+<div class="homework-list">
+  <div *ngIf="homeworkList && homeworkList.length">
+    <div class="headers">
+      <span class="header h-i"></span>
+      <span class="header h-title">title</span>
+      <span class="header h-published">published</span>
+      <span class="header h-due">due</span>
+    </div>
+    <div *ngFor="let homework of homeworkList" class="homework">
+      <app-homework-item [data]="homework"></app-homework-item>
+    </div>
+  </div>
+  <p *ngIf="homeworkList && !homeworkList.length" class="list-empty">No homeworks to show.</p>
+</div>

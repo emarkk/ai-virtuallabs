@@ -1,0 +1,17 @@
+.headers {
+  display: flex;
+  text-transform: uppercase;
+  font-size: 0.7em;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 10px 40px;
+}
+.h-i {
+  flex: 0.5;
+}
+.h-title {
+  flex: 2;
+}
+.h-published, .h-due {
+  flex: 1;
+}
