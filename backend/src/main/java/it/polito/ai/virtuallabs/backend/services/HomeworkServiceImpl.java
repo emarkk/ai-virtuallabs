@@ -111,7 +111,7 @@ public class HomeworkServiceImpl implements HomeworkService {
     }
 
     @Override
-    public Resource getHomeworkResource(Long homeworkId) {
+    public Resource getHomeworkText(Long homeworkId) {
         Homework homework = getter.homework(homeworkId);
 
         if(!homework.getCourse().getEnabled()) {

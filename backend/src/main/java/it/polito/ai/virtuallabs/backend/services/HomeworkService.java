@@ -10,7 +10,7 @@ import java.util.List;
 public interface HomeworkService {
     void addHomework(String courseCode, String title, Long dueDate, MultipartFile file);
     HomeworkDTO getHomework(Long homeworkId);
-    Resource getHomeworkResource(Long homeworkId);
+    Resource getHomeworkText(Long homeworkId);
     void deleteHomework(Long homeworkId);
     void addHomeworkDelivery(Long homeworkId, MultipartFile file);
     Resource getHomeworkDeliveryResource(Long homeworkDeliveryId);

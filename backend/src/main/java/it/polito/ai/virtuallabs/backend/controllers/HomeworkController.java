@@ -59,11 +59,11 @@ public class HomeworkController {
     }
 
 
-    @GetMapping("/{id}/resource")
+    @GetMapping("/{id}/text")
     @ResponseBody
-    public ResponseEntity<Resource> getHomeworkResource(@PathVariable(name = "id") Long homeworkId) {
+    public ResponseEntity<Resource> getHomeworkText(@PathVariable(name = "id") Long homeworkId) {
         try {
-            Resource file = homeworkService.getHomeworkResource(homeworkId);
+            Resource file = homeworkService.getHomeworkText(homeworkId);
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_JPEG)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
