@@ -90,7 +90,24 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
         }
     }
-    
+
+    @GetMapping("/{id}/actions/student/{studentId}")
+    public List<HomeworkActionDTO> getStudentHomeworkActions(@PathVariable(name = "id") Long homeworkId, @PathVariable(name = "studentId") Long studentId) {
+        try{
+            return homeworkService.gerStudentHomeworkActions(homeworkId, studentId);
+        } catch (HomeworkNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
+        } catch(StudentNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student '" + studentId + "' not found");
+        }  catch(StudentNotEnrolledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not enrolled in course");
+        }
+    }
+
     @PostMapping("/{id}/actions/delivery")
     public void addHomeworkDelivery(@PathVariable(name = "id") Long homeworkId, @RequestParam("file") MultipartFile file) {
         try{

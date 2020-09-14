@@ -13,4 +13,5 @@ public interface HomeworkService {
     void addHomeworkDelivery(Long homeworkId, MultipartFile file);
     Resource getHomeworkDelivery(Long homeworkDeliveryId);
     List<HomeworkActionDTO> getHomeworkActions(Long homeworkId);
+    List<HomeworkActionDTO> gerStudentHomeworkActions(Long homeworkId, Long studentId);
 }

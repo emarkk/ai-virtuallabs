@@ -260,6 +260,37 @@ public class HomeworkServiceImpl implements HomeworkService {
                 .collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @Override
+    public List<HomeworkActionDTO> gerStudentHomeworkActions(Long homeworkId, Long studentId) {
+        Homework homework = getter.homework(homeworkId);
+
+        if(!homework.getCourse().getEnabled()) {
+            throw new CourseNotEnabledException();
+        }
+
+        if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+        Student student = getter.student(studentId);
+
+        if(!homework.getCourse().getStudents().contains(student))
+            throw new StudentNotEnrolledException();
+        
+        return student.getHomeworkActions().stream()
+                .filter(ha -> ha.getHomework().equals(homework))
+                .sorted(byDate)
+                .map(ha -> {
+                    HomeworkActionDTO action = new HomeworkActionDTO();
+                    action.setStudent(modelMapper.map(student, StudentDTO.class));
+                    action.setId(ha.getId());
+                    action.setDate(ha.getDate());
+                    action.setActionType(ha.getActionType());
+                    return action;
+                })
+                .collect(Collectors.toList());
+    }
+
     private static final Path root = Paths.get("uploads");
     private static final Path homeworkDirectory = Paths.get("uploads/homeworks");
     private static final Path homeworkDeliveriesDirectory = Paths.get("uploads/homeworks/deliveries");
