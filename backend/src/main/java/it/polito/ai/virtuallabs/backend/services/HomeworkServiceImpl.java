@@ -1,5 +1,7 @@
 package it.polito.ai.virtuallabs.backend.services;
 
+import it.polito.ai.virtuallabs.backend.dtos.HomeworkActionDTO;
+import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.HomeworkActionRepository;
@@ -7,6 +9,7 @@ import it.polito.ai.virtuallabs.backend.repositories.HomeworkRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import it.polito.ai.virtuallabs.backend.utils.ImageConverterEngine;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
@@ -24,10 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -42,6 +42,9 @@ public class HomeworkServiceImpl implements HomeworkService {
 
     @Autowired
     HomeworkActionRepository homeworkActionRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     GetterProxy getter;
@@ -227,6 +230,34 @@ public class HomeworkServiceImpl implements HomeworkService {
             throw new FileHandlingException();
         }
 
+    }
+
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @Override
+    public List<HomeworkActionDTO> getHomeworkActions(Long homeworkId) {
+        Homework homework = getter.homework(homeworkId);
+
+        if(!homework.getCourse().getEnabled()) {
+            throw new CourseNotEnabledException();
+        }
+
+        if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+
+        return homework.getCourse().getStudents().stream()
+                .map(s -> {
+                    List<HomeworkAction> actions = homework.getHomeworkActions().stream().filter(ha -> ha.getStudent().equals(s)).sorted(byDate).collect(Collectors.toList());
+                    HomeworkActionDTO actionDTO = new HomeworkActionDTO();
+                    if(!actions.isEmpty()) {
+                      actionDTO.setActionType(actions.get(actions.size() - 1).getActionType());
+                      actionDTO.setDate(actions.get(actions.size() - 1).getDate());
+                      actionDTO.setId(actions.get(actions.size() - 1).getId());
+                    }
+                    actionDTO.setStudent(modelMapper.map(s, StudentDTO.class));
+                    return actionDTO;
+                })
+                .collect(Collectors.toList());
     }
 
     private static final Path root = Paths.get("uploads");

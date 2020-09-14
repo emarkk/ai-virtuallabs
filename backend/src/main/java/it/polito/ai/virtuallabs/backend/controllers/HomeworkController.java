@@ -1,5 +1,6 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
+import it.polito.ai.virtuallabs.backend.dtos.HomeworkActionDTO;
 import it.polito.ai.virtuallabs.backend.entities.HomeworkAction;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -73,6 +75,19 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
         } catch (FileHandlingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
+        }
+    }
+
+    @GetMapping("/{id}/actions")
+    public List<HomeworkActionDTO> getHomeworkActions(@PathVariable(name = "id") Long homeworkId) {
+        try{
+            return homeworkService.getHomeworkActions(homeworkId);
+        } catch (HomeworkNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
         }
     }
 
