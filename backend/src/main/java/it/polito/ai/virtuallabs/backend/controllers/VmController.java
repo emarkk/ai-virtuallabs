@@ -45,8 +45,6 @@ public class VmController {
             return vmService.getVm(vmId);
         } catch (VmNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vm with id: " + vmId + " not found");
-        } catch (StudentNotInTeamException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not in team");
         } catch (TeamNotActiveException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is not active");
         } catch(NotAllowedException e) {

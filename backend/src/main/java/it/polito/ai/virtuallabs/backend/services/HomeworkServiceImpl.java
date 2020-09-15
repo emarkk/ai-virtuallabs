@@ -110,16 +110,13 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     public HomeworkDTO getHomework(Long homeworkId) {
         Homework homework = getter.homework(homeworkId);
-        if(!homework.getCourse().getEnabled()) {
-            throw new CourseNotEnabledException();
-        }
-
         AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
 
-        if(authenticated.getClass().getName().contains("Student") && !((Student) authenticated).getCourses().contains(homework.getCourse()))
+        if(!homework.getCourse().getEnabled())
+            throw new CourseNotEnabledException();
+        if(authenticated instanceof Student && !((Student) authenticated).getCourses().contains(homework.getCourse()))
             throw new NotAllowedException();
-
-        if(authenticated.getClass().getName().contains("Professor") && !homework.getCourse().getProfessors().contains((Professor) authenticated))
+        if(authenticated instanceof Professor && !homework.getCourse().getProfessors().contains(authenticated))
             throw new NotAllowedException();
 
         return modelMapper.map(homework, HomeworkDTO.class);
@@ -128,10 +125,14 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     public Resource getHomeworkText(Long homeworkId) {
         Homework homework = getter.homework(homeworkId);
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
 
-        if(!homework.getCourse().getEnabled()) {
+        if(!homework.getCourse().getEnabled())
             throw new CourseNotEnabledException();
-        }
+        if(authenticated instanceof Student && !((Student) authenticated).getCourses().contains(homework.getCourse()))
+            throw new NotAllowedException();
+        if(authenticated instanceof Professor && !homework.getCourse().getProfessors().contains(authenticated))
+            throw new NotAllowedException();
 
         Path file = root.resolve("homeworks/" + homework.getCourse().getCode() + "/" + homework.getId() + ".jpg");
         try{
@@ -139,13 +140,7 @@ public class HomeworkServiceImpl implements HomeworkService {
             if (!resource.exists() || !resource.isReadable())
                 throw new RuntimeException("Could not read the file!");
 
-            AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
-
-            if(authenticated.getClass().getName().contains("Student")) {
-
-                if(!((Student) authenticated).getCourses().contains(homework.getCourse()))
-                    throw new NotAllowedException();
-
+            if(authenticated instanceof Student) {
                 List<HomeworkAction> actions = ((Student) authenticated).getHomeworkActions().stream().filter(ha -> ha.getHomework().equals(homework)).sorted(byHomeworkActionDate).collect(Collectors.toList());
 
                 if(actions.get(actions.size() -1).isNull()) {
@@ -156,10 +151,6 @@ public class HomeworkServiceImpl implements HomeworkService {
                     homeworkAction.assignHomework(homework);
                     homeworkActionRepository.save(homeworkAction);
                 }
-            } else {
-                //Nel caso di un Professor
-                if(!homework.getCourse().getProfessors().contains((Professor) authenticated))
-                    throw new NotAllowedException();
             }
             return resource;
         } catch (MalformedURLException e) {
@@ -171,11 +162,12 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     public void deleteHomework(Long homeworkId) {
         Homework homework = getter.homework(homeworkId);
+
         if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
-        if(!homework.getCourse().getEnabled()) {
+        if(!homework.getCourse().getEnabled())
             throw new CourseNotEnabledException();
-        }
+
         Path file = root.resolve("homeworks/" + homework.getCourse().getCode() + "/" + homework.getId() + ".jpg");
         try {
             Files.deleteIfExists(file);
@@ -189,12 +181,10 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     public void addHomeworkDelivery(Long homeworkId, MultipartFile file) {
         Homework homework = getter.homework(homeworkId);
-
-        if(!homework.getCourse().getEnabled()) {
-            throw new CourseNotEnabledException();
-        }
         Student authenticated = (Student) authenticatedEntityMapper.get();
 
+        if(!homework.getCourse().getEnabled())
+            throw new CourseNotEnabledException();
         if(!authenticated.getCourses().contains(homework.getCourse()))
             throw new NotAllowedException();
 
@@ -238,17 +228,14 @@ public class HomeworkServiceImpl implements HomeworkService {
 
         if(homeworkDelivery.isRead())
             throw new HomeworkActionNotAllowedException();
-
-        if(!homeworkDelivery.getHomework().getCourse().getEnabled()) {
+        if(!homeworkDelivery.getHomework().getCourse().getEnabled())
             throw new CourseNotEnabledException();
-        }
 
         AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
 
-        if(authenticated.getClass().getName().contains("Student") && !((Student) authenticated).equals(homeworkDelivery.getStudent()))
+        if(authenticated instanceof Student && !homeworkDelivery.getStudent().equals(authenticated))
             throw new NotAllowedException();
-
-        if(authenticated.getClass().getName().contains("Professor") && !((Professor) authenticated).getCourses().contains(homeworkDelivery.getHomework().getCourse()))
+        if(authenticated instanceof Professor && !((Professor) authenticated).getCourses().contains(homeworkDelivery.getHomework().getCourse()))
             throw new NotAllowedException();
 
         Path file = root.resolve("homeworks/deliveries/" + homeworkDelivery.getHomework().getId() + "/" + homeworkDelivery.getId() + ".jpg");
@@ -266,17 +253,13 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     public HomeworkActionDTO getHomeworkAction(Long homeworkActionId) {
         HomeworkAction homeworkAction = getter.homeworkAction(homeworkActionId);
-
-        if(!homeworkAction.getHomework().getCourse().getEnabled()) {
-            throw new CourseNotEnabledException();
-        }
-
         AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
 
-        if(authenticated.getClass().getName().contains("Student") && !((Student)authenticated).equals(homeworkAction.getStudent()))
+        if(!homeworkAction.getHomework().getCourse().getEnabled())
+            throw new CourseNotEnabledException();
+        if(authenticated instanceof Student && !homeworkAction.getStudent().equals(authenticated))
             throw new NotAllowedException();
-
-        if(authenticated.getClass().getName().contains("Professor") && !((Professor) authenticated).getCourses().contains(homeworkAction.getHomework().getCourse()))
+        if(authenticated instanceof Professor && !((Professor) authenticated).getCourses().contains(homeworkAction.getHomework().getCourse()))
             throw new NotAllowedException();
 
         return modelMapper.map(homeworkAction, HomeworkActionDTO.class);
@@ -322,9 +305,8 @@ public class HomeworkServiceImpl implements HomeworkService {
     public List<HomeworkActionDTO> getStudentHomeworkActions(Long homeworkId, Long studentId) {
         Homework homework = getter.homework(homeworkId);
 
-        if(!homework.getCourse().getEnabled()) {
+        if(!homework.getCourse().getEnabled())
             throw new CourseNotEnabledException();
-        }
 
         Student student = getter.student(studentId);
 
@@ -333,10 +315,9 @@ public class HomeworkServiceImpl implements HomeworkService {
 
         AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
 
-        if(authenticated.getClass().getName().contains("Professor") && !homework.getCourse().getProfessors().contains((Professor) authenticated))
+        if(authenticated instanceof Student && !student.equals(authenticated))
             throw new NotAllowedException();
-
-        if(authenticated.getClass().getName().contains("Student") && !student.equals((Student) authenticated))
+        if(authenticated instanceof Professor && !homework.getCourse().getProfessors().contains(authenticated))
             throw new NotAllowedException();
 
         List<HomeworkActionDTO> dtos =  student.getHomeworkActions().stream()

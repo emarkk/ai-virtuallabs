@@ -77,9 +77,9 @@ public class TeamServiceImpl implements TeamService {
         Team team = getter.team(teamId);
         AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
 
-        if(authenticatedEntity.getClass().getName().contains("Professor") && !((Professor) authenticatedEntity).getCourses().contains(team.getCourse()))
+        if(authenticatedEntity instanceof Student && ((Student) authenticatedEntity).getTeams().stream().noneMatch(ts -> ts.getTeam().equals(team)))
             throw new NotAllowedException();
-        if(authenticatedEntity.getClass().getName().contains("Student") && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(team))
+        if(authenticatedEntity instanceof Professor && !((Professor) authenticatedEntity).getCourses().contains(team.getCourse()))
             throw new NotAllowedException();
 
         return modelMapper.map(team.getVmsResourcesUsed(), TeamVmsResourcesDTO.class);
@@ -90,9 +90,9 @@ public class TeamServiceImpl implements TeamService {
         Team team = getter.team(teamId);
         AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
 
-        if(authenticatedEntity.getClass().getName().contains("Professor") && !((Professor) authenticatedEntity).getCourses().contains(team.getCourse()))
+        if(authenticatedEntity instanceof Student && ((Student) authenticatedEntity).getTeams().stream().noneMatch(ts -> ts.getTeam().equals(team)))
             throw new NotAllowedException();
-        if(authenticatedEntity.getClass().getName().contains("Student") && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(team))
+        if(authenticatedEntity instanceof Professor && !((Professor) authenticatedEntity).getCourses().contains(team.getCourse()))
             throw new NotAllowedException();
 
         return modelMapper.map(team.getVmsResourcesLimits(), TeamVmsResourcesDTO.class);

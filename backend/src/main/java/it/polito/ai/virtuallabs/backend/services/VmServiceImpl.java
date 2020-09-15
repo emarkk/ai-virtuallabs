@@ -160,10 +160,10 @@ public class VmServiceImpl implements VmService {
         Vm vm = getter.vm(vmId);
         AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
 
-        if(authenticatedEntity.getClass().getName().contains("Professor") && !((Professor) authenticatedEntity).getCourses().contains(vm.getTeam().getCourse()))
+        if(authenticatedEntity instanceof Student && ((Student) authenticatedEntity).getTeams().stream().noneMatch(ts -> ts.getTeam().equals(vm.getTeam())))
             throw new NotAllowedException();
-        if(authenticatedEntity.getClass().getName().contains("Student") && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(vm.getTeam()))
-            throw new StudentNotInTeamException();
+        if(authenticatedEntity instanceof Professor && !((Professor) authenticatedEntity).getCourses().contains(vm.getTeam().getCourse()))
+            throw new NotAllowedException();
         if(!vm.getTeam().isComplete())
             throw new TeamNotActiveException();
 
