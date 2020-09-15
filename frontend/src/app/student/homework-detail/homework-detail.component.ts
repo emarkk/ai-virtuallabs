@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { forkJoin, Observable } from 'rxjs';
@@ -17,13 +17,13 @@ import { navHome, navCourses, nav } from '../student.navdata';
   templateUrl: './homework-detail.component.html',
   styleUrls: ['./homework-detail.component.css']
 })
-export class StudentHomeworkDetailComponent implements OnInit {
+export class StudentHomeworkDetailComponent implements OnInit, OnDestroy {
   courseCode: string;
   homeworkId: number;
 
   course$: Observable<Course>;
   homework$: Observable<Homework>;
-  homeworkText$: Observable<SafeUrl>;
+  homeworkText: SafeUrl;
 
   navigationData$: Observable<Array<any>>;
 
@@ -38,10 +38,15 @@ export class StudentHomeworkDetailComponent implements OnInit {
   init(): void {
     this.course$ = this.courseService.get(this.courseCode);
     this.homework$ = this.homeworkService.get(this.homeworkId);
-    this.homeworkText$ = this.homeworkService.getText(this.homeworkId);
     this.navigationData$ = forkJoin([this.course$, this.homework$]).pipe(
       map(([course, homework]) => [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('Homeworks', `/student/course/${course.code}/homeworks`), nav(homework.title)])
     );
+    
+    this.homeworkService.getText(this.homeworkId).subscribe(homeworkText => this.homeworkText = homeworkText);
+  }
+
+  ngOnDestroy() {
+    URL.revokeObjectURL(this.homeworkText as string);
   }
 
 }

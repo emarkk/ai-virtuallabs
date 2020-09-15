@@ -10,7 +10,7 @@
             Due: <b>{{ info.homework.dueDate.toLocaleString() }}</b>
           </p>
         </div>
-        <div class="info-text" *ngIf="homeworkText$ | async as homeworkText">
+        <div class="info-text" *ngIf="homeworkText">
           <a [href]="homeworkText" [download]="info.homework.title"><mat-icon>assignment</mat-icon> Download the assignment text</a>
         </div>
       </div>
