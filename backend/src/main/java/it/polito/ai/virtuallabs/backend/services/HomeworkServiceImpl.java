@@ -300,27 +300,49 @@ public class HomeworkServiceImpl implements HomeworkService {
 
         if(!filterBy.equals("ALL") && !filterBy.equals("READ") && !filterBy.equals("NULL") && !filterBy.equals("DELIVERY") && !filterBy.equals("REVIEW"))
             throw new IllegalFilterRequestException();
-        
-            if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
-                throw new NotAllowedException();
 
-            Page<HomeworkAction> actionPage = null;
-            if(filterBy.equals("ALL")) {
-                actionPage = homeworkActionRepository.findAllActions(
-                        PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "date")),
-                        homeworkId);
-            } else {
+        if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+        Page<HomeworkAction> actionPage = null;
+        if(filterBy.equals("ALL")) {
+            actionPage = homeworkActionRepository.findAllActions(
+                    PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "date")),
+                    homeworkId);
+        } else {
                 actionPage = homeworkActionRepository.findAllByHomeworkIdAndActionType(
                         PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "date")),
                         homeworkId, filterBy.equals("NULL") ? HomeworkAction.ActionType.NULL : filterBy.equals("DELIVERY") ? HomeworkAction.ActionType.DELIVERY : filterBy.equals("READ") ? HomeworkAction.ActionType.READ : HomeworkAction.ActionType.REVIEW);
-            }
+        }
 
-            List<HomeworkActionDTO> dtos = actionPage.stream()
-                    .map(ha -> modelMapper.map(ha, HomeworkActionDTO.class))
-                    .collect(Collectors.toList());
+        List<HomeworkActionDTO> dtos = actionPage.stream()
+                .map(ha -> modelMapper.map(ha, HomeworkActionDTO.class))
+                .collect(Collectors.toList());
 
-            return new PageDTO<>((int)actionPage.getTotalElements(), dtos);
+        return new PageDTO<>((int)actionPage.getTotalElements(), dtos);
     }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public List<HomeworkActionDTO> getAuthenticatedStudentHomeworkActions(Long homeworkId) {
+        Homework homework = getter.homework(homeworkId);
+
+        if(!homework.getCourse().getEnabled()) {
+            throw new CourseNotEnabledException();
+        }
+
+        if(!homework.getCourse().getStudents().contains((Student) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+
+        List<HomeworkActionDTO> dtos = ((Student) authenticatedEntityMapper.get()).getHomeworkActions().stream()
+                .filter(ha -> ha.getHomework().equals(homework))
+                .sorted(byHomeworkActionDate)
+                .map(ha -> modelMapper.map(ha, HomeworkActionDTO.class))
+                .collect(Collectors.toList());
+        Collections.reverse(dtos);
+        return dtos;
+    }
+
 
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override

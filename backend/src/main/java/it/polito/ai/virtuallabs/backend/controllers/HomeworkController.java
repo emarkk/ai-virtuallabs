@@ -114,11 +114,10 @@ public class HomeworkController {
         }
     }
 
-    @GetMapping("/{id}/actions/personal")
-    public List<HomeworkActionDTO> getHomeworkActions(@PathVariable(name = "id") Long homeworkId) {
+    @GetMapping("/{id}/actions/authenticated")
+    public List<HomeworkActionDTO> getAuthenticatedStudentHomeworkActions(@PathVariable(name = "id") Long homeworkId) {
         try{
-            //return homeworkService.getHomeworkActions(homeworkId);
-            return null;
+            return homeworkService.getAuthenticatedStudentHomeworkActions(homeworkId);
         } catch (HomeworkNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
         } catch (CourseNotEnabledException e) {

@@ -17,6 +17,7 @@ public interface HomeworkService {
     Resource getHomeworkDeliveryResource(Long homeworkDeliveryId);
     HomeworkActionDTO getHomeworkAction(Long homeworkActionId);
     PageDTO<HomeworkActionDTO> getAllHomeworkActions(Long homeworkId, Integer page, Integer pageSize, String filterBy);
+    List<HomeworkActionDTO> getAuthenticatedStudentHomeworkActions(Long homeworkId);
     List<HomeworkActionDTO> getStudentHomeworkActions(Long homeworkId, Long studentId);
 
 }
