@@ -91,6 +91,14 @@ public class HomeworkServiceImpl implements HomeworkService {
 
             homeworkRepository.save(homework);
             courseRepository.save(course);
+            course.getStudents().forEach(s -> {
+                HomeworkAction firstAction = new HomeworkAction();
+                firstAction.setActionType(HomeworkAction.ActionType.NULL);
+                firstAction.setDate(new Timestamp(System.currentTimeMillis()));
+                firstAction.setHomework(homework);
+                firstAction.setStudent(s);
+                homeworkActionRepository.save(firstAction);
+            });
             Files.deleteIfExists(coursePath.resolve(homework.getId().toString() + ".jpg"));
             ImageIO.write(converted, "jpg", coursePath.resolve(homework.getId().toString() + ".jpg").toFile());
         } catch (IOException e) {
@@ -138,7 +146,9 @@ public class HomeworkServiceImpl implements HomeworkService {
                 if(!authenticated.getCourses().contains(homework.getCourse()))
                     throw new NotAllowedException();
 
-                if(homeworkActionRepository.findByHomeworkAndStudent(homework, authenticated).isEmpty()) {
+                List<HomeworkAction> actions = authenticated.getHomeworkActions().stream().filter(ha -> ha.getHomework().equals(homework)).sorted(byHomeworkActionDate).collect(Collectors.toList());
+
+                if(actions.get(actions.size() -1).isNull()) {
                     HomeworkAction homeworkAction = new HomeworkAction();
                     homeworkAction.setDate(new Timestamp(System.currentTimeMillis()));
                     homeworkAction.setActionType(HomeworkAction.ActionType.READ);
@@ -192,12 +202,9 @@ public class HomeworkServiceImpl implements HomeworkService {
 
         List<HomeworkAction> homeworkActions = authenticated.getHomeworkActions().stream().filter(ha -> ha.getHomework().equals(homework)).sorted(byHomeworkActionDate).collect(Collectors.toList());
 
-        if(homeworkActions.isEmpty())
-            throw new HomeworkActionNotAllowedException();
-
         HomeworkAction lastAction = homeworkActions.get(homeworkActions.size() - 1);
 
-        if(lastAction.getMark() != null || lastAction.isDelivery())
+        if(lastAction.getMark() != null || lastAction.isDelivery() || lastAction.isNull())
             throw new HomeworkActionNotAllowedException();
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -279,51 +286,40 @@ public class HomeworkServiceImpl implements HomeworkService {
         return modelMapper.map(homeworkAction, HomeworkActionDTO.class);
     }
 
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
-    public List<HomeworkActionDTO> getHomeworkActions(Long homeworkId) {
+    public PageDTO<HomeworkActionDTO> getAllHomeworkActions(Long homeworkId, Integer page, Integer pageSize, String filterBy) {
         Homework homework = getter.homework(homeworkId);
 
         if(!homework.getCourse().getEnabled()) {
             throw new CourseNotEnabledException();
         }
 
-        try {
-            Student authenticated = (Student) authenticatedEntityMapper.get();
+        if(page < 0 || pageSize < 0)
+            throw new InvalidPageException();
 
-            if(!authenticated.getCourses().contains(homework.getCourse()))
-                throw new NotAllowedException();
-
-            return authenticated.getHomeworkActions().stream()
-                    .filter(ha -> ha.getHomework().equals(homework))
-                    .sorted(byHomeworkActionDate)
-                    .map(ha -> {
-                        HomeworkActionDTO homeworkActionDTO = new HomeworkActionDTO();
-                        homeworkActionDTO.setId(ha.getId());
-                        homeworkActionDTO.setActionType(ha.getActionType());
-                        homeworkActionDTO.setDate(ha.getDate());
-                        homeworkActionDTO.setStudent(modelMapper.map(authenticated, StudentDTO.class));
-                        return homeworkActionDTO;
-                    })
-                    .collect(Collectors.toList());
-        } catch (ClassCastException e) {
+        if(!filterBy.equals("ALL") && !filterBy.equals("READ") && !filterBy.equals("NULL") && !filterBy.equals("DELIVERY") && !filterBy.equals("REVIEW"))
+            throw new IllegalFilterRequestException();
+        
             if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
                 throw new NotAllowedException();
 
-                return homework.getCourse().getStudents().stream()
-                    .map(s -> {
-                        List<HomeworkAction> actions = homework.getHomeworkActions().stream().filter(ha -> ha.getStudent().equals(s)).sorted(byHomeworkActionDate).collect(Collectors.toList());
-                        HomeworkActionDTO actionDTO = new HomeworkActionDTO();
-                        if(!actions.isEmpty()) {
-                            actionDTO.setActionType(actions.get(actions.size() - 1).getActionType());
-                            actionDTO.setDate(actions.get(actions.size() - 1).getDate());
-                            actionDTO.setId(actions.get(actions.size() - 1).getId());
-                        }
-                        actionDTO.setStudent(modelMapper.map(s, StudentDTO.class));
-                        return actionDTO;
-                    })
-                    .collect(Collectors.toList());
-        }
+            Page<HomeworkAction> actionPage = null;
+            if(filterBy.equals("ALL")) {
+                actionPage = homeworkActionRepository.findAllActions(
+                        PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "date")),
+                        homeworkId);
+            } else {
+                actionPage = homeworkActionRepository.findAllByHomeworkIdAndActionType(
+                        PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "date")),
+                        homeworkId, filterBy.equals("NULL") ? HomeworkAction.ActionType.NULL : filterBy.equals("DELIVERY") ? HomeworkAction.ActionType.DELIVERY : filterBy.equals("READ") ? HomeworkAction.ActionType.READ : HomeworkAction.ActionType.REVIEW);
+            }
 
+            List<HomeworkActionDTO> dtos = actionPage.stream()
+                    .map(ha -> modelMapper.map(ha, HomeworkActionDTO.class))
+                    .collect(Collectors.toList());
+
+            return new PageDTO<>((int)actionPage.getTotalElements(), dtos);
     }
 
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")

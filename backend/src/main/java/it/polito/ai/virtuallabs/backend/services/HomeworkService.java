@@ -2,6 +2,7 @@ package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.dtos.HomeworkActionDTO;
 import it.polito.ai.virtuallabs.backend.dtos.HomeworkDTO;
+import it.polito.ai.virtuallabs.backend.dtos.PageDTO;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +16,7 @@ public interface HomeworkService {
     void addHomeworkDelivery(Long homeworkId, MultipartFile file);
     Resource getHomeworkDeliveryResource(Long homeworkDeliveryId);
     HomeworkActionDTO getHomeworkAction(Long homeworkActionId);
-    List<HomeworkActionDTO> getHomeworkActions(Long homeworkId);
+    PageDTO<HomeworkActionDTO> getAllHomeworkActions(Long homeworkId, Integer page, Integer pageSize, String filterBy);
     List<HomeworkActionDTO> getStudentHomeworkActions(Long homeworkId, Long studentId);
 
 }

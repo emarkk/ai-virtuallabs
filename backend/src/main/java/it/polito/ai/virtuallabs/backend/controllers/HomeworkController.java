@@ -93,10 +93,32 @@ public class HomeworkController {
         }
     }
 
-    @GetMapping("/{id}/actions")
+    @GetMapping("/{id}/actions/all")
+    public PageDTO<HomeworkActionDTO> getAllHomeworkActions(
+            @PathVariable(name = "id") Long homeworkId,
+            @RequestParam(name = "filterBy", required = false, defaultValue = "ALL") String filterBy,
+            @RequestParam(name = "page", required = false, defaultValue = "0") String page,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "15") String pageSize) {
+        try{
+            return homeworkService.getAllHomeworkActions(homeworkId, Integer.parseInt(page), Integer.parseInt(pageSize), filterBy);
+        } catch (HomeworkNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
+        }  catch (InvalidPageException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Page or pageSize Field Not Valid");
+        } catch (IllegalFilterRequestException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Illegal Filter Requested");
+        }
+    }
+
+    @GetMapping("/{id}/actions/personal")
     public List<HomeworkActionDTO> getHomeworkActions(@PathVariable(name = "id") Long homeworkId) {
         try{
-            return homeworkService.getHomeworkActions(homeworkId);
+            //return homeworkService.getHomeworkActions(homeworkId);
+            return null;
         } catch (HomeworkNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
         } catch (CourseNotEnabledException e) {

@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 public class HomeworkAction {
 
     public enum ActionType {
+        NULL,
         READ,
         DELIVERY,
         REVIEW,
@@ -70,6 +71,10 @@ public class HomeworkAction {
 
     public Boolean isReview() {
         return this.actionType == ActionType.REVIEW;
+    }
+
+    public Boolean isNull() {
+        return this.actionType == ActionType.NULL;
     }
 
 
