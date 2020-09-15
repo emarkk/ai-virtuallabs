@@ -40,13 +40,11 @@ public class CourseController {
             @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
             @RequestParam(name = "sortDirection", required = false, defaultValue = "asc") String sortDirection,
             @RequestParam(name = "page", required = false, defaultValue = "0") String page,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "15") String pageSize) throws CourseNotFoundException, SortingFieldNotFoundException, InvalidPageException{
+            @RequestParam(name = "pageSize", required = false, defaultValue = "15") String pageSize) {
         try {
             return courseService.getEnrolledStudents(courseCode, sortBy, sortDirection, Integer.parseInt(page), Integer.parseInt(pageSize));
         } catch(CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
-        } catch (SortingFieldNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, sortBy + ": Does Not Exist");
         } catch (InvalidPageException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "page or pageSize Field Not Valid");
         }
@@ -170,7 +168,7 @@ public class CourseController {
     }
 
     @PostMapping("/{code}/unenroll/all")
-    public void unenrollAll(@PathVariable(name = "code") String courseCode) throws CourseNotFoundException, CourseNotEnabledException, NotAllowedException{
+    public void unenrollAll(@PathVariable(name = "code") String courseCode) {
         try{
             courseService.unenrollAllStudents(courseCode);
         } catch (CourseNotFoundException e) {

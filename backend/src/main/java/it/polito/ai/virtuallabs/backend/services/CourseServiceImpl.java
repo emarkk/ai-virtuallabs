@@ -3,6 +3,7 @@ package it.polito.ai.virtuallabs.backend.services;
 import it.polito.ai.virtuallabs.backend.dtos.*;
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
+import it.polito.ai.virtuallabs.backend.repositories.CourseStudent;
 import it.polito.ai.virtuallabs.backend.repositories.HomeworkRepository;
 import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
@@ -123,32 +124,22 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public PageDTO<CourseStudentDTO> getEnrolledStudents(String courseCode, String sortField, String sortDirection, int page, int pageSize) {
         Course course = getter.course(courseCode);
-        try {
-            Student.class.getDeclaredField(sortField);
-        } catch (NoSuchFieldException e) {
-            throw new SortingFieldNotFoundException();
-        }
 
         if(page < 0 || pageSize < 0)
             throw new InvalidPageException();
 
-        Page<Student> studentPage = studentRepository.findAllByCoursesIsContaining(
+        Page<CourseStudent> studentPage = studentRepository.findAllWithTeamByCoursesIsContaining(
                 PageRequest.of(page, pageSize, Sort.by(
                         sortDirection.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField
                 )),
                 course);
 
-        List<CourseStudentDTO> students = studentPage.stream()
-                .map(s -> {
-                    Optional<Team> team = s.getTeams().stream().map(TeamStudent::getTeam).filter(t -> t.isComplete() && t.getCourse().equals(course)).findFirst();
-                    if(team.isPresent())
-                        return new CourseStudentDTO(modelMapper.map(s, StudentDTO.class), modelMapper.map(team.get(), TeamDTO.class));
-                    Optional<TeamStudent> ts = s.getTeams().stream().filter(t -> (t.getTeam().isActive()) && (t.getInvitationStatus().equals(TeamStudent.InvitationStatus.ACCEPTED) || t.getInvitationStatus().equals(TeamStudent.InvitationStatus.CREATOR))).findFirst();
-                    return ts.map(teamStudent -> new CourseStudentDTO(modelMapper.map(s, StudentDTO.class), modelMapper.map(teamStudent.getTeam(), TeamDTO.class))).orElseGet(() -> new CourseStudentDTO(modelMapper.map(s, StudentDTO.class), null));
-                })
-                .collect(Collectors.toList());
-
-        return new PageDTO<>(course.getStudents().size(), students);
+        return new PageDTO<>(course.getStudents().size(), studentPage.stream().map(cs ->
+                new CourseStudentDTO(
+                        modelMapper.map(cs.getStudent(), StudentDTO.class),
+                        cs.getTeam() != null ? modelMapper.map(cs.getTeam(), TeamDTO.class) : null
+                )
+        ).collect(Collectors.toList()));
     }
 
     @Override
