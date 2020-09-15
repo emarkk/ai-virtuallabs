@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-welcome',
@@ -15,6 +15,8 @@ export class WelcomeComponent implements OnInit {
   @Input() set picture(value: string) {
     this.picturePath = value;
   }
+
+  @Output() editPictureClick = new EventEmitter<void>();
 
   constructor() {
   }

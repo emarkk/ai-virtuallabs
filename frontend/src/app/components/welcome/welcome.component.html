@@ -3,6 +3,7 @@
     <div class="info">
       <div class="profile-pic"><img [src]="picturePath || 'assets/img/user.png'" /></div>
       <p>Welcome back, <b>{{ fullName }}</b></p>
+      <a (click)="editPictureClick.emit()">Edit profile picture</a>
     </div>
   </app-tile>
 </div>

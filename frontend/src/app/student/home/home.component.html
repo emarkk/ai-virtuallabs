@@ -1,6 +1,7 @@
 <div class="container" *ngIf="me$ | async as me; else loading">
   <app-page>
-    <app-welcome [name]="me.firstName + ' ' + me.lastName.toUpperCase()" [picture]="me.picturePath"></app-welcome>
+    <app-welcome [name]="me.firstName + ' ' + me.lastName.toUpperCase()" [picture]="me.picturePath" (editPictureClick)="editPictureClicked()"></app-welcome>
+    <input type="file" ng2FileSelect hidden accept="image/*" (change)="profilePictureSelected($event.target.files[0])" #fileInput />
     <app-tile text="Courses" textLink="/student/courses" icon="library_books">
       <app-course-list [courses]="courses$ | async"></app-course-list>
     </app-tile>

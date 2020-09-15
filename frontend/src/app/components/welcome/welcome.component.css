@@ -14,3 +14,6 @@ p {
   width: 22px;
   height: 22px;
 }
+.info p {
+  flex: 1;
+}

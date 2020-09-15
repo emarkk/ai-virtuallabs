@@ -86,4 +86,12 @@ export class StudentService {
       map(arr => arr.find(t => t.status == TeamStatus.COMPLETE))
     );
   }
+  setProfilePicture(studentId: number, file: File): Observable<boolean> {
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+    return this.http.post(url(`students/${studentId}/picture`), formData).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
 }

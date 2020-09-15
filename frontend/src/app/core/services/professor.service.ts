@@ -49,4 +49,12 @@ export class ProfessorService {
       catchError(error => of(null))
     );
   }
+  setProfilePicture(professorId: number, file: File): Observable<boolean> {
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+    return this.http.post(url(`professors/${professorId}/picture`), formData).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
 }
