@@ -318,29 +318,6 @@ public class HomeworkServiceImpl implements HomeworkService {
         return new PageDTO<>((int)actionPage.getTotalElements(), dtos);
     }
 
-    @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public List<HomeworkActionDTO> getAuthenticatedStudentHomeworkActions(Long homeworkId) {
-        Homework homework = getter.homework(homeworkId);
-
-        if(!homework.getCourse().getEnabled()) {
-            throw new CourseNotEnabledException();
-        }
-
-        if(!homework.getCourse().getStudents().contains((Student) authenticatedEntityMapper.get()))
-            throw new NotAllowedException();
-
-
-        List<HomeworkActionDTO> dtos = ((Student) authenticatedEntityMapper.get()).getHomeworkActions().stream()
-                .filter(ha -> ha.getHomework().equals(homework))
-                .sorted(byHomeworkActionDate)
-                .map(ha -> modelMapper.map(ha, HomeworkActionDTO.class))
-                .collect(Collectors.toList());
-        Collections.reverse(dtos);
-        return dtos;
-    }
-
-
-    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
     public List<HomeworkActionDTO> getStudentHomeworkActions(Long homeworkId, Long studentId) {
         Homework homework = getter.homework(homeworkId);
@@ -349,26 +326,27 @@ public class HomeworkServiceImpl implements HomeworkService {
             throw new CourseNotEnabledException();
         }
 
-        if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
-            throw new NotAllowedException();
-
         Student student = getter.student(studentId);
 
         if(!homework.getCourse().getStudents().contains(student))
             throw new StudentNotEnrolledException();
 
-        return student.getHomeworkActions().stream()
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
+
+        if(authenticated.getClass().getName().contains("Professor") && !homework.getCourse().getProfessors().contains((Professor) authenticated))
+            throw new NotAllowedException();
+
+        if(authenticated.getClass().getName().contains("Student") && !student.equals((Student) authenticated))
+            throw new NotAllowedException();
+
+        List<HomeworkActionDTO> dtos =  student.getHomeworkActions().stream()
                 .filter(ha -> ha.getHomework().equals(homework))
                 .sorted(byHomeworkActionDate)
-                .map(ha -> {
-                    HomeworkActionDTO action = new HomeworkActionDTO();
-                    action.setStudent(modelMapper.map(student, StudentDTO.class));
-                    action.setId(ha.getId());
-                    action.setDate(ha.getDate());
-                    action.setActionType(ha.getActionType());
-                    return action;
-                })
+                .map(ha -> modelMapper.map(ha, HomeworkActionDTO.class))
                 .collect(Collectors.toList());
+        Collections.reverse(dtos);
+
+        return dtos;
     }
 
     private static final Path root = Paths.get("uploads");

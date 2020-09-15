@@ -93,7 +93,7 @@ public class HomeworkController {
         }
     }
 
-    @GetMapping("/{id}/actions/all")
+    @GetMapping("/{id}/actions")
     public PageDTO<HomeworkActionDTO> getAllHomeworkActions(
             @PathVariable(name = "id") Long homeworkId,
             @RequestParam(name = "filterBy", required = false, defaultValue = "ALL") String filterBy,
@@ -114,20 +114,7 @@ public class HomeworkController {
         }
     }
 
-    @GetMapping("/{id}/actions/authenticated")
-    public List<HomeworkActionDTO> getAuthenticatedStudentHomeworkActions(@PathVariable(name = "id") Long homeworkId) {
-        try{
-            return homeworkService.getAuthenticatedStudentHomeworkActions(homeworkId);
-        } catch (HomeworkNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
-        } catch (CourseNotEnabledException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
-        } catch (NotAllowedException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
-        }
-    }
-
-    @GetMapping("/{id}/actions/history/{studentId}")
+    @GetMapping("/{id}/actions/{studentId}")
     public List<HomeworkActionDTO> getStudentHomeworkActions(@PathVariable(name = "id") Long homeworkId, @PathVariable(name = "studentId") Long studentId) {
         try{
             return homeworkService.getStudentHomeworkActions(homeworkId, studentId);
