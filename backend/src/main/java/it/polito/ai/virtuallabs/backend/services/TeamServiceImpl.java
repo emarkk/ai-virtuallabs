@@ -77,9 +77,9 @@ public class TeamServiceImpl implements TeamService {
         Team team = getter.team(teamId);
         AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
 
-        if(authenticatedEntity.getClass().equals(Professor.class) && !((Professor) authenticatedEntity).getCourses().contains(team.getCourse()))
+        if(authenticatedEntity.getClass().getName().contains("Professor") && !((Professor) authenticatedEntity).getCourses().contains(team.getCourse()))
             throw new NotAllowedException();
-        if(authenticatedEntity.getClass().equals(Student.class) && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(team))
+        if(authenticatedEntity.getClass().getName().contains("Student") && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(team))
             throw new NotAllowedException();
 
         return modelMapper.map(team.getVmsResourcesUsed(), TeamVmsResourcesDTO.class);
@@ -90,9 +90,9 @@ public class TeamServiceImpl implements TeamService {
         Team team = getter.team(teamId);
         AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
 
-        if(authenticatedEntity.getClass().equals(Professor.class) && !((Professor) authenticatedEntity).getCourses().contains(team.getCourse()))
+        if(authenticatedEntity.getClass().getName().contains("Professor") && !((Professor) authenticatedEntity).getCourses().contains(team.getCourse()))
             throw new NotAllowedException();
-        if(authenticatedEntity.getClass().equals(Student.class) && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(team))
+        if(authenticatedEntity.getClass().getName().contains("Student") && !((Student) authenticatedEntity).getTeams().stream().map(TeamStudent::getTeam).collect(Collectors.toList()).contains(team))
             throw new NotAllowedException();
 
         return modelMapper.map(team.getVmsResourcesLimits(), TeamVmsResourcesDTO.class);

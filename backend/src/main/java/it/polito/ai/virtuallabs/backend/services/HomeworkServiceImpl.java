@@ -113,16 +113,15 @@ public class HomeworkServiceImpl implements HomeworkService {
         if(!homework.getCourse().getEnabled()) {
             throw new CourseNotEnabledException();
         }
-        try{
 
-            Student authenticated = (Student) authenticatedEntityMapper.get();
-            if(!authenticated.getCourses().contains(homework.getCourse()))
-                throw new NotAllowedException();
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
 
-        } catch (ClassCastException e) {
-            if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
-                throw new NotAllowedException();
-        }
+        if(authenticated.getClass().getName().contains("Student") && !((Student) authenticated).getCourses().contains(homework.getCourse()))
+            throw new NotAllowedException();
+
+        if(authenticated.getClass().getName().contains("Professor") && !homework.getCourse().getProfessors().contains((Professor) authenticated))
+            throw new NotAllowedException();
+
         return modelMapper.map(homework, HomeworkDTO.class);
     }
 
@@ -140,30 +139,29 @@ public class HomeworkServiceImpl implements HomeworkService {
             if (!resource.exists() || !resource.isReadable())
                 throw new RuntimeException("Could not read the file!");
 
-            try {
-                Student authenticated = (Student) authenticatedEntityMapper.get();
+            AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
 
-                if(!authenticated.getCourses().contains(homework.getCourse()))
+            if(authenticated.getClass().getName().contains("Student")) {
+
+                if(!((Student) authenticated).getCourses().contains(homework.getCourse()))
                     throw new NotAllowedException();
 
-                List<HomeworkAction> actions = authenticated.getHomeworkActions().stream().filter(ha -> ha.getHomework().equals(homework)).sorted(byHomeworkActionDate).collect(Collectors.toList());
+                List<HomeworkAction> actions = ((Student) authenticated).getHomeworkActions().stream().filter(ha -> ha.getHomework().equals(homework)).sorted(byHomeworkActionDate).collect(Collectors.toList());
 
                 if(actions.get(actions.size() -1).isNull()) {
                     HomeworkAction homeworkAction = new HomeworkAction();
                     homeworkAction.setDate(new Timestamp(System.currentTimeMillis()));
                     homeworkAction.setActionType(HomeworkAction.ActionType.READ);
-                    homeworkAction.assignStudent(authenticated);
+                    homeworkAction.assignStudent((Student) authenticated);
                     homeworkAction.assignHomework(homework);
                     homeworkActionRepository.save(homeworkAction);
                 }
-                return resource;
-            } catch (ClassCastException e) {
+            } else {
                 //Nel caso di un Professor
-                if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+                if(!homework.getCourse().getProfessors().contains((Professor) authenticated))
                     throw new NotAllowedException();
-
-                return resource;
             }
+            return resource;
         } catch (MalformedURLException e) {
             throw new HomeworkNotFoundException();
         }
@@ -245,15 +243,13 @@ public class HomeworkServiceImpl implements HomeworkService {
             throw new CourseNotEnabledException();
         }
 
-        try{
-            Student authenticated = (Student) authenticatedEntityMapper.get();
-            if(!authenticated.equals(homeworkDelivery.getStudent()))
-                throw new NotAllowedException();
-        } catch (ClassCastException e) {
-            Professor authenticated = (Professor) authenticatedEntityMapper.get();
-            if(!authenticated.getCourses().contains(homeworkDelivery.getHomework().getCourse()))
-                throw new NotAllowedException();
-        }
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
+
+        if(authenticated.getClass().getName().contains("Student") && !((Student) authenticated).equals(homeworkDelivery.getStudent()))
+            throw new NotAllowedException();
+
+        if(authenticated.getClass().getName().contains("Professor") && !((Professor) authenticated).getCourses().contains(homeworkDelivery.getHomework().getCourse()))
+            throw new NotAllowedException();
 
         Path file = root.resolve("homeworks/deliveries/" + homeworkDelivery.getHomework().getId() + "/" + homeworkDelivery.getId() + ".jpg");
         try{
@@ -275,14 +271,14 @@ public class HomeworkServiceImpl implements HomeworkService {
             throw new CourseNotEnabledException();
         }
 
-        try{
-            Student authenticated = (Student) authenticatedEntityMapper.get();
-            if(!authenticated.equals(homeworkAction.getStudent()))
-                throw new NotAllowedException();
-        } catch (ClassCastException e) {
-            if(!((Professor) authenticatedEntityMapper.get()).getCourses().contains(homeworkAction.getHomework().getCourse()))
-                throw new NotAllowedException();
-        }
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
+
+        if(authenticated.getClass().getName().contains("Student") && !((Student)authenticated).equals(homeworkAction.getStudent()))
+            throw new NotAllowedException();
+
+        if(authenticated.getClass().getName().contains("Professor") && !((Professor) authenticated).getCourses().contains(homeworkAction.getHomework().getCourse()))
+            throw new NotAllowedException();
+
         return modelMapper.map(homeworkAction, HomeworkActionDTO.class);
     }
 
