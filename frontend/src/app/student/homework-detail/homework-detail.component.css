@@ -1,0 +1,13 @@
+mat-icon {
+  padding-top: 2px;
+}
+.info {
+  display: flex;
+  align-items: center;
+}
+.info-dates {
+  flex: 2;
+}
+.info-text {
+  flex: 1;
+}

@@ -9,15 +9,23 @@ import { Homework } from 'src/app/core/models/homework.model';
 })
 export class HomeworkListComponent implements OnInit {
   homeworkList: Homework[] = null;
+  activeHomeworkList: Homework[] = null;
+  pastHomeworkList: Homework[] = null;
 
   @Input() set homeworks(data: Homework[]) {
     this.homeworkList = data;
+    this.activeHomeworkList = this.homeworkList.filter(h => h.dueDate > new Date());
+    this.pastHomeworkList = this.homeworkList.filter(h => h.dueDate < new Date());
   }
 
   constructor() {
   }
 
   ngOnInit(): void {
+    setInterval(() => {
+      this.activeHomeworkList = this.homeworkList.filter(h => h.dueDate > new Date());
+      this.pastHomeworkList = this.homeworkList.filter(h => h.dueDate < new Date());
+    }, 60*1000);
   }
 
 }

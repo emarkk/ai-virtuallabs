@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -22,10 +23,11 @@ export class StudentHomeworkDetailComponent implements OnInit {
 
   course$: Observable<Course>;
   homework$: Observable<Homework>;
+  homeworkText$: Observable<SafeUrl>;
 
   navigationData$: Observable<Array<any>>;
 
-  constructor(private route: ActivatedRoute, private courseService: CourseService, private homeworkService: HomeworkService) {
+  constructor(private route: ActivatedRoute, private courseService: CourseService, private homeworkService: HomeworkService, private domSanitizer: DomSanitizer) {
   }
 
   ngOnInit(): void {
@@ -36,6 +38,7 @@ export class StudentHomeworkDetailComponent implements OnInit {
   init(): void {
     this.course$ = this.courseService.get(this.courseCode);
     this.homework$ = this.homeworkService.get(this.homeworkId);
+    this.homeworkText$ = this.homeworkService.getText(this.homeworkId);
     this.navigationData$ = forkJoin([this.course$, this.homework$]).pipe(
       map(([course, homework]) => [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('Homeworks', `/student/course/${course.code}/homeworks`), nav(homework.title)])
     );

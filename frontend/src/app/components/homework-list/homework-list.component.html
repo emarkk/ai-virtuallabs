@@ -6,8 +6,18 @@
       <span class="header h-published">published</span>
       <span class="header h-due">due</span>
     </div>
-    <div *ngFor="let homework of homeworkList" class="homework">
+    <div *ngFor="let homework of activeHomeworkList" class="homework">
       <app-homework-item [data]="homework"></app-homework-item>
+    </div>
+    <div *ngIf="pastHomeworkList.length">
+      <div class="old">
+        <div><hr /></div>
+        <span>past assignments</span>
+        <div><hr /></div>
+      </div>      
+      <div *ngFor="let homework of pastHomeworkList" class="homework">
+        <app-homework-item [data]="homework"></app-homework-item>
+      </div>
     </div>
   </div>
   <p *ngIf="homeworkList && !homeworkList.length" class="list-empty">No homeworks to show.</p>
