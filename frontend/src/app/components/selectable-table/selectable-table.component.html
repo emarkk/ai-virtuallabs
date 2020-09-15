@@ -10,7 +10,11 @@
     </ng-container>
     <ng-container *ngFor="let column of tableColumns" [matColumnDef]="column.name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!column.sortable">{{ column.label }}</th>
-      <td mat-cell *matCellDef="let row" [innerHTML]="column.template ? column.template(row) : row[column.name]"></td>
+      <td mat-cell *matCellDef="let row">
+        <div *ngIf="!column.template && !column.special">{{ row[column.name] }}</div>
+        <div *ngIf="column.template" [innerHTML]="column.template(row)"></div>
+        <div *ngIf="column.special == '$PICTURE$'"><div class="profile-pic"><app-secure-image [user]="row"></app-secure-image></div></div>
+      </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
     <ng-container matColumnDef="_selectInfo">

@@ -8,7 +8,7 @@
       <div>
         <span class="header">proposed by</span>
         <div *ngFor="let member of (invitation.members | teamCreator)" class="member">
-          <app-user-tag [firstName]="member.student.firstName" [lastName]="member.student.lastName.toUpperCase()" [picture]="member.student.picturePath" [id]="'s' + member.student.id"></app-user-tag>
+          <app-user-tag [firstName]="member.student.firstName" [lastName]="member.student.lastName.toUpperCase()" [user]="member.student" [id]="'s' + member.student.id"></app-user-tag>
         </div>
       </div>
       <div class="members">
@@ -16,7 +16,7 @@
         <div *ngFor="let member of (invitation.members | teamGuests)" class="member">
           <mat-icon *ngIf="member.status == InvitationStatus.ACCEPTED" class="icon-accepted" title="Invitation accepted">done_all</mat-icon>
           <mat-icon *ngIf="member.status == InvitationStatus.PENDING" class="icon-pending" title="Pending approval">schedule</mat-icon>
-          <app-user-tag [firstName]="member.student.firstName" [lastName]="member.student.lastName.toUpperCase()" [picture]="member.student.picturePath" [id]="'s' + member.student.id"></app-user-tag>
+          <app-user-tag [firstName]="member.student.firstName" [lastName]="member.student.lastName.toUpperCase()" [user]="member.student" [id]="'s' + member.student.id"></app-user-tag>
         </div>
       </div>
     </ng-container>

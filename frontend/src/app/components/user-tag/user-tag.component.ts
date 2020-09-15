@@ -1,5 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 
+import { Professor } from 'src/app/core/models/professor.model';
+import { Student } from 'src/app/core/models/student.model';
+
 @Component({
   selector: 'app-user-tag',
   templateUrl: './user-tag.component.html',
@@ -9,7 +12,7 @@ export class UserTagComponent implements OnInit {
   name: string;
   boldName: string;
   info: string;
-  picturePath: string;
+  u: Student|Professor;
 
   @Input() set firstName(value: string) {
     this.name = value;
@@ -20,8 +23,8 @@ export class UserTagComponent implements OnInit {
   @Input() set id(value: string) {
     this.info = value;
   }
-  @Input() set picture(value: string) {
-    this.picturePath = value;
+  @Input() set user(value: Student|Professor) {
+    this.u = value;
   }
 
   constructor() {

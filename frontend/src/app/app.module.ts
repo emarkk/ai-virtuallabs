@@ -40,6 +40,7 @@ import { VmLimitsDialog } from './components/dialogs/vm-limits/vm-limits.compone
 import { TileComponent } from './components/tile/tile.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { AsyncButtonComponent } from './components/async-button/async-button.component';
+import { SecureImageComponent } from './components/secure-image/secure-image.component';
 import { UserTagComponent } from './components/user-tag/user-tag.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { DataPlaceholderComponent } from './components/data-placeholder/data-placeholder.component';
@@ -102,6 +103,7 @@ import { StudentHomeworkDetailComponent } from './student/homework-detail/homewo
     TileComponent,
     ToastComponent,
     AsyncButtonComponent,
+    SecureImageComponent,
     UserTagComponent,
     WelcomeComponent,
     NavigationComponent,

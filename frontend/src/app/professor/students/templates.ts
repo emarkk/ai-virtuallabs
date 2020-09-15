@@ -1,9 +1,5 @@
 import { TeamStatus } from 'src/app/core/models/team.model';
 
-export const pictureTemplate = student => {
-  return `<div class="profile-pic"><img src="${student.picturePath || 'assets/img/user.png'}" /></div>`;
-};
-
 export const lastNameTemplate = student => {
   return `${student.lastName.toUpperCase()}`;
 };

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
@@ -24,7 +24,7 @@ export class HomeworkService {
       catchError(error => of(null))
     );
   }
-  getText(id: number): Observable<string> {
+  getText(id: number): Observable<SafeUrl> {
     return this.http.get(url(`homeworks/${id}/text`), { responseType: 'blob' }).pipe(
       map(image => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(image))),
       catchError(error => of(null))

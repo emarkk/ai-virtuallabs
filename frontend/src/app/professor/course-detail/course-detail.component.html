@@ -21,7 +21,7 @@
         <td>
           <div class="professor-list" *ngIf="professors$ | async as professors">
             <div *ngFor="let professor of professors" class="professor">
-              <app-user-tag [firstName]="professor.firstName" [lastName]="professor.lastName.toUpperCase()" [picture]="professor.picturePath"></app-user-tag>
+              <app-user-tag [firstName]="professor.firstName" [lastName]="professor.lastName.toUpperCase()" [user]="professor"></app-user-tag>
             </div>
             <button mat-flat-button color="primary" (click)="addCollaboratorButtonClicked()">Add collaborator</button>
           </div>

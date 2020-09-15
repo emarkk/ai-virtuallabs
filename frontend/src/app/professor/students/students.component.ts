@@ -15,7 +15,7 @@ import { EnrolledStudentsDataSource } from 'src/app/core/datasources/enrolled-st
 import { ConfirmDialog } from 'src/app/components/dialogs/confirm/confirm.component';
 import { SelectableTableComponent } from 'src/app/components/selectable-table/selectable-table.component';
 
-import { pictureTemplate, lastNameTemplate, teamTemplate } from './templates';
+import { lastNameTemplate, teamTemplate } from './templates';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
 
@@ -36,7 +36,7 @@ export class ProfessorStudentsComponent implements OnInit {
 
   enrolledStudentColumns = [    
     { name: 'id', label: 'ID', sortable: true },
-    { name: 'picture', label: '', template: pictureTemplate },
+    { name: 'picture', label: '', special: '$PICTURE$' },
     { name: 'firstName', label: 'First Name', sortable: true },
     { name: 'lastName', label: 'Last Name', sortable: true, template: lastNameTemplate },
     { name: 'teamName', label: 'Team', sortable: true, template: teamTemplate }

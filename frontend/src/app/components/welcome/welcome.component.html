@@ -1,7 +1,7 @@
 <div class="welcome">
   <app-tile noPad>
     <div class="info">
-      <div class="profile-pic"><img [src]="picturePath || 'assets/img/user.png'" /></div>
+      <div class="profile-pic"><app-secure-image [user]="u"></app-secure-image></div>
       <p>Welcome back, <b>{{ fullName }}</b></p>
       <a (click)="editPictureClick.emit()">Edit profile picture</a>
     </div>

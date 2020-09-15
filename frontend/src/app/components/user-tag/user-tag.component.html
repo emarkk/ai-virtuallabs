@@ -1,5 +1,7 @@
 <div class="container">
-  <div class="profile-pic"><img [src]="picturePath || 'assets/img/user.png'" /></div>
+  <div class="profile-pic">
+    <app-secure-image [user]="u"></app-secure-image>
+  </div>
   <div class="name">
     <span>{{ name }} </span><span><b>{{ boldName }}</b></span>
     <span *ngIf="info"> ({{ info }})</span>

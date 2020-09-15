@@ -30,7 +30,7 @@
             <th mat-header-cell *matHeaderCellDef>Created by</th>
             <td mat-cell *matCellDef="let tv">
               <div *ngIf="tv.vm">
-                <app-user-tag [firstName]="tv.vm.creator.firstName" [lastName]="tv.vm.creator.lastName.toUpperCase()" [picture]="tv.vm.creator.picturePath"></app-user-tag>
+                <app-user-tag [firstName]="tv.vm.creator.firstName" [lastName]="tv.vm.creator.lastName.toUpperCase()" [user]="tv.vm.creator"></app-user-tag>
               </div>
             </td>
           </ng-container>
