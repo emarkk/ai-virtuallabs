@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Professor } from 'src/app/core/models/professor.model';
@@ -17,6 +18,8 @@ export class ProfessorHomeComponent implements OnInit {
   me$: Observable<Professor>;
   courses$: Observable<Course[]>;
   
+  profilePictureRefreshToken = new BehaviorSubject(undefined);
+  
   @ViewChild('fileInput')
   fileInput: ElementRef;
 
@@ -24,7 +27,9 @@ export class ProfessorHomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.me$ = this.professorService.get(this.authService.getId());
+    this.me$ = this.profilePictureRefreshToken.pipe(
+      switchMap(() => this.professorService.get(this.authService.getId()))
+    );
     this.courses$ = this.professorService.getCourses(this.authService.getId());
   }
 
@@ -33,9 +38,10 @@ export class ProfessorHomeComponent implements OnInit {
   }
   profilePictureSelected(file: File): void {
     this.professorService.setProfilePicture(this.authService.getId(), file).subscribe(res => {
-      if(res)
+      if(res) {
+        this.profilePictureRefreshToken.next(undefined);
         this.toastService.show({ type: 'success', text: 'Profile picture updated successfully.' });
-      else
+      } else
         this.toastService.show({ type: 'danger', text: 'An error occurred.' });
     });
   }
