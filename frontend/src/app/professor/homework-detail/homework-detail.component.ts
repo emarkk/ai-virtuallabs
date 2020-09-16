@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Homework } from 'src/app/core/models/homework.model';
-import { HomeworkAction } from 'src/app/core/models/homework-action.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
 import { HomeworkService } from 'src/app/core/services/homework.service';
@@ -28,7 +27,6 @@ export class ProfessorHomeworkDetailComponent implements OnInit, OnDestroy {
   course$: Observable<Course>;
   homework$: Observable<Homework>;
   homeworkText: SafeUrl;
-  homeworkStudentsOverview$: Observable<HomeworkAction[]>;
   
   imageDialogRef: MatDialogRef<ImageDialog> = null;
   
@@ -45,7 +43,6 @@ export class ProfessorHomeworkDetailComponent implements OnInit, OnDestroy {
   init(): void {
     this.course$ = this.courseService.get(this.courseCode);
     this.homework$ = this.homeworkService.get(this.homeworkId);
-    this.homeworkStudentsOverview$ = this.homeworkService.getStudentsOverview(this.homeworkId);
     this.navigationData$ = forkJoin([this.course$, this.homework$]).pipe(
       map(([course, homework]) => [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Homeworks', `/professor/course/${course.code}/homeworks`), nav(homework.title)])
     );
@@ -65,9 +62,9 @@ export class ProfessorHomeworkDetailComponent implements OnInit, OnDestroy {
         this.imageDialogRef.close();
     });
   }
-
   ngOnDestroy() {
-    URL.revokeObjectURL(this.homeworkText as string);
+    if(this.homeworkText)
+      URL.revokeObjectURL(this.homeworkText as string);
   }
 
 }

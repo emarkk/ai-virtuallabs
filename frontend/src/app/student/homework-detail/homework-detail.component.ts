@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { forkJoin, Observable } from 'rxjs';
@@ -27,6 +27,9 @@ export class StudentHomeworkDetailComponent implements OnInit, OnDestroy {
 
   navigationData$: Observable<Array<any>>;
 
+  @ViewChild('fileDownload')
+  fileDownload: ElementRef;
+
   constructor(private route: ActivatedRoute, private courseService: CourseService, private homeworkService: HomeworkService, private domSanitizer: DomSanitizer) {
   }
 
@@ -41,12 +44,23 @@ export class StudentHomeworkDetailComponent implements OnInit, OnDestroy {
     this.navigationData$ = forkJoin([this.course$, this.homework$]).pipe(
       map(([course, homework]) => [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('Homeworks', `/student/course/${course.code}/homeworks`), nav(homework.title)])
     );
-    
-    this.homeworkService.getText(this.homeworkId).subscribe(homeworkText => this.homeworkText = homeworkText);
   }
-
   ngOnDestroy() {
-    URL.revokeObjectURL(this.homeworkText as string);
+    if(this.homeworkText)
+      URL.revokeObjectURL(this.homeworkText as string);
   }
 
+  downloadAssignmentText(): void {
+    if(this.homeworkText) {
+      this.fileDownload.nativeElement.click();
+      return;
+    }
+
+    this.homeworkService.getText(this.homeworkId).subscribe(homeworkText => {
+      this.homeworkText = homeworkText;
+      setTimeout(() => {
+        this.fileDownload.nativeElement.click();
+      }, 100);
+    });
+  }
 }

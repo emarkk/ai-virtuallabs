@@ -30,9 +30,15 @@ export class HomeworkService {
       catchError(error => of(null))
     );
   }
-  getStudentsOverview(id: number): Observable<HomeworkAction[]> {
-    return this.http.get<any>(url(`homeworks/${id}/actions`)).pipe(
-      map(x => new HomeworkAction(x.id, x.date ? new Date(x.date) : null, x.actionType as HomeworkActionType, new Student(x.student.id, x.student.firstName, x.student.lastName, x.student.email, x.student.hasPicture))),
+  getStudentActions(id: number, studentId: number): Observable<HomeworkAction[]> {
+    return this.http.get<any[]>(url(`homeworks/${id}/actions/${studentId}`)).pipe(
+      map(arr => arr.map(x => new HomeworkAction(x.id, x.date ? new Date(x.date) : null, x.mark, x.actionType as HomeworkActionType, new Student(x.student.id, x.student.firstName, x.student.lastName, x.student.email, x.student.hasPicture)))),
+      catchError(error => of(null))
+    );
+  }
+  getStudentsActions(id: number): Observable<HomeworkAction[]> {
+    return this.http.get<any[]>(url(`homeworks/${id}/actions`)).pipe(
+      map(arr => arr.map(x => new HomeworkAction(x.id, x.date ? new Date(x.date) : null, x.mark, x.actionType as HomeworkActionType, new Student(x.student.id, x.student.firstName, x.student.lastName, x.student.email, x.student.hasPicture)))),
       catchError(error => of(null))
     );
   }

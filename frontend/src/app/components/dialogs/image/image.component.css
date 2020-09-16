@@ -1,5 +1,6 @@
 .dialog {
   width: 640px;
+  background: #ddd;
   text-align: center;
 }
 .dialog img {
