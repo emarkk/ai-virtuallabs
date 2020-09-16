@@ -3,7 +3,6 @@ package it.polito.ai.virtuallabs.backend.services;
 import it.polito.ai.virtuallabs.backend.dtos.HomeworkActionDTO;
 import it.polito.ai.virtuallabs.backend.dtos.HomeworkDTO;
 import it.polito.ai.virtuallabs.backend.dtos.PageDTO;
-import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
 import it.polito.ai.virtuallabs.backend.repositories.HomeworkActionRepository;
@@ -196,7 +195,6 @@ public class HomeworkServiceImpl implements HomeworkService {
             throw new HomeworkActionNotAllowedException();
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
-
         if(now.after(homework.getDueDate()))
             throw new HomeworkActionNotAllowedException();
 
@@ -216,6 +214,52 @@ public class HomeworkServiceImpl implements HomeworkService {
             Files.deleteIfExists(coursePath.resolve(homeworkAction.getId().toString() + ".jpg"));
             ImageIO.write(converted, "jpg", coursePath.resolve(homeworkAction.getId().toString() + ".jpg").toFile());
 
+        } catch (IOException e) {
+            throw new FileHandlingException();
+        }
+
+    }
+
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @Override
+    public void addHomeworkReview(Long homeworkId, Long actionId, MultipartFile file, Integer mark) {
+        Homework homework = getter.homework(homeworkId);
+        HomeworkAction action = getter.homeworkAction(actionId);
+        Professor authenticated = (Professor) authenticatedEntityMapper.get();
+
+        if(!homework.getCourse().getEnabled())
+            throw new CourseNotEnabledException();
+        if(!homework.getCourse().getProfessors().contains(authenticated))
+            throw new NotAllowedException();
+        if(!homework.getHomeworkActions().contains(action))
+            throw new HomeworkActionNotAllowedException();
+
+        //Controllo che l'action sia l'ultima per il relativo studente
+        List<HomeworkAction> studentActions = action.getStudent().getHomeworkActions().stream().filter(ha -> ha.getHomework().equals(homework)).sorted(byHomeworkActionDate).collect(Collectors.toList());
+        if(!action.isDelivery() || !studentActions.get(studentActions.size() -1).equals(action))
+            throw new HomeworkActionNotAllowedException();
+
+        if(mark != null && (mark < 0 || mark > 30))
+            throw new IllegalMarkException();
+
+        HomeworkAction reviewAction = new HomeworkAction();
+        reviewAction.setDate(new Timestamp(System.currentTimeMillis()));
+        reviewAction.setActionType(HomeworkAction.ActionType.REVIEW);
+        reviewAction.assignHomework(homework);
+        reviewAction.assignStudent(action.getStudent());
+
+        if(mark != null)
+            reviewAction.setMark(mark);
+        homeworkActionRepository.save(reviewAction);
+
+        try{
+            Path coursePath = Paths.get( "uploads/homeworks/deliveries/" + homework.getId());
+            if(!Files.exists(coursePath))
+                Files.createDirectory(coursePath);
+
+            BufferedImage converted = ImageConverterEngine.convert(file);
+            Files.deleteIfExists(coursePath.resolve(reviewAction.getId().toString() + ".jpg"));
+            ImageIO.write(converted, "jpg", coursePath.resolve(reviewAction.getId().toString() + ".jpg").toFile());
         } catch (IOException e) {
             throw new FileHandlingException();
         }

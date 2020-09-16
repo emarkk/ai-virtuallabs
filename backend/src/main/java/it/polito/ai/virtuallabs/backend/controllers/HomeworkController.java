@@ -148,6 +148,27 @@ public class HomeworkController {
         }
     }
 
+    @PostMapping("/{id}/actions/{actionId}/review")
+    public void addHomeworkReview(@PathVariable(name = "id") Long homeworkId, @PathVariable(name = "actionId") Long actionId, @RequestParam("file") MultipartFile file, @RequestParam(name = "mark", required = false) Integer mark) {
+        try{
+            homeworkService.addHomeworkReview(homeworkId, actionId ,file, mark);
+        } catch (HomeworkNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
+        } catch (HomeworkActionNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Action Not Found");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
+        } catch (CourseNotEnabledException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
+        } catch (HomeworkActionNotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Homework Action Not Allowed");
+        } catch (FileHandlingException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
+        } catch (IllegalMarkException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mark Not Allowed");
+        }
+    }
+
     @GetMapping("/actions/{id}")
     public HomeworkActionDTO getHomeworkAction(@PathVariable(name = "id") Long homeworkActionId) {
         try {
@@ -161,7 +182,7 @@ public class HomeworkController {
         }
     }
 
-    @GetMapping("actions/deliveries/{id}/resource")
+    @GetMapping("/actions/deliveries/{id}/resource")
     @ResponseBody
     public ResponseEntity<Resource> getHomeworkDeliveryResource(@PathVariable(name = "id") Long homeworkDeliveryId) {
         try {

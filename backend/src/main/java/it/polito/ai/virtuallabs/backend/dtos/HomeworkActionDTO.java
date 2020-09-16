@@ -18,5 +18,7 @@ public class HomeworkActionDTO {
 
     private HomeworkAction.ActionType actionType;
 
+    private Integer mark;
+
     private StudentDTO student;
 }
