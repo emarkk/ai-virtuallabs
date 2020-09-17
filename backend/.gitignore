@@ -3,7 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-!mock_profile_pictures/
+!mock_profile_pictures/**
 
 ### STS ###
 .apt_generated

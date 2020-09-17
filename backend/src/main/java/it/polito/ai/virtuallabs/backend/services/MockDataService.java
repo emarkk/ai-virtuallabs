@@ -2,11 +2,18 @@ package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.*;
+import it.polito.ai.virtuallabs.backend.utils.ProfilePicturesUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import java.io.*;
+import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +49,9 @@ public class MockDataService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    ProfilePicturesUtility profilePicturesUtility;
 
     public void addProfessor(Long id, String email, String password, String firstName, String lastName) {
         String username = "d" + id;
@@ -185,6 +195,34 @@ public class MockDataService {
 
     }
 
+    public void addTeacherProfilePic(Long teacherId) {
+        Professor professor = professorRepository.getOne(teacherId);
+        File file = new File("mock_profile_pictures/professor/" + teacherId + ".jpg");
+        try {
+            InputStream stream = new FileInputStream(file);
+            MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), MediaType.IMAGE_JPEG_VALUE, stream);
+            profilePicturesUtility.postProfilePicture(teacherId, ProfilePicturesUtility.ProfileType.PROFESSOR, multipartFile);
+            professor.setHasPicture(true);
+            professorRepository.save(professor);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addStudentProfilePic(Long studentId) {
+        Student student = studentRepository.getOne(studentId);
+        File file = new File("mock_profile_pictures/student/" + studentId + ".jpg");
+        try {
+            InputStream stream = new FileInputStream(file);
+            MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), MediaType.IMAGE_JPEG_VALUE, stream);
+            profilePicturesUtility.postProfilePicture(studentId, ProfilePicturesUtility.ProfileType.STUDENT, multipartFile);
+            student.setHasPicture(true);
+            studentRepository.save(student);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void addVmModels() {
         addVmModel("Spring+Angular", "FROM ubuntu", "01NYHOV");
         addVmModel("Spring+React", "FROM kubuntu", "02DUCOV");
@@ -198,6 +236,28 @@ public class MockDataService {
         addTeamVm(2, 10, 1000, studentRepository.getOne(202123L).getTeams().stream().filter(t -> t.getTeam().getCourse().getCode().equals("02DUCOV")).findFirst().get().getTeam().getId());
     }
 
+    public void addTeacherProfilePics() {
+        addTeacherProfilePic(22294L);
+    }
+
+    public void addStudentProfilePics() {
+        addStudentProfilePic(248530L);
+        addStudentProfilePic(251129L);
+        addStudentProfilePic(259434L);
+        addStudentProfilePic(218506L);
+        addStudentProfilePic(266394L);
+        addStudentProfilePic(250354L);
+        addStudentProfilePic(243044L);
+        addStudentProfilePic(210293L);
+        addStudentProfilePic(240394L);
+        addStudentProfilePic(209341L);
+        addStudentProfilePic(245458L);
+        addStudentProfilePic(254390L);
+        addStudentProfilePic(202123L);
+        addStudentProfilePic(234943L);
+        addStudentProfilePic(229302L);
+    }
+
     public void insertMockData() {
         addProfessors();
         addStudents();
@@ -209,6 +269,8 @@ public class MockDataService {
         addVmModels();
         addTeamVmLimits();
         addTeamVms();
+        addTeacherProfilePics();
+        addStudentProfilePics();
     }
 
 }
