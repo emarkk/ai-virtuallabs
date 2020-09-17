@@ -294,21 +294,6 @@ public class HomeworkServiceImpl implements HomeworkService {
 
     }
 
-    @Override
-    public HomeworkActionDTO getHomeworkAction(Long homeworkActionId) {
-        HomeworkAction homeworkAction = getter.homeworkAction(homeworkActionId);
-        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
-
-        if(!homeworkAction.getHomework().getCourse().getEnabled())
-            throw new CourseNotEnabledException();
-        if(authenticated instanceof Student && !homeworkAction.getStudent().equals(authenticated))
-            throw new NotAllowedException();
-        if(authenticated instanceof Professor && !((Professor) authenticated).getCourses().contains(homeworkAction.getHomework().getCourse()))
-            throw new NotAllowedException();
-
-        return modelMapper.map(homeworkAction, HomeworkActionDTO.class);
-    }
-
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
     public PageDTO<HomeworkActionDTO> getAllHomeworkActions(Long homeworkId, Integer page, Integer pageSize, String filterBy) {

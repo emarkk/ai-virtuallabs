@@ -169,19 +169,6 @@ public class HomeworkController {
         }
     }
 
-    @GetMapping("/actions/{id}")
-    public HomeworkActionDTO getHomeworkAction(@PathVariable(name = "id") Long homeworkActionId) {
-        try {
-            return homeworkService.getHomeworkAction(homeworkActionId);
-        } catch (HomeworkActionNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
-        } catch (NotAllowedException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
-        } catch (CourseNotEnabledException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
-        }
-    }
-
     @GetMapping("/actions/{id}/resource")
     @ResponseBody
     public ResponseEntity<Resource> getHomeworkActionResource(@PathVariable(name = "id") Long homeworkActionId) {
