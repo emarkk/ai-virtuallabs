@@ -47,6 +47,7 @@ import { DataPlaceholderComponent } from './components/data-placeholder/data-pla
 import { FullscreenSearchComponent } from './components/fullscreen-search/fullscreen-search.component';
 import { SelectableTableComponent } from './components/selectable-table/selectable-table.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
+import { TimelineComponent } from './components/timeline/timeline.component';
 import { CourseItemComponent } from './components/course-item/course-item.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
 import { CourseFormComponent } from './components/course-form/course-form.component';
@@ -106,6 +107,7 @@ import { StudentHomeworkDetailComponent } from './student/homework-detail/homewo
     SecureImageComponent,
     UserTagComponent,
     WelcomeComponent,
+    TimelineComponent,
     NavigationComponent,
     DataPlaceholderComponent,
     FullscreenSearchComponent,

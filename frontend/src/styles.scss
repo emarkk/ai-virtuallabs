@@ -28,6 +28,9 @@ a {
   color: #ff6647;
   text-decoration: underline;
 }
+a::selection {
+  color: #fff;
+}
 .copyright {
   position: fixed;
   bottom: 0;

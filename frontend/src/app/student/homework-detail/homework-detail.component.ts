@@ -1,36 +1,47 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { forkJoin, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Homework } from 'src/app/core/models/homework.model';
+import { HomeworkAction, HomeworkActionType } from 'src/app/core/models/homework-action.model';
 
+import { AuthService } from 'src/app/core/services/auth.service';
 import { CourseService } from 'src/app/core/services/course.service';
 import { HomeworkService } from 'src/app/core/services/homework.service';
 
 import { navHome, navCourses, nav } from '../student.navdata';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-student-homework-detail',
   templateUrl: './homework-detail.component.html',
   styleUrls: ['./homework-detail.component.css']
 })
-export class StudentHomeworkDetailComponent implements OnInit, OnDestroy {
+export class StudentHomeworkDetailComponent implements OnInit {
+  Math = window.Math;
+  ActionType = HomeworkActionType;
+
   courseCode: string;
   homeworkId: number;
 
   course$: Observable<Course>;
   homework$: Observable<Homework>;
-  homeworkText: SafeUrl;
+  homeworkText: string;
+  
+  homeworkActions$: Observable<HomeworkAction[]>;
+  homeworkActionsRefreshToken = new BehaviorSubject(undefined);
 
   navigationData$: Observable<Array<any>>;
 
   @ViewChild('fileDownload')
   fileDownload: ElementRef;
 
-  constructor(private route: ActivatedRoute, private courseService: CourseService, private homeworkService: HomeworkService, private domSanitizer: DomSanitizer) {
+  @ViewChild('fileUpload')
+  fileUpload: ElementRef;
+
+  constructor(private route: ActivatedRoute, private authService: AuthService, private courseService: CourseService, private homeworkService: HomeworkService, private toastService: ToastService) {
   }
 
   ngOnInit(): void {
@@ -41,13 +52,12 @@ export class StudentHomeworkDetailComponent implements OnInit, OnDestroy {
   init(): void {
     this.course$ = this.courseService.get(this.courseCode);
     this.homework$ = this.homeworkService.get(this.homeworkId);
+    this.homeworkActions$ = this.homeworkActionsRefreshToken.pipe(
+      switchMap(() => this.homeworkService.getStudentActions(this.homeworkId, this.authService.getId()))
+    );
     this.navigationData$ = forkJoin([this.course$, this.homework$]).pipe(
       map(([course, homework]) => [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('Homeworks', `/student/course/${course.code}/homeworks`), nav(homework.title)])
     );
-  }
-  ngOnDestroy() {
-    if(this.homeworkText)
-      URL.revokeObjectURL(this.homeworkText as string);
   }
 
   downloadAssignmentText(): void {
@@ -58,9 +68,22 @@ export class StudentHomeworkDetailComponent implements OnInit, OnDestroy {
 
     this.homeworkService.getText(this.homeworkId).subscribe(homeworkText => {
       this.homeworkText = homeworkText;
+      this.homeworkActionsRefreshToken.next(undefined);
       setTimeout(() => {
         this.fileDownload.nativeElement.click();
-      }, 100);
+      }, 150);
+    });
+  }
+  submitHomeworkSolution(): void {
+    this.fileUpload.nativeElement.click();
+  }
+  homeworkSolutionSelected(file: File): void {
+    this.homeworkService.submitSolution(this.homeworkId, file).subscribe(res => {
+      if(res) {
+        this.homeworkActionsRefreshToken.next(undefined);
+        this.toastService.show({ type: 'success', text: 'Assignment solution submitted successfully.' });
+      } else
+        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
     });
   }
 }

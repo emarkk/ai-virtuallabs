@@ -1,0 +1,86 @@
+.timeline {
+  position: relative;
+  padding: 6px 0;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  top: 0;
+  left: calc(50% - 1px);
+  background: #d8e5ee;
+}
+::ng-deep {
+  span {
+    font-size: 0.9em;
+  }
+  h4 {
+    margin: 0;
+  }
+  h4 mat-icon {
+    padding-top: 0 !important;
+    margin-right: 5px;
+    color: #ff6647;
+  }
+  .block-container {
+    display: flex;
+  }
+  .block-container.right {
+    flex-direction: row-reverse;
+  }
+  .block {
+    position: relative;
+    width: 47.5%;
+    margin: 20px 0;
+    padding: 18px 20px;
+    border-radius: 8px;
+    border: 1px solid #d8e5ee;
+    box-shadow: 0 3px 0 #d8e5ee;
+    box-sizing: border-box;
+  }
+  .block::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+  }
+  .block-container.left .block::after {
+    left: 100%;
+    border-left: 8px solid #d8e5ee;
+  }
+  .block-container.right .block::after {
+    left: -8px;
+    border-right: 8px solid #d8e5ee;
+  }
+  .time-dot {
+    width: 6px;
+    height: 6px;
+    margin-top: 36px;
+    border-radius: 5px;
+    background: #fff;
+    border: 2px solid #d8e5ee;
+    z-index: 100;
+  }
+  .block-container.left .time-dot {
+    margin-left: calc(2.5% - 5px);
+  }
+  .block-container.right .time-dot {
+    margin-right: calc(2.5% - 5px);
+  }
+  .timestamp {
+    margin-top: 31px;
+    color: #aaa;
+    font-size: 0.8em;
+    letter-spacing: 0.5px;
+  }
+  .block-container.left .timestamp {
+    margin-left: 12px;
+  }
+  .block-container.right .timestamp {
+    margin-right: 12px;
+  }
+}

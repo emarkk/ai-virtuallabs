@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { combineLatest, forkJoin, Observable } from 'rxjs';
@@ -13,20 +13,19 @@ import { HomeworkService } from 'src/app/core/services/homework.service';
 import { ImageDialog } from 'src/app/components/dialogs/image/image.component';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
-import { SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-professor-homework-detail',
   templateUrl: './homework-detail.component.html',
   styleUrls: ['./homework-detail.component.css']
 })
-export class ProfessorHomeworkDetailComponent implements OnInit, OnDestroy {
+export class ProfessorHomeworkDetailComponent implements OnInit {
   courseCode: string;
   homeworkId: number;
 
   course$: Observable<Course>;
   homework$: Observable<Homework>;
-  homeworkText: SafeUrl;
+  homeworkText: string;
   
   imageDialogRef: MatDialogRef<ImageDialog> = null;
   
@@ -61,10 +60,6 @@ export class ProfessorHomeworkDetailComponent implements OnInit, OnDestroy {
       } else if(this.imageDialogRef)
         this.imageDialogRef.close();
     });
-  }
-  ngOnDestroy() {
-    if(this.homeworkText)
-      URL.revokeObjectURL(this.homeworkText as string);
   }
 
 }

@@ -15,9 +15,9 @@ export class SecureImageComponent implements OnInit {
 
   @Input() set user(value: Student|Professor) {
     if(value instanceof Student && value.hasPicture)
-      this.imageService.getStudent(value.id).subscribe(src => this.imageSrc = src);
+      this.imageService.getStudentProfilePicture(value.id).subscribe(src => this.imageSrc = src);
     else if(value instanceof Professor && value.hasPicture)
-      this.imageService.getProfessor(value.id).subscribe(src => this.imageSrc = src);
+      this.imageService.getProfessorProfilePicture(value.id).subscribe(src => this.imageSrc = src);
   }
 
   constructor(private imageService: ImageService) {

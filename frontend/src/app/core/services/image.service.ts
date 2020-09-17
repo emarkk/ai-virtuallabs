@@ -13,6 +13,25 @@ export class ImageService {
   constructor(private http: HttpClient) {
   }
   
+  get(imageURL: string): Observable<string> {
+    return this.http.get(url(imageURL), { responseType: 'blob' }).pipe(
+      flatMap(image => this.toBase64(image)),
+      catchError(error => of(null))
+    );
+  }
+  getProfessorProfilePicture(id: number): Observable<string> {
+    return this.http.get(url(`professors/${id}/picture`), { responseType: 'blob' }).pipe(
+      flatMap(image => this.toBase64(image)),
+      catchError(error => of(null))
+    );
+  }
+  getStudentProfilePicture(id: number): Observable<string> {
+    return this.http.get(url(`students/${id}/picture`), { responseType: 'blob' }).pipe(
+      flatMap(image => this.toBase64(image)),
+      catchError(error => of(null))
+    );
+  }
+  
   private toBase64(blob: Blob): Observable<string> {
     return new Observable((observer: Observer<string>) => {
       var reader = new FileReader(); 
@@ -22,17 +41,5 @@ export class ImageService {
         observer.complete();
       }
     });
-  }
-  getProfessor(id: number): Observable<string> {
-    return this.http.get(url(`professors/${id}/picture`), { responseType: 'blob' }).pipe(
-      flatMap(image => this.toBase64(image)),
-      catchError(error => of(null))
-    );
-  }
-  getStudent(id: number): Observable<string> {
-    return this.http.get(url(`students/${id}/picture`), { responseType: 'blob' }).pipe(
-      flatMap(image => this.toBase64(image)),
-      catchError(error => of(null))
-    );
   }
 }
