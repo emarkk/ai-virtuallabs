@@ -148,10 +148,10 @@ public class HomeworkController {
         }
     }
 
-    @PostMapping("/{id}/actions/{actionId}/review")
+    @PostMapping("/{id}/review/{actionId}")
     public void addHomeworkReview(@PathVariable(name = "id") Long homeworkId, @PathVariable(name = "actionId") Long actionId, @RequestParam("file") MultipartFile file, @RequestParam(name = "mark", required = false) Integer mark) {
         try{
-            homeworkService.addHomeworkReview(homeworkId, actionId ,file, mark);
+            homeworkService.addHomeworkReview(homeworkId, actionId, file, mark);
         } catch (HomeworkNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Homework Not Found");
         } catch (HomeworkActionNotFoundException e) {
