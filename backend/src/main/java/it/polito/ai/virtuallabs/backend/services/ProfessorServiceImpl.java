@@ -75,7 +75,7 @@ public class ProfessorServiceImpl implements ProfessorService {
                 .map(p -> new AbstractMap.SimpleEntry<>(p, UserSearchEngine.getSimilarity(q, "d" + p.getId(), p.getFirstName(), p.getLastName())))
                 .sorted(Comparator.comparingDouble(AbstractMap.SimpleEntry<Professor, Double>::getValue).reversed())
                 .limit(3)
-                .map(p -> modelMapper.map(p, ProfessorDTO.class))
+                .map(e -> modelMapper.map(e.getKey(), ProfessorDTO.class))
                 .collect(Collectors.toList());
     }
 
