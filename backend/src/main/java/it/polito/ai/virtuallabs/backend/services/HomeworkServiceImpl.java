@@ -142,9 +142,11 @@ public class HomeworkServiceImpl implements HomeworkService {
             if(authenticated instanceof Student) {
                 List<HomeworkAction> actions = ((Student) authenticated).getHomeworkActions().stream().filter(ha -> ha.getHomework().equals(homework)).sorted(byHomeworkActionDate).collect(Collectors.toList());
 
-                if(actions.get(actions.size() -1).isNull()) {
+                Timestamp now = new Timestamp(System.currentTimeMillis());
+
+                if(actions.get(actions.size() -1).isNull() && now.before(homework.getDueDate())) {
                     HomeworkAction homeworkAction = new HomeworkAction();
-                    homeworkAction.setDate(new Timestamp(System.currentTimeMillis()));
+                    homeworkAction.setDate(now);
                     homeworkAction.setActionType(HomeworkAction.ActionType.READ);
                     homeworkAction.assignStudent((Student) authenticated);
                     homeworkAction.assignHomework(homework);
