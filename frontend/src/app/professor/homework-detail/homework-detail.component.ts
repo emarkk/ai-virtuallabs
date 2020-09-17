@@ -16,7 +16,7 @@ import { HomeworkOverviewDataSource } from 'src/app/core/datasources/homework-ov
 import { ConfirmDialog } from 'src/app/components/dialogs/confirm/confirm.component';
 import { ImageDialog } from 'src/app/components/dialogs/image/image.component';
 
-import { studentFieldsTemplate, studentLastNameTemplate, timestampTemplate } from './templates';
+import { statusTemplate, studentFieldsTemplate, studentLastNameTemplate, timestampTemplate } from './templates';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
 import { ToastService } from 'src/app/core/services/toast.service';
@@ -39,7 +39,7 @@ export class ProfessorHomeworkDetailComponent implements OnInit {
     { name: 'picture', label: '', special: '$PICTURE$', picture: action => action.student },
     { name: 'firstName', label: 'First Name', template: studentFieldsTemplate('firstName') },
     { name: 'lastName', label: 'Last Name', template: studentLastNameTemplate },
-    { name: 'status', label: 'Status' },
+    { name: 'status', label: 'Status', template: statusTemplate },
     { name: 'timestamp', label: 'Timestamp', template: timestampTemplate }
   ];
   homeworkHistoryLink = (action: HomeworkAction) => `/professor/course/${this.courseCode}/homework/${this.homeworkId}/student/${action.student.id}`;
