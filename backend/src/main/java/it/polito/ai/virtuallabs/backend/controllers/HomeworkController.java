@@ -131,7 +131,7 @@ public class HomeworkController {
         }
     }
 
-    @PostMapping("/{id}/actions/delivery")
+    @PostMapping("/{id}/delivery")
     public void addHomeworkDelivery(@PathVariable(name = "id") Long homeworkId, @RequestParam("file") MultipartFile file) {
         try{
             homeworkService.addHomeworkDelivery(homeworkId, file);
