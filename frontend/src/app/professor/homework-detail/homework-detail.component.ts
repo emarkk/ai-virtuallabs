@@ -10,7 +10,11 @@ import { Homework } from 'src/app/core/models/homework.model';
 import { CourseService } from 'src/app/core/services/course.service';
 import { HomeworkService } from 'src/app/core/services/homework.service';
 
+import { HomeworkOverviewDataSource } from 'src/app/core/datasources/homework-overview.datasource';
+
 import { ImageDialog } from 'src/app/components/dialogs/image/image.component';
+
+import { historyTemplate, studentFieldsTemplate, studentLastNameTemplate, timestampTemplate } from './templates';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
 
@@ -27,6 +31,17 @@ export class ProfessorHomeworkDetailComponent implements OnInit {
   homework$: Observable<Homework>;
   homeworkText: string;
   
+  homeworkOverviewColumns = [    
+    { name: 'id', label: 'ID', template: studentFieldsTemplate('id') },
+    { name: 'picture', label: '', special: '$PICTURE$', picture: action => action.student },
+    { name: 'firstName', label: 'First Name', template: studentFieldsTemplate('firstName') },
+    { name: 'lastName', label: 'Last Name', template: studentLastNameTemplate },
+    { name: 'status', label: 'Status' },
+    { name: 'timestamp', label: 'Timestamp', template: timestampTemplate },
+    { name: 'actions', label: '' },
+  ];
+  homeworkOverviewDataSource: HomeworkOverviewDataSource;
+  
   imageDialogRef: MatDialogRef<ImageDialog> = null;
   
   navigationData$: Observable<Array<any>>;
@@ -42,6 +57,7 @@ export class ProfessorHomeworkDetailComponent implements OnInit {
   init(): void {
     this.course$ = this.courseService.get(this.courseCode);
     this.homework$ = this.homeworkService.get(this.homeworkId);
+    this.homeworkOverviewDataSource = new HomeworkOverviewDataSource(this.homeworkService, this.homeworkId);
     this.navigationData$ = forkJoin([this.course$, this.homework$]).pipe(
       map(([course, homework]) => [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`), nav('Homeworks', `/professor/course/${course.code}/homeworks`), nav(homework.title)])
     );

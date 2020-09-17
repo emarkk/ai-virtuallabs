@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import { Homework } from '../models/homework.model';
 import { Student } from '../models/student.model';
+import { Page } from '../models/page.model';
 import { HomeworkAction, HomeworkActionType } from '../models/homework-action.model';
 
 import { ImageService } from './image.service';
@@ -43,17 +44,19 @@ export class HomeworkService {
       catchError(error => of(null))
     );
   }
-  getStudentsActions(id: number): Observable<HomeworkAction[]> {
-    return this.http.get<any[]>(url(`homeworks/${id}/actions`)).pipe(
-      map(arr => arr.map(x =>
+  getStudentsLastActions(id: number, pageIndex: number = 0, pageSize: number = 15): Observable<Page<HomeworkAction>> {
+    let params = new HttpParams().set('page', pageIndex.toString()).set('pageSize', pageSize.toString());
+    return this.http.get<any>(url(`homeworks/${id}/actions`), { params }).pipe(
+      map(x => new Page(x.total, x.page.map(a =>
         new HomeworkAction(
-          x.id,
-          x.date ? new Date(x.date) : null,
-          x.mark,
-          x.actionType as HomeworkActionType,
-          (x.actionType == HomeworkActionType.DELIVERY || x.actionType == HomeworkActionType.REVIEW) ? this.getActionResource(x.id) : null,
-          new Student(x.student.id, x.student.firstName, x.student.lastName, x.student.email, x.student.hasPicture)
-        ))),
+          a.id,
+          a.date ? new Date(a.date) : null,
+          a.mark,
+          a.actionType as HomeworkActionType,
+          (a.actionType == HomeworkActionType.DELIVERY || a.actionType == HomeworkActionType.REVIEW) ? this.getActionResource(a.id) : null,
+          new Student(a.student.id, a.student.firstName, a.student.lastName, a.student.email, a.student.hasPicture)
+        )
+      ))),
       catchError(error => of(null))
     );
   }

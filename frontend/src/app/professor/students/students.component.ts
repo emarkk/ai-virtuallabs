@@ -36,7 +36,7 @@ export class ProfessorStudentsComponent implements OnInit {
 
   enrolledStudentColumns = [    
     { name: 'id', label: 'ID', sortable: true },
-    { name: 'picture', label: '', special: '$PICTURE$' },
+    { name: 'picture', label: '', special: '$PICTURE$', picture: student => student },
     { name: 'firstName', label: 'First Name', sortable: true },
     { name: 'lastName', label: 'Last Name', sortable: true, template: lastNameTemplate },
     { name: 'teamName', label: 'Team', sortable: true, template: teamTemplate }

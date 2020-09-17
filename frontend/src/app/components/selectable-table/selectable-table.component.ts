@@ -12,6 +12,8 @@ import { PagingSortingDataSource } from 'src/app/core/datasources/pagingsorting.
   styleUrls: ['./selectable-table.component.css']
 })
 export class SelectableTableComponent implements OnInit {
+  isSelectable: boolean = true;
+
   // data source for table
   tableDataSource: PagingSortingDataSource<any>;
   // list of table columns
@@ -34,13 +36,16 @@ export class SelectableTableComponent implements OnInit {
   @ViewChild(MatSort)
   sort: MatSort;
 
+  @Input() set selectable(value: boolean) {
+    this.isSelectable = value;
+    this.setColumnsToDisplay();
+  }
   @Input() set dataSource(value: PagingSortingDataSource<any>) {
     this.tableDataSource = value;
   }
   @Input() set columns(value: any[]) {
     this.tableColumns = value;
-    // columns to display = _select + names of input columns
-    this.columnsToDisplay = ['_select', ...value.map(c => c.name)];
+    this.setColumnsToDisplay();
   }
 
   // emits current selection to parent (can be a set of ids or the string 'all')
@@ -66,6 +71,10 @@ export class SelectableTableComponent implements OnInit {
     ).subscribe();
   }
 
+  setColumnsToDisplay() {
+    if(this.tableColumns)
+      this.columnsToDisplay = this.isSelectable ? ['_select', ...this.tableColumns.map(c => c.name)] : this.tableColumns.map(c => c.name);
+  }
   loadDataPage() {
     // load data page based on current sorting and paging settings
     this.tableDataSource.loadData(this.sort.active, this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
