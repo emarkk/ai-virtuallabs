@@ -125,7 +125,7 @@ public class TeamServiceImpl implements TeamService {
         if(students.size() < course.getMinTeamMembers() || students.size() > course.getMaxTeamMembers())
             throw new IllegalTeamSizeException();
         if(students.stream().anyMatch(s ->
-                s.getTeams().stream().anyMatch(ts -> ts.getTeam().isComplete())))
+                s.getTeams().stream().anyMatch(ts -> ts.getTeam().isComplete() && ts.getTeam().getCourse().equals(course))))
             throw new StudentAlreadyInTeamException();
 
         Team team = Team.builder()
