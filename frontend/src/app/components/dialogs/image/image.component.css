@@ -1,7 +1,8 @@
 .dialog {
+  display: flex;
   width: 640px;
   background: #ddd;
-  text-align: center;
+  justify-content: center;
 }
 .dialog img {
   max-width: 100%;

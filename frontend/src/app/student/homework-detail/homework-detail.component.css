@@ -16,10 +16,11 @@ mat-icon {
 }
 .resource-container {
   cursor: pointer;
-  max-height: 200px;
+  display: flex;
   margin-top: 12px;
   background: #f3f3f3;
-  text-align: center;
+  justify-content: center;
+  outline: none;
 }
 .resource {
   max-width: 100%;

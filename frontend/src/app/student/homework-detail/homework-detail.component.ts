@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, combineLatest, forkJoin, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
@@ -10,9 +11,11 @@ import { HomeworkAction, HomeworkActionType } from 'src/app/core/models/homework
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CourseService } from 'src/app/core/services/course.service';
 import { HomeworkService } from 'src/app/core/services/homework.service';
+import { ToastService } from 'src/app/core/services/toast.service';
+
+import { ImageDialog } from 'src/app/components/dialogs/image/image.component';
 
 import { navHome, navCourses, nav } from '../student.navdata';
-import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-student-homework-detail',
@@ -32,6 +35,8 @@ export class StudentHomeworkDetailComponent implements OnInit {
   
   homeworkActions$: Observable<HomeworkAction[]>;
   homeworkActionsRefreshToken = new BehaviorSubject(undefined);
+  
+  imageDialogRef: MatDialogRef<ImageDialog> = null;
 
   navigationData$: Observable<Array<any>>;
 
@@ -41,7 +46,8 @@ export class StudentHomeworkDetailComponent implements OnInit {
   @ViewChild('fileUpload')
   fileUpload: ElementRef;
 
-  constructor(private route: ActivatedRoute, private authService: AuthService, private courseService: CourseService, private homeworkService: HomeworkService, private toastService: ToastService) {
+  constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService, private courseService: CourseService,
+      private homeworkService: HomeworkService, private toastService: ToastService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -58,6 +64,22 @@ export class StudentHomeworkDetailComponent implements OnInit {
     this.navigationData$ = forkJoin([this.course$, this.homework$]).pipe(
       map(([course, homework]) => [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('Homeworks', `/student/course/${course.code}/homeworks`), nav(homework.title)])
     );
+
+    combineLatest([this.route.queryParams, this.homeworkActions$]).subscribe(([queryParams, homeworkActions]) => {
+      if(queryParams.action && homeworkActions.some(a => a.id == queryParams.action)) {
+        homeworkActions.find(a => a.id == queryParams.action).resource$.subscribe(resource => {
+          this.imageDialogRef = this.dialog.open(ImageDialog, {
+            data: {
+              imageUrl: resource
+            }
+          });
+          this.imageDialogRef.afterClosed().subscribe(_ => {
+            this.router.navigate([]);
+          });
+        });
+      } else if(this.imageDialogRef)
+        this.imageDialogRef.close();
+    });
   }
 
   downloadAssignmentText(): void {

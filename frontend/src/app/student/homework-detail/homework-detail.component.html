@@ -30,7 +30,7 @@
               </div>
               <div class="block" *ngIf="action.actionType == ActionType.DELIVERY">
                 <h4><mat-icon>how_to_vote</mat-icon> You submitted a solution for the homework</h4>
-                <div class="resource-container" *ngIf="action.resource$ | async as resource">
+                <div class="resource-container" [routerLink]="[]" [queryParams]="{ action: action.id }" *ngIf="action.resource$ | async as resource">
                   <img class="resource" [src]="resource" />
                 </div>
               </div>
