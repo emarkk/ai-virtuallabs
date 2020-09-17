@@ -15,7 +15,7 @@ public interface HomeworkService {
     void deleteHomework(Long homeworkId);
     void addHomeworkDelivery(Long homeworkId, MultipartFile file);
     void addHomeworkReview(Long homeworkId, Long actionId, MultipartFile file, Integer mark);
-    Resource getHomeworkDeliveryResource(Long homeworkDeliveryId);
+    Resource getHomeworkActionResource(Long homeworkActionId);
     HomeworkActionDTO getHomeworkAction(Long homeworkActionId);
     PageDTO<HomeworkActionDTO> getAllHomeworkActions(Long homeworkId, Integer page, Integer pageSize, String filterBy);
     List<HomeworkActionDTO> getStudentHomeworkActions(Long homeworkId, Long studentId);

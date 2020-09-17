@@ -267,10 +267,10 @@ public class HomeworkServiceImpl implements HomeworkService {
     }
 
     @Override
-    public Resource getHomeworkDeliveryResource(Long homeworkDeliveryId) {
-        HomeworkAction homeworkDelivery = getter.homeworkAction(homeworkDeliveryId);
+    public Resource getHomeworkActionResource(Long homeworkActionId) {
+        HomeworkAction homeworkDelivery = getter.homeworkAction(homeworkActionId);
 
-        if(homeworkDelivery.isRead())
+        if(homeworkDelivery.isRead() || homeworkDelivery.isNull())
             throw new HomeworkActionNotAllowedException();
         if(!homeworkDelivery.getHomework().getCourse().getEnabled())
             throw new CourseNotEnabledException();
