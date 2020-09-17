@@ -13,6 +13,8 @@ import { PagingSortingDataSource } from 'src/app/core/datasources/pagingsorting.
 })
 export class SelectableTableComponent implements OnInit {
   isSelectable: boolean = true;
+  isClickable: boolean = false;
+  rowRouterLink: (any) => string = () => '';
 
   // data source for table
   tableDataSource: PagingSortingDataSource<any>;
@@ -39,6 +41,12 @@ export class SelectableTableComponent implements OnInit {
   @Input() set selectable(value: boolean) {
     this.isSelectable = value;
     this.setColumnsToDisplay();
+  }
+  @Input() set clickable(value: boolean) {
+    this.isClickable = value;
+  }
+  @Input() set rowLink(value: (any) => string) {
+    this.rowRouterLink = value;
   }
   @Input() set dataSource(value: PagingSortingDataSource<any>) {
     this.tableDataSource = value;

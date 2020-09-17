@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Homework } from 'src/app/core/models/homework.model';
+import { HomeworkAction } from 'src/app/core/models/homework-action.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
 import { HomeworkService } from 'src/app/core/services/homework.service';
@@ -14,7 +15,7 @@ import { HomeworkOverviewDataSource } from 'src/app/core/datasources/homework-ov
 
 import { ImageDialog } from 'src/app/components/dialogs/image/image.component';
 
-import { historyTemplate, studentFieldsTemplate, studentLastNameTemplate, timestampTemplate } from './templates';
+import { studentFieldsTemplate, studentLastNameTemplate, timestampTemplate } from './templates';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
 
@@ -37,9 +38,9 @@ export class ProfessorHomeworkDetailComponent implements OnInit {
     { name: 'firstName', label: 'First Name', template: studentFieldsTemplate('firstName') },
     { name: 'lastName', label: 'Last Name', template: studentLastNameTemplate },
     { name: 'status', label: 'Status' },
-    { name: 'timestamp', label: 'Timestamp', template: timestampTemplate },
-    { name: 'actions', label: '' },
+    { name: 'timestamp', label: 'Timestamp', template: timestampTemplate }
   ];
+  homeworkHistoryLink = (action: HomeworkAction) => `/professor/course/${this.courseCode}/homework/${this.homeworkId}/student/${action.student.id}`;
   homeworkOverviewDataSource: HomeworkOverviewDataSource;
   
   imageDialogRef: MatDialogRef<ImageDialog> = null;

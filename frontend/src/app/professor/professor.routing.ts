@@ -14,6 +14,7 @@ import { ProfessorVmComponent } from './vm/vm.component';
 import { ProfessorHomeworksComponent } from './homeworks/homeworks.component';
 import { ProfessorNewHomeworkComponent } from './new-homework/new-homework.component';
 import { ProfessorHomeworkDetailComponent } from './homework-detail/homework-detail.component';
+import { ProfessorHomeworkDetailStudentComponent } from './homework-detail-student/homework-detail-student.component';
 
 export const professorRouting = [
   {
@@ -74,6 +75,10 @@ export const professorRouting = [
       {
         path: 'course/:code/homework/:id',
         component: ProfessorHomeworkDetailComponent,
+      },
+      {
+        path: 'course/:code/homework/:id/student/:studentId',
+        component: ProfessorHomeworkDetailStudentComponent,
       }
     ]
   }

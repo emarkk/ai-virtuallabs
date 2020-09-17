@@ -11,31 +11,29 @@
           </p>
         </div>
         <div class="info-text">
-          <a (click)="downloadAssignmentText()"><mat-icon>assignment</mat-icon> Download the assignment text</a>
-          <a class="hidden" [href]="homeworkText" [download]="info.homework.title + '.jpg'" #fileDownload></a>
+          <a [routerLink]="[]" [queryParams]="{ show: 'text' }"><mat-icon>assignment</mat-icon> Read the assignment text</a>
         </div>
       </div>
       <div class="history" *ngIf="homeworkActions$ | async as homeworkActions">
         <app-timeline>
           <div class="action" *ngFor="let action of homeworkActions; let first = first">
-            <div class="block-container" [class.left]="action.actionType == ActionType.NULL || action.actionType == ActionType.REVIEW" [class.right]="action.actionType == ActionType.READ || action.actionType == ActionType.DELIVERY">
+            <div class="block-container" [class.left]="action.actionType == ActionType.READ || action.actionType == ActionType.DELIVERY" [class.right]="action.actionType == ActionType.NULL || action.actionType == ActionType.REVIEW">
               <div class="block" *ngIf="action.actionType == ActionType.NULL">
-                <h4><mat-icon>backup</mat-icon> Homework assignment published</h4>
+                <h4><mat-icon>backup</mat-icon> You published the homework assignment</h4>
                 <span>The assignment is expected to be completed in {{ Math.floor((info.homework.dueDate.getTime() - info.homework.publicationDate.getTime()) / (24*60*60*1000)) }} days</span>
               </div>
               <div class="block" *ngIf="action.actionType == ActionType.READ">
-                <h4><mat-icon>menu_book</mat-icon> You downloaded the assignment text</h4>
-                <span *ngIf="first">Now take your time, and then <a (click)="submitHomeworkSolution()">submit a solution</a></span>
+                <h4><mat-icon>menu_book</mat-icon> Assignment text downloaded</h4>
                 <span></span>
               </div>
               <div class="block" *ngIf="action.actionType == ActionType.DELIVERY">
-                <h4><mat-icon>how_to_vote</mat-icon> You submitted a solution for the homework</h4>
+                <h4><mat-icon>how_to_vote</mat-icon> Homework solution submitted</h4>
                 <div class="resource-container" [routerLink]="[]" [queryParams]="{ action: action.id }" *ngIf="action.resource$ | async as resource">
                   <img class="resource" [src]="resource" />
                 </div>
               </div>
               <div class="block" *ngIf="action.actionType == ActionType.REVIEW">
-                <h4><mat-icon>verified</mat-icon> Assignment solution reviewed</h4>
+                <h4><mat-icon>verified</mat-icon> You reviewed the assignment solution</h4>
                 <span></span>
               </div>
               <div class="time-dot"></div>
@@ -44,7 +42,7 @@
           </div>
         </app-timeline>
       </div>
-      <input type="file" ng2FileSelect hidden accept="image/*" (change)="homeworkSolutionSelected($event.target.files[0])" #fileUpload />
+      <input type="file" ng2FileSelect hidden accept="image/*" #fileUpload />
     </app-page>
   </ng-container>
 </div>

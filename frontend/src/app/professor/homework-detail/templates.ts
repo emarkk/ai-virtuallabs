@@ -7,6 +7,3 @@ export const studentLastNameTemplate = action => {
 export const timestampTemplate = action => {
   return action.date.toLocaleString();
 };
-export const historyTemplate = action => {
-  return '<mat-icon>history</mat-icon>';
-};

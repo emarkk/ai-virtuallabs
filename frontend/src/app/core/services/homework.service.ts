@@ -27,7 +27,6 @@ export class HomeworkService {
     );
   }
   getText(id: number): Observable<string> {
-    console.log(this.imageService);
     return this.imageService.get(`homeworks/${id}/text`);
   }
   getStudentActions(id: number, studentId: number): Observable<HomeworkAction[]> {

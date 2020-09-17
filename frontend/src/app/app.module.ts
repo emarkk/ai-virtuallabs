@@ -78,6 +78,7 @@ import { ProfessorVmComponent } from './professor/vm/vm.component';
 import { ProfessorHomeworksComponent } from './professor/homeworks/homeworks.component';
 import { ProfessorNewHomeworkComponent } from './professor/new-homework/new-homework.component';
 import { ProfessorHomeworkDetailComponent } from './professor/homework-detail/homework-detail.component';
+import { ProfessorHomeworkDetailStudentComponent } from './professor/homework-detail-student/homework-detail-student.component';
 import { StudentContainerComponent } from './student/container/container.component';
 import { StudentHomeComponent } from './student/home/home.component';
 import { StudentCoursesComponent } from './student/courses/courses.component';
@@ -141,6 +142,7 @@ import { StudentHomeworkDetailComponent } from './student/homework-detail/homewo
     ProfessorHomeworksComponent,
     ProfessorNewHomeworkComponent,
     ProfessorHomeworkDetailComponent,
+    ProfessorHomeworkDetailStudentComponent,
     StudentContainerComponent,
     StudentHomeComponent,
     StudentCoursesComponent,

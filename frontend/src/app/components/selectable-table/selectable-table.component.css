@@ -1,6 +1,13 @@
 table {
   width: 100%;
 }
+tr.clickable {
+  cursor: pointer;
+  outline: none;
+}
+tr.clickable:hover {
+  background: #ffe1db;
+}
 .mat-column-_select {
   width: 10%;
 }

@@ -24,7 +24,12 @@
       </th>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="['_selectInfo']" [class.hidden]="!masterChecked || tableDataSource.currentPage.length == tableDataSource.size"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="selectable-table-row"></tr>
+    <ng-container *ngIf="isClickable">
+      <tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="selectable-table-row clickable" [routerLink]="rowRouterLink(row)"></tr>
+    </ng-container>
+    <ng-container *ngIf="!isClickable">
+      <tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="selectable-table-row"></tr>
+    </ng-container>
   </table>
   <mat-paginator [length]="tableDataSource.size" [pageSize]="15" [pageSizeOptions]="[15, 30, 50, 100]" showFirstLastButtons></mat-paginator>
 </div>
