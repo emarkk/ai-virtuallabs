@@ -1,8 +1,8 @@
-<div class="container" *ngIf="{ course: course$ | async, homework: homework$ | async} as info">
-  <ng-container *ngIf="info.course && info.homework">
+<div class="container" *ngIf="{ course: course$ | async, homework: homework$ | async, student: student$ | async} as info">
+  <ng-container *ngIf="info.course && info.homework && info.student">
     <app-page>
       <app-navigation [navigationData]="navigationData$ | async"></app-navigation>
-      <h1>{{ info.homework.title }}</h1>
+      <h1>{{ info.homework.title }} <span class="bar"></span><span>{{ info.student.firstName + ' ' + info.student.lastName }}</span></h1>
       <div class="info">
         <div class="info-dates">
           <p>

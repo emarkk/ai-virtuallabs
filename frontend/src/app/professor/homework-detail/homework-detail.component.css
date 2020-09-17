@@ -8,8 +8,8 @@ mat-icon {
 .info-dates {
   flex: 2;
 }
-.info-text {
-  flex: 1;
+.info-text, .info-delete {
+  flex: 1.4;
 }
 .overview {
   margin-top: 3em;

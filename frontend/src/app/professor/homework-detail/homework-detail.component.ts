@@ -13,11 +13,13 @@ import { HomeworkService } from 'src/app/core/services/homework.service';
 
 import { HomeworkOverviewDataSource } from 'src/app/core/datasources/homework-overview.datasource';
 
+import { ConfirmDialog } from 'src/app/components/dialogs/confirm/confirm.component';
 import { ImageDialog } from 'src/app/components/dialogs/image/image.component';
 
 import { studentFieldsTemplate, studentLastNameTemplate, timestampTemplate } from './templates';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-professor-homework-detail',
@@ -47,7 +49,8 @@ export class ProfessorHomeworkDetailComponent implements OnInit {
   
   navigationData$: Observable<Array<any>>;
 
-  constructor(private router: Router, private route: ActivatedRoute, private courseService: CourseService, private homeworkService: HomeworkService, private dialog: MatDialog) {
+  constructor(private router: Router, private route: ActivatedRoute, private courseService: CourseService, private homeworkService: HomeworkService,
+      private toastService: ToastService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -79,4 +82,22 @@ export class ProfessorHomeworkDetailComponent implements OnInit {
     });
   }
 
+  deleteHomeworkAssignment() {
+    this.dialog.open(ConfirmDialog, {
+      data: {
+        title: 'Delete homework',
+        message: 'Are you sure you want to delete this homework? Be aware that this operation will fail if any student has already submitted a solution.'
+      }
+    }).afterClosed().subscribe(confirmed => {
+      if(confirmed) {
+        this.homeworkService.delete(this.homeworkId).subscribe(res => {
+          if(res) {
+            this.router.navigate([`/professor/course/${this.courseCode}/homeworks`]);
+            this.toastService.show({ type: 'success', text: 'Homework deleted successfully.' });
+          } else 
+            this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+        });
+      }
+    });
+  }
 }

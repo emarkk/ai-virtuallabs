@@ -1,6 +1,9 @@
 mat-icon {
   padding-top: 2px;
 }
+h1 span {
+  font-weight: normal;
+}
 .info {
   display: flex;
   align-items: center;

@@ -82,4 +82,10 @@ export class HomeworkService {
       catchError(error => of(false))
     );
   }
+  delete(id: number): Observable<boolean> {
+    return this.http.delete(url(`homeworks/${id}`)).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
 }

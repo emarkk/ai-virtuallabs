@@ -13,6 +13,9 @@
         <div class="info-text">
           <a [routerLink]="[]" [queryParams]="{ show: 'text' }"><mat-icon>assignment</mat-icon> Read the assignment text</a>
         </div>
+        <div class="info-delete">
+          <a (click)="deleteHomeworkAssignment()"><mat-icon>delete_forever</mat-icon> Delete homework assignment</a>
+        </div>
       </div>
       <div class="overview">
         <app-selectable-table [selectable]="false" [clickable]="true" [rowLink]="homeworkHistoryLink" [dataSource]="homeworkOverviewDataSource" [columns]="homeworkOverviewColumns"></app-selectable-table>
