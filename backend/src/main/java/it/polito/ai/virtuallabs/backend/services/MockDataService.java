@@ -32,6 +32,9 @@ public class MockDataService {
     TeamRepository teamRepository;
 
     @Autowired
+    VmRepository vmRepository;
+
+    @Autowired
     TeamStudentRepository teamStudentRepository;
 
     @Autowired
@@ -121,7 +124,7 @@ public class MockDataService {
         addCourse("01QYDOV", "Information systems", "IS", 1, 7, true);
         addCourse("01SQNOV", "Data spaces", "DS", 3, 5, true);
         addCourse("02JGROV", "Computer system security", "CSS", 2, 5, false);
-        addCourse("02DUCOV", "Software Engineering II", "SE2", 3, 6, false);
+        addCourse("02DUCOV", "Software Engineering II", "SE2", 3, 6, true);
     }
 
     public void addProfessorsToCourses() {
@@ -150,6 +153,7 @@ public class MockDataService {
 
     public void addTeams() {
         addTeam("team-1", "01NYHOV", List.of(251129L, 229302L));
+        addTeam("team-alpha", "02DUCOV", List.of(202123L, 210293L, 248530L));
     }
 
     public void addVmModel(String name, String configuration, String courseCode) {
@@ -159,8 +163,39 @@ public class MockDataService {
         course.setVmModel(vmModel);
     }
 
+    public void addTeamVmLimit(Integer vcpus, Integer diskSpace, Integer ram, Integer instances, Integer activeInstances, Long teamId) {
+        Team team = teamRepository.getOne(teamId);
+        TeamVmsResources teamVmsResources = new TeamVmsResources(vcpus, diskSpace, ram, instances, activeInstances);
+        team.setVmsResourcesLimits(teamVmsResources);
+        teamRepository.save(team);
+    }
+
+    public void addTeamVm(Integer vcpus, Integer diskSpace, Integer ram, Long teamId) {
+        Team team = teamRepository.getOne(teamId);
+        Vm vm = Vm.builder()
+                .team(team)
+                .online(false)
+                .vcpus(vcpus)
+                .ram(ram)
+                .diskSpace(diskSpace)
+                .creator(team.getMembers().get(0).getStudent())
+                .build();
+        vm.addOwner(team.getMembers().get(0).getStudent());
+        vmRepository.save(vm);
+
+    }
+
     public void addVmModels() {
         addVmModel("Spring+Angular", "FROM ubuntu", "01NYHOV");
+        addVmModel("Spring+React", "FROM kubuntu", "02DUCOV");
+    }
+
+    public void addTeamVmLimits() {
+        addTeamVmLimit(5, 30, 3000, 5, 3, studentRepository.getOne(202123L).getTeams().stream().filter(t -> t.getTeam().getCourse().getCode().equals("02DUCOV")).findFirst().get().getTeam().getId());
+    }
+
+    public void addTeamVms() {
+        addTeamVm(2, 10, 1000, studentRepository.getOne(202123L).getTeams().stream().filter(t -> t.getTeam().getCourse().getCode().equals("02DUCOV")).findFirst().get().getTeam().getId());
     }
 
     public void insertMockData() {
@@ -172,6 +207,8 @@ public class MockDataService {
         enrollStudents();
         addTeams();
         addVmModels();
+        addTeamVmLimits();
+        addTeamVms();
     }
 
 }
