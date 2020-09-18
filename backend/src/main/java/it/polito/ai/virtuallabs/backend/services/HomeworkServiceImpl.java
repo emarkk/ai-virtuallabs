@@ -326,7 +326,9 @@ public class HomeworkServiceImpl implements HomeworkService {
                     PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "date")),
                     homeworkId);
         } else if(filterBy.equals("EVALUATION")) {
-            // TODO
+            actionPage = homeworkActionRepository.findAllByHomeworkIdWithMark(
+                    PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "date")),
+                    homeworkId, HomeworkAction.ActionType.REVIEW);
         } else {
             actionPage = homeworkActionRepository.findAllByHomeworkIdAndActionType(
                     PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "date")),

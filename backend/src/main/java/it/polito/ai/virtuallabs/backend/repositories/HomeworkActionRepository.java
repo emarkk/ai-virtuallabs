@@ -20,6 +20,9 @@ public interface HomeworkActionRepository extends JpaRepository<HomeworkAction, 
     @Query("SELECT ha FROM HomeworkAction ha INNER JOIN ha.homework h INNER JOIN ha.student s WHERE h.id = :homeworkId AND ha.id IN (SELECT ha1.id FROM HomeworkAction ha1 INNER JOIN ha1.student s1 WHERE s1.id = s.id AND ha1.date = (SELECT MAX(ha2.date) FROM HomeworkAction ha2 INNER JOIN ha2.student s2 WHERE s2.id = s1.id))")
     Page<HomeworkAction> findAllActions(Pageable pageable, @Param("homeworkId") Long homeworkId);
 
-    @Query("SELECT ha FROM HomeworkAction ha INNER JOIN ha.homework h INNER JOIN ha.student s WHERE h.id = :homeworkId AND ha.actionType = :actionType AND ha.id IN (SELECT ha1.id FROM HomeworkAction ha1 INNER JOIN ha1.student s1 WHERE s1.id = s.id AND ha1.date = (SELECT MAX(ha2.date) FROM HomeworkAction ha2 INNER JOIN ha2.student s2 WHERE s2.id = s1.id))")
+    @Query("SELECT ha FROM HomeworkAction ha INNER JOIN ha.homework h INNER JOIN ha.student s WHERE ha.mark IS NULL AND h.id = :homeworkId AND ha.actionType = :actionType AND ha.id IN (SELECT ha1.id FROM HomeworkAction ha1 INNER JOIN ha1.student s1 WHERE s1.id = s.id AND ha1.date = (SELECT MAX(ha2.date) FROM HomeworkAction ha2 INNER JOIN ha2.student s2 WHERE s2.id = s1.id))")
     Page<HomeworkAction> findAllByHomeworkIdAndActionType(Pageable pageable, @Param("homeworkId") Long homeworkId, @Param("actionType") HomeworkAction.ActionType actionType);
+
+    @Query("SELECT ha FROM HomeworkAction ha INNER JOIN ha.homework h INNER JOIN ha.student s WHERE ha.mark IS NOT NULL AND h.id = :homeworkId AND ha.actionType = :actionType AND ha.id IN (SELECT ha1.id FROM HomeworkAction ha1 INNER JOIN ha1.student s1 WHERE s1.id = s.id AND ha1.date = (SELECT MAX(ha2.date) FROM HomeworkAction ha2 INNER JOIN ha2.student s2 WHERE s2.id = s1.id))")
+    Page<HomeworkAction> findAllByHomeworkIdWithMark(Pageable pageable, @Param("homeworkId") Long homeworkId, @Param("actionType") HomeworkAction.ActionType actionType);
 }
