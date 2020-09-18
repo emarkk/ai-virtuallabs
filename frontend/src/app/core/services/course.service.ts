@@ -71,10 +71,10 @@ export class CourseService {
     return this.getTeams(code).pipe(
       concatMap(teams => teams),
       filter((team: Team) => team.status == TeamStatus.COMPLETE),
-      flatMap((team: Team) => forkJoin(
+      flatMap((team: Team) => forkJoin([
         of(team),
-        this.http.get<any[]>(url(`teams/${team.id}/vms`)))
-      ),
+        this.http.get<any[]>(url(`teams/${team.id}/vms`))
+      ])),
       map(([team, vms]: [Team, any[]]) => {
         let teamsVms = { team, vms: [] };
         for(let vm of vms)

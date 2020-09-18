@@ -1,12 +1,8 @@
 h1 span {
   font-weight: normal;
 }
-p.empty {
+p.list-empty {
   margin-top: 60px;
-  color: #777;
-  text-align: center;
-  font-style: italic;
-  letter-spacing: 1px;
 }
 td .profile-pic {
   margin-top: 2px;

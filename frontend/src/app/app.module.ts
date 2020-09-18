@@ -37,6 +37,7 @@ import { ImageDialog } from './components/dialogs/image/image.component';
 import { VmModelDialog } from './components/dialogs/vm-model/vm-model.component';
 import { VmAddOwnersDialog } from './components/dialogs/vm-add-owners/vm-add-owners.component';
 import { VmLimitsDialog } from './components/dialogs/vm-limits/vm-limits.component';
+import { HomeworkReviewDialog } from './components/dialogs/homework-review/homework-review.component';
 import { TileComponent } from './components/tile/tile.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { AsyncButtonComponent } from './components/async-button/async-button.component';
@@ -102,6 +103,7 @@ import { StudentHomeworkDetailComponent } from './student/homework-detail/homewo
     VmModelDialog,
     VmAddOwnersDialog,
     VmLimitsDialog,
+    HomeworkReviewDialog,
     TileComponent,
     ToastComponent,
     AsyncButtonComponent,

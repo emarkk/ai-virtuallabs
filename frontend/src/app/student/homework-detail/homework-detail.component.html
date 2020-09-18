@@ -26,7 +26,6 @@
               <div class="block" *ngIf="action.actionType == ActionType.READ">
                 <h4><mat-icon>menu_book</mat-icon> You downloaded the assignment text</h4>
                 <span *ngIf="first">Now take your time, and then <a (click)="submitHomeworkSolution()">submit a solution</a></span>
-                <span></span>
               </div>
               <div class="block" *ngIf="action.actionType == ActionType.DELIVERY">
                 <h4><mat-icon>how_to_vote</mat-icon> You submitted a solution for the homework</h4>

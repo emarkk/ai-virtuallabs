@@ -11,6 +11,9 @@ mat-icon {
 .info-text, .info-delete {
   flex: 1.4;
 }
+p.list-empty {
+  margin-top: 60px;
+}
 .overview {
   margin-top: 3em;
 }

@@ -67,7 +67,7 @@ export class HomeworkService {
   add(title: string, dueDate: number, file: File, courseCode: string): Observable<boolean> {      
     const formData: FormData = new FormData();
     formData.append('title', title);
-    formData.append('dueDate', dueDate + '');
+    formData.append('dueDate', `${dueDate}`);
     formData.append('file', file);
     formData.append('courseCode', courseCode);
     return this.http.post(url('homeworks'), formData).pipe(
@@ -77,9 +77,20 @@ export class HomeworkService {
   }
   submitSolution(id: number, file: File): Observable<boolean> {    
     const formData: FormData = new FormData();
-    formData.append('id', id + '');
+    formData.append('id', `${id}`);
     formData.append('file', file);
     return this.http.post(url(`homeworks/${id}/delivery`), formData).pipe(
+      map(_ => true),
+      catchError(error => of(false))
+    );
+  }
+  postReview(id: number, actionId: number, file: File, mark?: number): Observable<boolean> {  
+    const formData: FormData = new FormData();
+    formData.append('id', `${id}`);
+    formData.append('file', file);
+    if(mark)
+      formData.append('mark', `${mark}`);
+    return this.http.post(url(`homeworks/${id}/review/${actionId}`), formData).pipe(
       map(_ => true),
       catchError(error => of(false))
     );

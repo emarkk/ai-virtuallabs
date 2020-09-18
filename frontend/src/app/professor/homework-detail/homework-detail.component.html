@@ -18,8 +18,8 @@
         </div>
       </div>
       <div class="overview">
-        <app-selectable-table [selectable]="false" [clickable]="true" [rowLink]="homeworkHistoryLink" [dataSource]="homeworkOverviewDataSource" [columns]="homeworkOverviewColumns"></app-selectable-table>
-        <p *ngIf="homeworkOverviewDataSource.size == 0" class="empty">No students enrolled in this course.</p>
+        <app-selectable-table [selectable]="false" [clickable]="true" [rowLink]="homeworkHistoryLink" [dataSource]="homeworkOverviewDataSource" [columns]="homeworkOverviewColumns" [class.hidden]="homeworkOverviewDataSource.maxSize == 0"></app-selectable-table>
+        <p *ngIf="homeworkOverviewDataSource.loaded && homeworkOverviewDataSource.maxSize == 0" class="list-empty">No students enrolled in this course.</p>
       </div>
     </app-page>
   </ng-container>

@@ -1,0 +1,26 @@
+<div class="dialog">
+  <h2>Homework submission review</h2>
+  <div class="review">
+    <form [formGroup]="form">
+      <mat-form-field appearance="legacy">
+        <ngx-mat-file-input #fileInput formControlName="file" placeholder="Review file" [accept]="'image/*'" required></ngx-mat-file-input>
+        <button mat-icon-button matSuffix *ngIf="!fileInput.empty && !fileInput.disabled" (click)="fileInput.clear($event)">
+          <mat-icon>clear</mat-icon>
+        </button>
+        <mat-error>{{ getFileErrorMessage() }}</mat-error>
+      </mat-form-field>
+      <div class="fraction third first">
+        <mat-slide-toggle formControlName="final">Final review</mat-slide-toggle>
+      </div>
+      <mat-form-field class="fraction third" appearance="legacy">
+        <mat-label>Mark</mat-label>
+        <input matInput placeholder="18" formControlName="mark">
+        <mat-error>{{ getMarkErrorMessage() }}</mat-error>
+      </mat-form-field>
+    </form>
+  </div>
+  <div class="actions">
+    <button mat-flat-button mat-dialog-close>Cancel</button>
+    <app-async-button (aclick)="saveButtonClicked()" [loading]="locked">Save</app-async-button>
+  </div>
+</div>

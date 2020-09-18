@@ -20,7 +20,7 @@ h1 span {
 .resource-container {
   cursor: pointer;
   display: flex;
-  margin-top: 12px;
+  margin: 12px 0;
   background: #f3f3f3;
   justify-content: center;
   outline: none;
