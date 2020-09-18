@@ -300,29 +300,33 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     public PageDTO<HomeworkActionDTO> getAllHomeworkActions(Long homeworkId, Integer page, Integer pageSize, String filterBy) {
         Homework homework = getter.homework(homeworkId);
+        HomeworkAction.ActionType filter = null;
 
-        if(!homework.getCourse().getEnabled()) {
+        if(!homework.getCourse().getEnabled())
             throw new CourseNotEnabledException();
-        }
-
         if(page < 0 || pageSize < 0)
             throw new InvalidPageException();
-
-        if(!filterBy.equals("ALL") && !filterBy.equals("READ") && !filterBy.equals("NULL") && !filterBy.equals("DELIVERY") && !filterBy.equals("REVIEW"))
-            throw new IllegalFilterRequestException();
-
         if(!homework.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
+
+        try {
+            if(!filterBy.equals("ALL") && !filterBy.equals("EVALUATION"))
+                filter = HomeworkAction.ActionType.valueOf(filterBy);
+        } catch(IllegalArgumentException e) {
+            throw new IllegalFilterRequestException();
+        }
 
         Page<HomeworkAction> actionPage = null;
         if(filterBy.equals("ALL")) {
             actionPage = homeworkActionRepository.findAllActions(
                     PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "date")),
                     homeworkId);
+        } else if(filterBy.equals("EVALUATION")) {
+            // TODO
         } else {
-                actionPage = homeworkActionRepository.findAllByHomeworkIdAndActionType(
-                        PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "date")),
-                        homeworkId, filterBy.equals("NULL") ? HomeworkAction.ActionType.NULL : filterBy.equals("DELIVERY") ? HomeworkAction.ActionType.DELIVERY : filterBy.equals("READ") ? HomeworkAction.ActionType.READ : HomeworkAction.ActionType.REVIEW);
+            actionPage = homeworkActionRepository.findAllByHomeworkIdAndActionType(
+                    PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "date")),
+                    homeworkId, filter);
         }
 
         List<HomeworkActionDTO> dtos = actionPage.stream()
