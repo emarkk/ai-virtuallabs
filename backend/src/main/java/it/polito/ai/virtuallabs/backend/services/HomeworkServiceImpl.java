@@ -168,6 +168,10 @@ public class HomeworkServiceImpl implements HomeworkService {
             throw new NotAllowedException();
         if(!homework.getCourse().getEnabled())
             throw new CourseNotEnabledException();
+        if(homework.getHomeworkActions().stream().anyMatch(HomeworkAction::isDelivery))
+            throw new HomeworkActionNotAllowedException();
+
+        homework.getHomeworkActions().forEach(ha -> homeworkActionRepository.delete(ha));
 
         Path file = root.resolve("homeworks/" + homework.getCourse().getCode() + "/" + homework.getId() + ".jpg");
         try {

@@ -90,6 +90,8 @@ public class HomeworkController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Course Not Enabled");
         } catch (FileHandlingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Sever Error");
+        } catch (HomeworkActionNotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Action Not Allowed");
         }
     }
 
