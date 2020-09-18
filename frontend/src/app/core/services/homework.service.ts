@@ -43,8 +43,10 @@ export class HomeworkService {
       catchError(error => of(null))
     );
   }
-  getStudentsLastActions(id: number, pageIndex: number = 0, pageSize: number = 15): Observable<Page<HomeworkAction>> {
+  getStudentsLastActions(id: number, filterBy: string, pageIndex: number = 0, pageSize: number = 15): Observable<Page<HomeworkAction>> {
     let params = new HttpParams().set('page', pageIndex.toString()).set('pageSize', pageSize.toString());
+    if(filterBy)
+      params = params.set('filterBy', filterBy);
     return this.http.get<any>(url(`homeworks/${id}/actions`), { params }).pipe(
       map(x => new Page(x.total, x.page.map(a =>
         new HomeworkAction(

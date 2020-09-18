@@ -149,6 +149,10 @@ form .actions {
 form .actions .mat-flat-button {
   margin: 0 10px;
 }
+table select {
+  border: none;
+  outline: none;
+}
 .bar {
   position: relative;
   top: 5px;
@@ -257,4 +261,7 @@ table.info td:first-child {
 mat-form-field .filename {
   position: relative;
   top: 6px;
+}
+.mat-column-timestamp {
+  width: 23%;
 }

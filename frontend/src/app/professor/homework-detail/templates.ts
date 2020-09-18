@@ -18,6 +18,9 @@ export const statusTemplate = (action: HomeworkAction) => {
   if(action.actionType == HomeworkActionType.REVIEW && action.mark != null)
     return `⭐ Evaluated`;
 };
+export const markTemplate = (action: HomeworkAction) => {
+  return action.mark || '&mdash;';
+};
 export const timestampTemplate = (action: HomeworkAction) => {
   return action.date.toLocaleString();
 };

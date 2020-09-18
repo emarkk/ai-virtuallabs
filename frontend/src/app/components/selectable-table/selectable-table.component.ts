@@ -32,6 +32,8 @@ export class SelectableTableComponent implements OnInit {
   // whether all dataset was selected
   allDatasetSelected: boolean = false;
 
+  filters: any = {};
+
   @ViewChild(MatPaginator)
   paginator: MatPaginator;
 
@@ -85,11 +87,18 @@ export class SelectableTableComponent implements OnInit {
   }
   loadDataPage() {
     // load data page based on current sorting and paging settings
-    this.tableDataSource.loadData(this.sort.active, this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
+    this.tableDataSource.loadData(this.sort.active, this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize, this.filters);
   }
   refresh() {
     // data may have changed, so reset selection and fetch data again
     this.cancelSelection();
+    this.loadDataPage();
+  }
+  updateFilter(columnName: string, filterValue: string) {
+    if(filterValue == '$unset$')
+      delete this.filters[columnName];
+    else
+      this.filters[columnName] = filterValue;
     this.loadDataPage();
   }
   selectAll() {

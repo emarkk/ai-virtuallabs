@@ -32,8 +32,8 @@ export class HomeworkOverviewDataSource implements PagingSortingDataSource<Homew
     return this.lastActionsSubject.value;
   }
 
-  loadData(sortBy: string = null, sortDirection: string = null, pageIndex: number = 0, pageSize: number = 15) {
-    this.homeworkService.getStudentsLastActions(this.homeworkId, pageIndex, pageSize).subscribe(page => {
+  loadData(sortBy: string = null, sortDirection: string = null, pageIndex: number = 0, pageSize: number = 15, filters: any = {}) {
+    this.homeworkService.getStudentsLastActions(this.homeworkId, filters.status || null, pageIndex, pageSize).subscribe(page => {
       this.datasetSize = page.count;
       this.lastActionsSubject.next(page.data)
     });

@@ -9,7 +9,17 @@
       </td>
     </ng-container>
     <ng-container *ngFor="let column of tableColumns" [matColumnDef]="column.name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!column.sortable">{{ column.label }}</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!column.sortable">
+        <ng-container *ngIf="column.filter">
+          <select (change)="updateFilter(column.name, $event.target.value)">
+            <option selected value="$unset$">{{ column.label }}</option>
+            <option *ngFor="let option of column.filterOptions" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </ng-container>
+        <ng-container *ngIf="!column.filter">
+          {{ column.label }}
+        </ng-container>
+      </th>
       <td mat-cell *matCellDef="let row">
         <div *ngIf="!column.template && !column.special">{{ row[column.name] }}</div>
         <div *ngIf="column.template" [innerHTML]="column.template(row)"></div>
@@ -18,7 +28,7 @@
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
     <ng-container matColumnDef="_selectInfo">
-      <th mat-header-cell *matHeaderCellDef [attr.colspan]="6" class="select-info">
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="columnsToDisplay.length" class="select-info">
         <span *ngIf="!allDatasetSelected">All {{ tableDataSource.currentPage.length }} elements on this page are selected. <a (click)="selectAll()">Select all {{ tableDataSource.size }} elements</a></span>
         <span *ngIf="allDatasetSelected">All {{ tableDataSource.size }} elements have been selected. <a (click)="cancelSelection()">Cancel selection</a></span>
       </th>
