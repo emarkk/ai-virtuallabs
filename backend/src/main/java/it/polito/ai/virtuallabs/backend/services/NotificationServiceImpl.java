@@ -51,7 +51,7 @@ public class NotificationServiceImpl implements NotificationService {
         sendMessage(credentialsDTO.getEmail(),
                 "This is your Virtuallabs Account",
                 "Hi " + credentialsDTO.getFirstName() + ",\na new Virtuallabs account named has been created for you.\n"
-                        + "Please, click on the link here below in order to validate your account: http://localhost:3000/api/signup/confirm/" + token + "\n"
+                        + "Please, click on the link here below in order to validate your account: \nhttp://localhost:3000/api/signup/confirm/" + token + "\n"
                         + "If you didn't request this subscription you can ignore this email.\n"
                 );
     }
