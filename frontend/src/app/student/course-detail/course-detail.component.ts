@@ -40,7 +40,10 @@ export class StudentCourseDetailComponent implements OnInit {
     this.course$ = this.courseService.get(this.courseCode);
     this.professors$ = this.courseService.getProfessors(this.courseCode);
     this.homeworks$ = this.courseService.getHomeworks(this.courseCode).pipe(
-      map(homeworks => homeworks.filter(h => h.dueDate > new Date()))
+      map(homeworks => homeworks.filter(h => h.dueDate > new Date()).map(h => {
+        h.link = `/student/course/${this.courseCode}/homework/${h.id}`; 
+        return h;
+      }))
     );
     this.navigationData$ = this.course$.pipe(
       map(course => [navHome, navCourses, nav(course.name)])
