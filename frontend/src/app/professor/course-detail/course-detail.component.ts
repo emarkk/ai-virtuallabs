@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, Subscription, BehaviorSubject, combineLatest } from 'rxjs';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
 
 import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
@@ -10,6 +10,7 @@ import { Professor } from 'src/app/core/models/professor.model';
 import { Student } from 'src/app/core/models/student.model';
 import { Page } from 'src/app/core/models/page.model';
 import { VmModel } from 'src/app/core/models/vmmodel.model';
+import { Homework } from 'src/app/core/models/homework.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
 import { ProfessorService, ProfessorSearchFilters } from 'src/app/core/services/professor.service';
@@ -43,6 +44,8 @@ export class ProfessorCourseDetailComponent implements OnInit {
   vmModelRefreshToken = new BehaviorSubject(undefined);
   vmModelDialogRef: MatDialogRef<VmModelDialog> = null;
 
+  homeworks$: Observable<Homework[]>;
+
   showSearch: boolean = false;
   professorMatches: any[] = [];
   searchSubject: Subject<string> = new Subject();
@@ -63,6 +66,12 @@ export class ProfessorCourseDetailComponent implements OnInit {
       this.vmModel$ = this.vmModelRefreshToken.pipe(
         switchMap(() => this.courseService.getVmModel(this.courseCode)),
         switchMap(x => this.vmService.getModel(x.id))
+      );
+      this.homeworks$ = this.courseService.getHomeworks(this.courseCode).pipe(
+        map(homeworks => homeworks.filter(h => h.dueDate > new Date()).map(h => {
+          h.link = `/professor/course/${this.courseCode}/homework/${h.id}`; 
+          return h;
+        }))
       );
 
       combineLatest([this.route.queryParams, this.vmModel$]).subscribe(([queryParams, vmModel]) => {

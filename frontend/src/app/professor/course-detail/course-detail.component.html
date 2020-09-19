@@ -38,9 +38,14 @@
       </div>
       <div class="fl-1">
         <app-tile text="Teams" [textLink]="'/professor/course/' + course.code + '/teams'" icon="account_tree">
-          
+          <span class="tile-desc">Check out how students organized themselves in teams.</span>
         </app-tile>
       </div>
+    </div>
+    <div *ngIf="homeworks$ | async as homeworks">
+      <app-tile [text]="'Homeworks (' + homeworks.length + ' active)'" [textLink]="'/professor/course/' + courseCode + '/homeworks'" icon="perm_media">
+        <app-homework-list [homeworks]="homeworks" [onlyActive]="true"></app-homework-list>
+      </app-tile>
     </div>
     <app-tile text="VMs" [textLink]="'/professor/course/' + course.code + '/vms'" icon="dns">
       <div *ngIf="vmModel$ | async as vmModel">
@@ -50,8 +55,6 @@
         <span class="sep"></span>
         <a (click)="vmModelLinkClicked()">{{ vmModel.id != null ? 'Edit' : 'Add' }}</a>
       </div>
-    </app-tile>
-    <app-tile text="Homeworks" [textLink]="'/professor/course/' + course.code + '/homeworks'" icon="perm_media">
     </app-tile>
     <app-tile text="Actions" icon="amp_stories">
       <div class="actions">
