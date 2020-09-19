@@ -22,9 +22,8 @@ public class UserSearchEngine {
             double score = 0;
             Collections.shuffle(a);
 
-            for(int j = 0; j < a.size(); j++) {
+            for(int j = 0; j < a.size(); j++)
                 score += jarowinkler.apply(a.get(j), b.get(j));
-            }
 
             maxScore = Math.max(maxScore, score);
         }

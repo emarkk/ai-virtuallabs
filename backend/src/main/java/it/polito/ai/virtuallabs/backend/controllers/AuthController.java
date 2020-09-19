@@ -1,5 +1,6 @@
 package it.polito.ai.virtuallabs.backend.controllers;
 
+import it.polito.ai.virtuallabs.backend.dtos.AuthenticationRequestDTO;
 import it.polito.ai.virtuallabs.backend.entities.User;
 import it.polito.ai.virtuallabs.backend.repositories.UserRepository;
 import it.polito.ai.virtuallabs.backend.security.jwt.JwtTokenProvider;
@@ -35,8 +36,9 @@ public class AuthController {
     UserRepository userRepository;
 
     @PostMapping({ "", "/" })
-    public ResponseEntity login(@RequestBody AuthenticationRequest data) {
+    public ResponseEntity login(@RequestBody AuthenticationRequestDTO data) {
         try {
+            // users can login with id or email
             String credential = data.getUsername().toLowerCase();
 
             Optional<User> userOptional = this.userRepository.findByUsername(credential);

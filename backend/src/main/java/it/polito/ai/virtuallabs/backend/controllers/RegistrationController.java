@@ -22,6 +22,7 @@ public class RegistrationController {
     @ResponseStatus(HttpStatus.CREATED)
     public void signUp(@RequestBody CredentialsDTO credentialsDTO) {
         String generatedToken = registrationService.addUser(credentialsDTO);
+
         if(generatedToken == null)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
 

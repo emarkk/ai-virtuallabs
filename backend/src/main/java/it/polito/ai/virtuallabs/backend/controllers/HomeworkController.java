@@ -26,9 +26,9 @@ public class HomeworkController {
     @PostMapping({ "", "/" })
     @ResponseStatus(HttpStatus.CREATED)
     public void addHomework(@RequestParam Map<String, String> input, @RequestParam("file") MultipartFile file) {
-        if(!input.containsKey("courseCode") || !input.containsKey("dueDate") || !input.containsKey("title")){
+        if(!input.containsKey("courseCode") || !input.containsKey("dueDate") || !input.containsKey("title"))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
-        }
+
         try {
             homeworkService.addHomework(input.get("courseCode"), input.get("title"), Long.parseLong(input.get("dueDate")), file);
         } catch (CourseNotFoundException e) {

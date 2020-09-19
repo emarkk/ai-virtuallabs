@@ -1,4 +1,4 @@
-package it.polito.ai.virtuallabs.backend.controllers;
+package it.polito.ai.virtuallabs.backend.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationRequest implements Serializable {
+public class AuthenticationRequestDTO implements Serializable {
 
     private static final long serialVersionUID = -6986746375915710855L;
 
