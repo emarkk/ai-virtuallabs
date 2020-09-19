@@ -48,10 +48,6 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
     this.courseCode = this.route.snapshot.params.code;
     this.init();
   }
-  ngOnDestroy(): void {
-    if(this.vmUpdatesSignal)
-      this.vmUpdatesSignal.unsubscribe();
-  }
   init(): void {
     this.course$ = this.courseService.get(this.courseCode);
     this.course$.subscribe(course => {
@@ -132,6 +128,10 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
         }
       });
     });
+  }
+  ngOnDestroy(): void {
+    if(this.vmUpdatesSignal)
+      this.vmUpdatesSignal.unsubscribe();
   }
   
   getRowSpan(i: number, teamsVms: { team: Team, vm: Vm }[]): number {
