@@ -1,3 +1,6 @@
+.homework {
+  margin-bottom: 1em;
+}
 .course-disabled {
   pointer-events: none;
   cursor: default;

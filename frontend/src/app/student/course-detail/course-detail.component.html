@@ -22,11 +22,9 @@
     </table>
     <div class="content" [class.course-disabled]="!course.enabled">
       <div *ngIf="homeworks$ | async as homeworks">
-        <div *ngIf="homeworks.length">
-          <app-tile text="Homeworks" [textLink]="'/student/course/' + courseCode + '/homeworks'" icon="perm_media">
-            
-          </app-tile>
-        </div>
+        <app-tile [text]="'Homeworks (' + homeworks.length + ' active)'" [textLink]="'/student/course/' + courseCode + '/homeworks'" icon="perm_media">
+          <app-homework-list [homeworks]="homeworks" [onlyActive]="true"></app-homework-list>
+        </app-tile>
       </div>
       <div *ngIf="team">
         <app-tile text="VMs" [textLink]="'/student/course/' + courseCode + '/vms'" icon="dns">

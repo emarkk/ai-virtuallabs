@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Homework } from 'src/app/core/models/homework.model';
@@ -19,6 +19,7 @@ import { navHome, navCourses, nav } from '../student.navdata';
 })
 export class StudentCourseDetailComponent implements OnInit {
   courseCode: string;
+
   course$: Observable<Course>;
   professors$: Observable<Professor[]>;
   homeworks$: Observable<Homework[]>;
@@ -38,7 +39,9 @@ export class StudentCourseDetailComponent implements OnInit {
   init(): void {
     this.course$ = this.courseService.get(this.courseCode);
     this.professors$ = this.courseService.getProfessors(this.courseCode);
-    this.homeworks$ = this.courseService.getHomeworks(this.courseCode);
+    this.homeworks$ = this.courseService.getHomeworks(this.courseCode).pipe(
+      map(homeworks => homeworks.filter(h => h.dueDate > new Date()))
+    );
     this.navigationData$ = this.course$.pipe(
       map(course => [navHome, navCourses, nav(course.name)])
     );

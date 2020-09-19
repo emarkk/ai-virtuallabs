@@ -9,7 +9,7 @@
     <div *ngFor="let homework of activeHomeworkList" class="homework">
       <app-homework-item [data]="homework"></app-homework-item>
     </div>
-    <div *ngIf="pastHomeworkList.length">
+    <div *ngIf="pastHomeworkList.length && !showOnlyActive">
       <div class="old">
         <div><hr /></div>
         <span>past assignments</span>
@@ -20,5 +20,6 @@
       </div>
     </div>
   </div>
-  <p *ngIf="homeworkList && !homeworkList.length" class="list-empty">No homeworks to show.</p>
+  <p *ngIf="homeworkList && !homeworkList.length && !showOnlyActive" class="list-empty">No homeworks to show.</p>
+  <p *ngIf="homeworkList && !homeworkList.length && showOnlyActive" class="list-empty">There are no active homeworks.</p>
 </div>

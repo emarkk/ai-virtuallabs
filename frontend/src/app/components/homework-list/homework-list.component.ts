@@ -8,6 +8,8 @@ import { Homework } from 'src/app/core/models/homework.model';
   styleUrls: ['./homework-list.component.css']
 })
 export class HomeworkListComponent implements OnInit {
+  showOnlyActive: boolean = false;
+  
   homeworkList: Homework[] = null;
   activeHomeworkList: Homework[] = null;
   pastHomeworkList: Homework[] = null;
@@ -22,6 +24,9 @@ export class HomeworkListComponent implements OnInit {
       // for past homeworks, we want the closest one (due date most forthcoming in past) to appear first
       this.pastHomeworkList.sort((a, b) => b.dueDate.getTime() - a.dueDate.getTime());
     }
+  }
+  @Input() set onlyActive(value: boolean) {
+    this.showOnlyActive = value;
   }
 
   constructor() {
