@@ -2,10 +2,7 @@ package it.polito.ai.virtuallabs.backend.services;
 
 import it.polito.ai.virtuallabs.backend.dtos.*;
 import it.polito.ai.virtuallabs.backend.entities.*;
-import it.polito.ai.virtuallabs.backend.repositories.CourseRepository;
-import it.polito.ai.virtuallabs.backend.repositories.CourseStudent;
-import it.polito.ai.virtuallabs.backend.repositories.HomeworkRepository;
-import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
+import it.polito.ai.virtuallabs.backend.repositories.*;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import org.modelmapper.ModelMapper;
@@ -21,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +33,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private HomeworkActionRepository homeworkActionRepository;
 
     @Autowired
     private AuthenticatedEntityMapper authenticatedEntityMapper;
@@ -181,6 +182,16 @@ public class CourseServiceImpl implements CourseService {
             throw new CourseNotEnabledException();
         if(student.getCourses().contains(course))
             return false;
+
+        //Assign null action to course homeworks
+        course.getHomeworks().forEach(h -> {
+            HomeworkAction homeworkAction = new HomeworkAction();
+            homeworkAction.assignStudent(student);
+            homeworkAction.assignHomework(h);
+            homeworkAction.setActionType(HomeworkAction.ActionType.NULL);
+            homeworkAction.setDate(new Timestamp(System.currentTimeMillis()));
+            homeworkActionRepository.save(homeworkAction);
+        });
 
         course.addStudent(student);
         return true;
