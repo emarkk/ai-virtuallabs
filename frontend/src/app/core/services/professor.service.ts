@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+import { APIResult } from '../models/api-result.model';
 import { Course } from '../models/course.model';
 import { Professor } from '../models/professor.model';
 
@@ -49,12 +50,12 @@ export class ProfessorService {
       catchError(error => of(null))
     );
   }
-  setProfilePicture(professorId: number, file: File): Observable<boolean> {
+  setProfilePicture(professorId: number, file: File): Observable<APIResult> {
     const formData: FormData = new FormData();
     formData.append('file', file);
     return this.http.post(url(`professors/${professorId}/picture`), formData).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
 }

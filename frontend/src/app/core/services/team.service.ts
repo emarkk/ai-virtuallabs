@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+import { APIResult } from '../models/api-result.model';
 import { Student } from '../models/student.model';
 import { Team } from '../models/team.model';
 import { Vm } from '../models/vm.model';
@@ -40,31 +41,31 @@ export class TeamService {
     );
   }
   // propose a new team
-  propose(name: string, timeout: number, membersIds: number[], courseCode: string): Observable<boolean> {
+  propose(name: string, timeout: number, membersIds: number[], courseCode: string): Observable<APIResult> {
     return this.http.post(url('teams'), { name, timeout, membersIds, courseCode }, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // accept an invitation to a team
-  acceptTeamInvitation(teamId: number): Observable<boolean> {
+  acceptTeamInvitation(teamId: number): Observable<APIResult> {
     return this.http.post(url(`teams/${teamId}/accept`), null, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // decline an invitation to a team
-  declineTeamInvitation(teamId: number): Observable<boolean> {
+  declineTeamInvitation(teamId: number): Observable<APIResult> {
     return this.http.post(url(`teams/${teamId}/decline`), null, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // update vms resource limits for team
-  updateVmsResourcesLimits(teamId: number, vcpus: number, diskSpace: number, ram: number, activeInstances: number, instances: number): Observable<boolean> {
+  updateVmsResourcesLimits(teamId: number, vcpus: number, diskSpace: number, ram: number, activeInstances: number, instances: number): Observable<APIResult> {
     return this.http.post(url(`teams/${teamId}/vms/resources/limits`), { vcpus, diskSpace, ram, activeInstances, instances }, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
 }

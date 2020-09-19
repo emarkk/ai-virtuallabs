@@ -6,6 +6,7 @@ import { map, catchError } from 'rxjs/operators';
 import { SignalService } from './signal.service';
 
 import { url, httpOptions } from '../utils';
+import { APIResult } from '../models/api-result.model';
 
 const ONE_HOUR = 60*60*1000;
 
@@ -49,13 +50,13 @@ export class AuthService {
     // return user info (username, id, roles)
     return { username: data.sub, id: parseInt(data.sub.substring(1)), roles: data.roles };
   }
-  login(username: string, password: string): Observable<boolean> {
+  login(username: string, password: string): Observable<APIResult> {
     return this.http.post(url('auth'), { username, password }, httpOptions).pipe(
-      map((x: any) => {
-        this.setToken(x.token, Date.now() + ONE_HOUR);
-        return true;
+      map((res: any) => {
+        this.setToken(res.token, Date.now() + ONE_HOUR);
+        return APIResult.ok(res);
       }),
-      catchError(error => of(false))
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   logout(): void {

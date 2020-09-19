@@ -5,6 +5,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
 import { Student } from 'src/app/core/models/student.model';
 
@@ -139,13 +140,13 @@ export class StudentNewTeamComponent implements OnInit {
     const membersIds = this.members.map(m => m.id).concat(this.authService.getId());
 
     this.lock();
-    this.teamService.propose(name, timeout, membersIds, this.courseCode).subscribe(res => {
+    this.teamService.propose(name, timeout, membersIds, this.courseCode).subscribe((res: APIResult) => {
       this.unlock();
-      if(res) {
+      if(res.ok) {
         this.router.navigate([`/student/course/${this.courseCode}`]);
         this.toastService.show({ type: 'success', text: 'Team proposal submitted successfully.' });
       } else
-        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+        this.toastService.show({ type: 'danger', text: res.errorMessage });
     });
   }
 }

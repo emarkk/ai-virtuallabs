@@ -4,6 +4,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Observable, combineLatest, merge } from 'rxjs';
 import { scan } from 'rxjs/operators';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
 import { Vm } from 'src/app/core/models/vm.model';
 import { Team } from 'src/app/core/models/team.model';
@@ -113,10 +114,12 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
           }
   
           this.vmLimitsDialogRef.afterClosed().subscribe(res => {
-            if(res)
-              this.toastService.show({ type: 'success', text: 'VMs resource limits saved successfully.' });
-            else if(res === false)
-              this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+            if(res instanceof APIResult) {
+              if(res.ok)
+                this.toastService.show({ type: 'success', text: 'VMs resource limits saved successfully.' });
+              else if(res.error)
+                this.toastService.show({ type: 'danger', text: res.errorMessage });
+            }
 
             this.router.navigate([]);
             this.vmLimitsDialogRef = null;

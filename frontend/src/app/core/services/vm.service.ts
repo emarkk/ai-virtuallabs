@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+import { APIResult } from '../models/api-result.model';
 import { VmModel } from '../models/vmmodel.model';
 import { Vm } from '../models/vm.model';
+import { Student } from '../models/student.model';
 
 import { url, httpOptions } from '../utils';
-import { Student } from '../models/student.model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,17 +28,17 @@ export class VmService {
     );
   }
   // add vm model for course
-  addModel(name: string, configuration: string, courseCode: string): Observable<boolean> {
+  addModel(name: string, configuration: string, courseCode: string): Observable<APIResult> {
     return this.http.post(url('vms/models'), { name, configuration, courseCode }, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // update vm model
-  updateModel(id: number, name: string, configuration: string): Observable<boolean> {
+  updateModel(id: number, name: string, configuration: string): Observable<APIResult> {
     return this.http.put(url(`vms/models/${id}`), { id, name, configuration }, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // get vm
@@ -48,39 +49,39 @@ export class VmService {
     );
   }
   // add vm
-  add(vcpus: number, diskSpace: number, ram: number, teamId: number): Observable<boolean> {
+  add(vcpus: number, diskSpace: number, ram: number, teamId: number): Observable<APIResult> {
     return this.http.post(url('vms'), { vcpus, diskSpace, ram, teamId }, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // update vm
-  update(id: number, vcpus: number, diskSpace: number, ram: number): Observable<boolean> {
+  update(id: number, vcpus: number, diskSpace: number, ram: number): Observable<APIResult> {
     return this.http.put(url(`vms/${id}`), { vcpus, diskSpace, ram }, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // turn on / turn off vm
-  turnOnOff(id: number, online: boolean): Observable<boolean> {
+  turnOnOff(id: number, online: boolean): Observable<APIResult> {
     const action = online ? 'on' : 'off';
     return this.http.post(url(`vms/${id}/${action}`), null, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // add owners to vm
-  addOwners(id: number, studentIds: number[]): Observable<boolean> {
+  addOwners(id: number, studentIds: number[]): Observable<APIResult> {
     return this.http.patch(url(`vms/${id}/owners`), studentIds, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // delete vm
-  delete(id: number): Observable<boolean> {
+  delete(id: number): Observable<APIResult> {
     return this.http.delete(url(`vms/${id}`)).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
 }

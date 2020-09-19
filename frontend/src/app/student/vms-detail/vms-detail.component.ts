@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, BehaviorSubject, combineLatest, of, merge, forkJoin } from 'rxjs';
 import { switchMap, scan } from 'rxjs/operators';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Vm } from 'src/app/core/models/vm.model';
 import { Team } from 'src/app/core/models/team.model';
 import { TeamVmsResources } from 'src/app/core/models/team-vms-resources.model';
@@ -112,11 +113,13 @@ export class StudentVmsDetailComponent implements OnInit {
           }
         });
         this.vmAddOwnersDialogRef.afterClosed().subscribe(res => {
-          if(res)
-            this.toastService.show({ type: 'success', text: 'VM owners updated successfully.' });
-          else if(res === false)
-            this.toastService.show({ type: 'danger', text: 'An error occurred.' });
-            
+          if(res instanceof APIResult) {
+            if(res.ok)
+              this.toastService.show({ type: 'success', text: 'VM owners updated successfully.' });
+            else if(res.error)
+              this.toastService.show({ type: 'danger', text: res.errorMessage });
+          }
+          
           this.router.navigate([]);
         });
       } else if(this.vmAddOwnersDialogRef)
@@ -131,10 +134,9 @@ export class StudentVmsDetailComponent implements OnInit {
   }
 
   changeVmState(data: { vmId: number, online: boolean }) {
-    this.vmService.turnOnOff(data.vmId, data.online).subscribe(res => {
-      if(res) {
+    this.vmService.turnOnOff(data.vmId, data.online).subscribe((res: APIResult) => {
+      if(res.ok)
         this.vmsRefreshToken.next(undefined);
-      }
     });
   }
   connectToVm(vmId: number) {
@@ -154,12 +156,12 @@ export class StudentVmsDetailComponent implements OnInit {
       }
     }).afterClosed().subscribe(confirmed => {
       if(confirmed) {
-        this.vmService.delete(vmId).subscribe(res => {
-          if(res) {
+        this.vmService.delete(vmId).subscribe((res: APIResult) => {
+          if(res.ok) {
             this.vmsRefreshToken.next(undefined);
             this.toastService.show({ type: 'success', text: 'VM deleted successfully.' });
           } else
-            this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+            this.toastService.show({ type: 'danger', text: res.errorMessage });
         });
       }
     });

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
+
 import { AuthService } from 'src/app/core/services/auth.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { politoEmailValidator, politoMatricolaValidator, politoSignUpFormValidator } from '../../core/validators/auth.validator';
@@ -88,11 +90,11 @@ export class SignUpComponent implements OnInit {
     const password = this.form.get('password').value;
 
     // registration attempt
-    this.registrationService.signup(firstName, lastName, matricola, email, password).subscribe(res => {
+    this.registrationService.signup(firstName, lastName, matricola, email, password).subscribe((res: APIResult) => {
       // unlock form
       this.unlock();
 
-      if(res) {
+      if(res.ok) {
         // set registration successful flag and redirect user to the related page
         this.registrationService.registrationSuccessful();
         this.router.navigate(['/signup/success']);

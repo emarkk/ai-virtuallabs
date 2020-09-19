@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, Subscription, BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
 import { Professor } from 'src/app/core/models/professor.model';
 import { Student } from 'src/app/core/models/student.model';
@@ -76,11 +77,13 @@ export class ProfessorCourseDetailComponent implements OnInit {
             }
           });
           this.vmModelDialogRef.afterClosed().subscribe(res => {
-            if(res) {
-              this.vmModelRefreshToken.next(undefined);
-              this.toastService.show({ type: 'success', text: 'VM model information saved successfully.' });
-            } else if(res === false)
-              this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+            if(res instanceof APIResult) {
+              if(res.ok) {
+                this.vmModelRefreshToken.next(undefined);
+                this.toastService.show({ type: 'success', text: 'VM model information saved successfully.' });
+              } else if(res.error)
+                this.toastService.show({ type: 'danger', text: res.errorMessage });
+            }
               
             this.router.navigate([]);
           });
@@ -119,12 +122,12 @@ export class ProfessorCourseDetailComponent implements OnInit {
   }
   searchResultSelected(id: number) {
     this.clearSearch();
-    this.courseService.addProfessor(this.courseCode, id).subscribe(res => {
-      if(res) {
+    this.courseService.addProfessor(this.courseCode, id).subscribe((res: APIResult) => {
+      if(res.ok) {
         this.professorsRefreshToken.next(undefined);
         this.toastService.show({ type: 'success', text: 'Collaborator added successfully.' });
       } else 
-        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+        this.toastService.show({ type: 'danger', text: res.errorMessage });
     });
   }
   searchCloseButtonClicked() {
@@ -139,24 +142,24 @@ export class ProfessorCourseDetailComponent implements OnInit {
       }
     }).afterClosed().subscribe(confirmed => {
       if(confirmed) {
-        this.courseService.delete(this.courseCode).subscribe(res => {
-          if(res) {
+        this.courseService.delete(this.courseCode).subscribe((res: APIResult) => {
+          if(res.ok) {
             this.router.navigate(['/professor/courses']);
             this.toastService.show({ type: 'success', text: 'Course deleted successfully.' });
           } else 
-            this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+            this.toastService.show({ type: 'danger', text: res.errorMessage });
         });
       }
     });
   }
   statusButtonClicked() {
     this.updatingStatus = true;
-    this.courseService.setEnabled(this.courseCode, !this.courseEnabled).subscribe(res => {
+    this.courseService.setEnabled(this.courseCode, !this.courseEnabled).subscribe((res: APIResult) => {
       this.updatingStatus = false;
-      if(res)
+      if(res.ok)
         this.courseEnabled = this.courseEnabled ? false : true;
       else
-        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+        this.toastService.show({ type: 'danger', text: res.errorMessage });
     });
   }
   addCollaboratorButtonClicked() {

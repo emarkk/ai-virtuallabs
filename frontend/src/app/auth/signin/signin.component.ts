@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+
+import { APIResult } from 'src/app/core/models/api-result.model';
 
 import { AuthService } from '../../core/services/auth.service';
+
 import { politoUsernameValidator } from '../../core/validators/auth.validator';
 
 @Component({
@@ -63,11 +66,11 @@ export class SignInComponent implements OnInit {
     this.lock();
 
     // login attempt
-    this.authService.login(this.form.get('username').value, this.form.get('password').value).subscribe(res => {
+    this.authService.login(this.form.get('username').value, this.form.get('password').value).subscribe((res: APIResult) => {
       // unlock form
       this.unlock();
 
-      if(res)
+      if(res.ok)
         // ok; redirect to desired path or to /
         this.router.navigate([this.redirectTo || '/']);
       else

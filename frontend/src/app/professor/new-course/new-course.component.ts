@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
+
 import { CourseService } from 'src/app/core/services/course.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 
@@ -29,13 +31,13 @@ export class ProfessorNewCourseComponent implements OnInit {
   saveCourse(courseData) {
     this.formComponent.lock();
     const { code, name, acronym, minTeamMembers, maxTeamMembers, enabled } = courseData;
-    this.courseService.add(code, name, acronym, minTeamMembers, maxTeamMembers, enabled).subscribe(res => {
+    this.courseService.add(code, name, acronym, minTeamMembers, maxTeamMembers, enabled).subscribe((res: APIResult) => {
       this.formComponent.unlock();
-      if(res) {
+      if(res.ok) {
         this.router.navigate(['/professor/courses']);
         this.toastService.show({ type: 'success', text: 'New course created successfully.' });
       } else
-        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+        this.toastService.show({ type: 'danger', text: res.errorMessage });
     });
   }
 

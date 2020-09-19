@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { TeamVmsResources } from 'src/app/core/models/team-vms-resources.model';
 
 import { TeamService } from 'src/app/core/services/team.service';
@@ -124,7 +125,7 @@ export class VmLimitsDialog implements OnInit {
     const instances = +this.form.get('maxInstances').value;
 
     this.lock();
-    this.teamService.updateVmsResourcesLimits(this.data.teamId, vcpus, diskSpace, ram, activeInstances, instances).subscribe(res => {
+    this.teamService.updateVmsResourcesLimits(this.data.teamId, vcpus, diskSpace, ram, activeInstances, instances).subscribe((res: APIResult) => {
       this.unlock();
       this.dialogRef.close(res);
     });

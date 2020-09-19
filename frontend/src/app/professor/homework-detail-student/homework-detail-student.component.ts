@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
 import { Homework } from 'src/app/core/models/homework.model';
 import { Student } from 'src/app/core/models/student.model';
@@ -101,11 +102,13 @@ export class ProfessorHomeworkDetailStudentComponent implements OnInit {
           actionId: queryParams.review
         } });
         this.reviewDialogRef.afterClosed().subscribe(res => {
-          if(res) {
-            this.homeworkActionsRefreshToken.next(undefined);
-            this.toastService.show({ type: 'success', text: 'Review uploaded successfully.' });
-          } else if(res === false)
-            this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+          if(res instanceof APIResult) {
+            if(res.ok) {
+              this.homeworkActionsRefreshToken.next(undefined);
+              this.toastService.show({ type: 'success', text: 'Review uploaded successfully.' });
+            } else if(res.error)
+              this.toastService.show({ type: 'danger', text: res.errorMessage });
+          }
             
           this.router.navigate([]);
         });

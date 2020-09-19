@@ -11,6 +11,7 @@ import { HomeworkAction, HomeworkActionType } from '../models/homework-action.mo
 import { ImageService } from './image.service';
 
 import { url } from '../utils';
+import { APIResult } from '../models/api-result.model';
 
 @Injectable({
   providedIn: 'root'
@@ -64,41 +65,41 @@ export class HomeworkService {
   getActionResource(actionId: number): Observable<string> {
     return this.imageService.get(`homeworks/actions/${actionId}/resource`);
   }
-  add(title: string, dueDate: number, file: File, courseCode: string): Observable<boolean> {      
+  add(title: string, dueDate: number, file: File, courseCode: string): Observable<APIResult> {      
     const formData: FormData = new FormData();
     formData.append('title', title);
     formData.append('dueDate', `${dueDate}`);
     formData.append('file', file);
     formData.append('courseCode', courseCode);
     return this.http.post(url('homeworks'), formData).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
-  submitSolution(id: number, file: File): Observable<boolean> {    
+  submitSolution(id: number, file: File): Observable<APIResult> {    
     const formData: FormData = new FormData();
     formData.append('id', `${id}`);
     formData.append('file', file);
     return this.http.post(url(`homeworks/${id}/delivery`), formData).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
-  postReview(id: number, actionId: number, file: File, mark?: number): Observable<boolean> {  
+  postReview(id: number, actionId: number, file: File, mark?: number): Observable<APIResult> {  
     const formData: FormData = new FormData();
     formData.append('id', `${id}`);
     formData.append('file', file);
     if(mark)
       formData.append('mark', `${mark}`);
     return this.http.post(url(`homeworks/${id}/review/${actionId}`), formData).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
-  delete(id: number): Observable<boolean> {
+  delete(id: number): Observable<APIResult> {
     return this.http.delete(url(`homeworks/${id}`)).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
 }

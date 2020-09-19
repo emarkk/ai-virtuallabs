@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Team, TeamStatus, TeamInvitationStatus } from 'src/app/core/models/team.model';
 
 import { StudentService } from 'src/app/core/services/student.service';
@@ -82,12 +83,12 @@ export class StudentCourseTeamDetailComponent implements OnInit {
       }
     }).afterClosed().subscribe(confirmed => {
       if(confirmed) {
-        this.teamService.acceptTeamInvitation(teamId).subscribe(res => {
-          if(res) {
+        this.teamService.acceptTeamInvitation(teamId).subscribe((res: APIResult) => {
+          if(res.ok) {
             this.teamsRefreshToken.next(undefined);
             this.toastService.show({ type: 'success', text: 'Team invitation accepted successfully.' });
           } else
-            this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+            this.toastService.show({ type: 'danger', text: res.errorMessage });
         });
       }
     });
@@ -100,12 +101,12 @@ export class StudentCourseTeamDetailComponent implements OnInit {
       }
     }).afterClosed().subscribe(confirmed => {
       if(confirmed) {
-        this.teamService.declineTeamInvitation(teamId).subscribe(res => {
-          if(res) {
+        this.teamService.declineTeamInvitation(teamId).subscribe((res: APIResult) => {
+          if(res.ok) {
             this.teamsRefreshToken.next(undefined);
             this.toastService.show({ type: 'success', text: 'Team invitation declined successfully.' });
           } else
-            this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+            this.toastService.show({ type: 'danger', text: res.errorMessage });
         });
       }
     });

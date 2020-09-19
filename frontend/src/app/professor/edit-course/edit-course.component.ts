@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
@@ -42,13 +43,13 @@ export class ProfessorEditCourseComponent implements OnInit {
   saveCourse(courseData) {
     this.formComponent.lock();
     const { name, acronym, minTeamMembers, maxTeamMembers, enabled } = courseData;
-    this.courseService.update(this.courseCode, name, acronym, minTeamMembers, maxTeamMembers, enabled).subscribe(res => {
+    this.courseService.update(this.courseCode, name, acronym, minTeamMembers, maxTeamMembers, enabled).subscribe((res: APIResult) => {
       this.formComponent.unlock();
-      if(res) {
+      if(res.ok) {
         this.router.navigate(['/professor/courses']);
         this.toastService.show({ type: 'success', text: 'Course information updated successfully.' });
       } else
-        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+        this.toastService.show({ type: 'danger', text: res.errorMessage });
     });
   }
 

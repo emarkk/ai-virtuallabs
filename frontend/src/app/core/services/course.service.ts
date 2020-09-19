@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of, forkJoin } from 'rxjs';
 import { map, catchError, concatMap, flatMap, reduce, filter } from 'rxjs/operators';
 
+import { APIResult } from '../models/api-result.model';
 import { Page } from '../models/page.model';
 import { Course } from '../models/course.model';
 import { Student } from '../models/student.model';
@@ -93,69 +94,69 @@ export class CourseService {
     );
   }
   // create new course
-  add(code: string, name: string, acronym: string, minTeamMembers: number, maxTeamMembers: number, enabled: boolean): Observable<boolean> {
+  add(code: string, name: string, acronym: string, minTeamMembers: number, maxTeamMembers: number, enabled: boolean): Observable<APIResult> {
     return this.http.post(url('courses'), { code, name, acronym, minTeamMembers, maxTeamMembers, enabled }, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // add professor to course
-  addProfessor(code: string, professorId: number): Observable<boolean> {
+  addProfessor(code: string, professorId: number): Observable<APIResult> {
     return this.http.post(url(`courses/${code}/professors`), { id: professorId }, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // delete course
-  update(code: string, name: string, acronym: string, minTeamMembers: number, maxTeamMembers: number, enabled: boolean): Observable<boolean> {
+  update(code: string, name: string, acronym: string, minTeamMembers: number, maxTeamMembers: number, enabled: boolean): Observable<APIResult> {
     return this.http.put(url(`courses/${code}`), { code, name, acronym, minTeamMembers, maxTeamMembers, enabled }, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // delete course
-  delete(code: string): Observable<boolean> {
+  delete(code: string): Observable<APIResult> {
     return this.http.delete(url(`courses/${code}`)).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // enable/disable course
-  setEnabled(code: string, enabled: boolean): Observable<boolean> {
+  setEnabled(code: string, enabled: boolean): Observable<APIResult> {
     const action = enabled ? 'enable' : 'disable';
     return this.http.post(url(`courses/${code}/${action}`), null, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // enroll student to course
-  enroll(code: string, studentId: number): Observable<boolean> {
+  enroll(code: string, studentId: number): Observable<APIResult> {
     return this.http.post(url(`courses/${code}/enroll`), { id: studentId }, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // enroll students from CSV
-  enrollFromCSV(code: string, csvFile: File): Observable<boolean> {
+  enrollFromCSV(code: string, csvFile: File): Observable<APIResult> {
     const formData: FormData = new FormData();
     formData.append('csvFile', csvFile);
     return this.http.post(url(`courses/${code}/enroll/csv`), formData).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // unenroll subset of students from course
-  unenroll(code: string, studentIds: number[]): Observable<boolean> {
+  unenroll(code: string, studentIds: number[]): Observable<APIResult> {
     return this.http.post(url(`courses/${code}/unenroll`), studentIds, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
   // unenroll all students from course
-  unenrollAll(code: string): Observable<boolean> {
+  unenrollAll(code: string): Observable<APIResult> {
     return this.http.post(url(`courses/${code}/unenroll/all`), null, httpOptions).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
 }

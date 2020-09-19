@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
@@ -89,12 +90,12 @@ export class ProfessorStudentsComponent implements OnInit {
   }
   searchResultSelected(id: number) {
     this.clearSearch();
-    this.courseService.enroll(this.courseCode, id).subscribe(res => {
-      if(res) {
+    this.courseService.enroll(this.courseCode, id).subscribe((res: APIResult) => {
+      if(res.ok) {
         this.studentsTable.refresh();
         this.toastService.show({ type: 'success', text: 'Student enrolled successfully.' });
       } else
-        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+        this.toastService.show({ type: 'danger', text: res.errorMessage });
     })
   }
   searchCloseButtonClicked() {
@@ -108,12 +109,12 @@ export class ProfessorStudentsComponent implements OnInit {
     this.fileInput.nativeElement.click();
   }
   csvFileSelected(file: File) {
-    this.courseService.enrollFromCSV(this.courseCode, file).subscribe(res => {
-      if(res) {
+    this.courseService.enrollFromCSV(this.courseCode, file).subscribe((res: APIResult) => {
+      if(res.ok) {
         this.studentsTable.refresh();
         this.toastService.show({ type: 'success', text: 'CSV file imported successfully.' });
       } else
-        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+        this.toastService.show({ type: 'danger', text: res.errorMessage });
     });
   }
   unenrollAll() {
@@ -124,12 +125,12 @@ export class ProfessorStudentsComponent implements OnInit {
       }
     }).afterClosed().subscribe(confirmed => {
       if(confirmed) {
-        this.courseService.unenrollAll(this.courseCode).subscribe(res => {
-          if(res) {
+        this.courseService.unenrollAll(this.courseCode).subscribe((res: APIResult) => {
+          if(res.ok) {
             this.studentsTable.refresh();
             this.toastService.show({ type: 'success', text: 'All students unenrolled successfully.' });
           } else
-            this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+            this.toastService.show({ type: 'danger', text: res.errorMessage });
         });
       }
     });
@@ -142,12 +143,12 @@ export class ProfessorStudentsComponent implements OnInit {
       }
     }).afterClosed().subscribe(confirmed => {
       if(confirmed) {
-        this.courseService.unenroll(this.courseCode, studentIds).subscribe(res => {
-          if(res) {
+        this.courseService.unenroll(this.courseCode, studentIds).subscribe((res: APIResult) => {
+          if(res.ok) {
             this.studentsTable.refresh();
             this.toastService.show({ type: 'success', text: 'Selected students unenrolled successfully.' });
           } else
-            this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+            this.toastService.show({ type: 'danger', text: res.errorMessage });
         });
       }
     });

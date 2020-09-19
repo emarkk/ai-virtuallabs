@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
 import { Homework } from 'src/app/core/models/homework.model';
 import { HomeworkAction, HomeworkActionType } from 'src/app/core/models/homework-action.model';
@@ -100,12 +101,12 @@ export class StudentHomeworkDetailComponent implements OnInit {
     this.fileUpload.nativeElement.click();
   }
   homeworkSolutionSelected(file: File): void {
-    this.homeworkService.submitSolution(this.homeworkId, file).subscribe(res => {
-      if(res) {
+    this.homeworkService.submitSolution(this.homeworkId, file).subscribe((res: APIResult) => {
+      if(res.ok) {
         this.homeworkActionsRefreshToken.next(undefined);
         this.toastService.show({ type: 'success', text: 'Assignment solution submitted successfully.' });
       } else
-        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+        this.toastService.show({ type: 'danger', text: res.errorMessage });
     });
   }
 }

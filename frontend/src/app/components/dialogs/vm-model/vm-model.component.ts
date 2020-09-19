@@ -3,6 +3,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
+
 import { VmService } from 'src/app/core/services/vm.service';
 
 export interface VmModelDialogData {
@@ -65,7 +67,7 @@ ENTRYPOINT ["nginx", "-g", "daemon off;"]`;
     const name = this.form.get('name').value;
     const config = this.form.get('config').value;
 
-    let request: Observable<boolean>;
+    let request: Observable<APIResult>;
     if(this.data.id)
       // request is an update to existing vm model
       request = this.vmService.updateModel(this.data.id, name, config);
@@ -74,7 +76,7 @@ ENTRYPOINT ["nginx", "-g", "daemon off;"]`;
       request = this.vmService.addModel(name, config, this.data.courseCode);
 
     this.lock();
-    request.subscribe(res => {
+    request.subscribe((res: APIResult) => {
       this.unlock();
       this.dialogRef.close(res);
     });

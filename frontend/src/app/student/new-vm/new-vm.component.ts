@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, merge, of } from 'rxjs';
 import { map, scan } from 'rxjs/operators';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
 import { TeamStatus } from 'src/app/core/models/team.model';
 import { VmModel } from 'src/app/core/models/vmmodel.model';
@@ -108,13 +109,13 @@ export class StudentNewVmComponent implements OnInit, OnDestroy {
   saveVm(vmData) {
     this.formComponent.lock();
     const { vcpu, disk, ram } = vmData;
-    this.vmService.add(vcpu, disk, ram, this.teamId).subscribe(res => {
+    this.vmService.add(vcpu, disk, ram, this.teamId).subscribe((res: APIResult) => {
       this.formComponent.unlock();
-      if(res) {
+      if(res.ok) {
         this.router.navigate([`/student/course/${this.courseCode}`]);
         this.toastService.show({ type: 'success', text: 'VM created successfully.' });
       } else
-        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+        this.toastService.show({ type: 'danger', text: res.errorMessage });
     });
   }
 }

@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
 import { Professor } from 'src/app/core/models/professor.model';
 
@@ -37,12 +38,12 @@ export class ProfessorHomeComponent implements OnInit {
     this.fileInput.nativeElement.click();
   }
   profilePictureSelected(file: File): void {
-    this.professorService.setProfilePicture(this.authService.getId(), file).subscribe(res => {
-      if(res) {
+    this.professorService.setProfilePicture(this.authService.getId(), file).subscribe((res: APIResult) => {
+      if(res.ok) {
         this.profilePictureRefreshToken.next(undefined);
         this.toastService.show({ type: 'success', text: 'Profile picture updated successfully.' });
       } else
-        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+        this.toastService.show({ type: 'danger', text: res.errorMessage });
     });
   }
 }

@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators'
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
 
 import { CourseService } from 'src/app/core/services/course.service';
@@ -81,13 +82,13 @@ export class ProfessorNewHomeworkComponent implements OnInit {
     const file = this.form.get('file').value._files[0];
 
     this.lock();
-    this.homeworkService.add(title, dueDate, file, this.courseCode).subscribe(res => {
+    this.homeworkService.add(title, dueDate, file, this.courseCode).subscribe((res: APIResult) => {
       this.unlock();
-      if(res) {
+      if(res.ok) {
         this.router.navigate([`/professor/course/${this.courseCode}/homeworks`]);
         this.toastService.show({ type: 'success', text: 'Homework assignment created successfully.' });
       } else
-        this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+        this.toastService.show({ type: 'danger', text: res.errorMessage });
     });
   }
 }

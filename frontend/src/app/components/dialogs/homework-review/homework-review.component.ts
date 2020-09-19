@@ -2,6 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
+
 import { HomeworkService } from 'src/app/core/services/homework.service';
 
 import { numberValidator } from 'src/app/core/validators/core.validator';
@@ -65,7 +67,7 @@ export class HomeworkReviewDialog implements OnInit {
     const mark = this.form.get('mark').value || null;
 
     this.lock();
-    this.homeworkService.postReview(this.data.homeworkId, this.data.actionId, file, mark).subscribe(res => {
+    this.homeworkService.postReview(this.data.homeworkId, this.data.actionId, file, mark).subscribe((res: APIResult) => {
       this.unlock();
       this.dialogRef.close(res);
     });

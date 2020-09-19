@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of, combineLatest, forkJoin } from 'rxjs';
-import { map, catchError, mergeMap, concatMap, reduce, flatMap } from 'rxjs/operators';
+import { Observable, of, forkJoin } from 'rxjs';
+import { map, catchError, concatMap, reduce, flatMap } from 'rxjs/operators';
 
+import { APIResult } from '../models/api-result.model';
 import { Course } from '../models/course.model';
 import { Student } from '../models/student.model';
 import { Team, TeamInvitationStatus, TeamStatus } from '../models/team.model';
@@ -86,12 +87,12 @@ export class StudentService {
       map(arr => arr.find(t => t.status == TeamStatus.COMPLETE))
     );
   }
-  setProfilePicture(studentId: number, file: File): Observable<boolean> {
+  setProfilePicture(studentId: number, file: File): Observable<APIResult> {
     const formData: FormData = new FormData();
     formData.append('file', file);
     return this.http.post(url(`students/${studentId}/picture`), formData).pipe(
-      map(_ => true),
-      catchError(error => of(false))
+      map(res => APIResult.ok(res)),
+      catchError(res => of(APIResult.error(res.error.message)))
     );
   }
 }

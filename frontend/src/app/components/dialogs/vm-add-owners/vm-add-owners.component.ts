@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Student } from 'src/app/core/models/student.model';
 
 import { VmService } from 'src/app/core/services/vm.service';
@@ -39,7 +40,7 @@ export class VmAddOwnersDialog implements OnInit {
       return;
 
     this.lock();
-    this.vmService.addOwners(this.data.vmId, [...this.checkedStudents].filter(s => !this.data.ownersIds.includes(s))).subscribe(res => {
+    this.vmService.addOwners(this.data.vmId, [...this.checkedStudents].filter(s => !this.data.ownersIds.includes(s))).subscribe((res: APIResult) => {
       this.unlock();
       this.dialogRef.close(res);
     });

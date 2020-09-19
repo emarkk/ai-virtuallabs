@@ -4,10 +4,12 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { combineLatest, forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
 import { Homework } from 'src/app/core/models/homework.model';
 import { HomeworkAction } from 'src/app/core/models/homework-action.model';
 
+import { ToastService } from 'src/app/core/services/toast.service';
 import { CourseService } from 'src/app/core/services/course.service';
 import { HomeworkService } from 'src/app/core/services/homework.service';
 
@@ -19,7 +21,6 @@ import { ImageDialog } from 'src/app/components/dialogs/image/image.component';
 import { markTemplate, statusTemplate, studentFieldsTemplate, studentLastNameTemplate, timestampTemplate } from './templates';
 
 import { navHome, navCourses, nav } from '../professor.navdata';
-import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-professor-homework-detail',
@@ -97,12 +98,12 @@ export class ProfessorHomeworkDetailComponent implements OnInit {
       }
     }).afterClosed().subscribe(confirmed => {
       if(confirmed) {
-        this.homeworkService.delete(this.homeworkId).subscribe(res => {
-          if(res) {
+        this.homeworkService.delete(this.homeworkId).subscribe((res: APIResult) => {
+          if(res.ok) {
             this.router.navigate([`/professor/course/${this.courseCode}/homeworks`]);
             this.toastService.show({ type: 'success', text: 'Homework deleted successfully.' });
           } else 
-            this.toastService.show({ type: 'danger', text: 'An error occurred.' });
+            this.toastService.show({ type: 'danger', text: res.errorMessage });
         });
       }
     });
