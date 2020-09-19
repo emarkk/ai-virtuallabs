@@ -8,6 +8,7 @@ import it.polito.ai.virtuallabs.backend.repositories.ProfessorRepository;
 import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.UserRepository;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
+import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -26,7 +27,6 @@ public class NotificationServiceImpl implements NotificationService {
     @Autowired
     JavaMailSender javaMailSender;
 
-
     @Autowired
     UserRepository userRepository;
 
@@ -35,6 +35,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     ProfessorRepository professorRepository;
+
+    @Autowired
+    private GetterProxy getter;
 
     @Async
     @Override
@@ -49,22 +52,21 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void notifyNewUser(CredentialsDTO credentialsDTO, String token) {
         sendMessage(credentialsDTO.getEmail(),
-                "This is your Virtuallabs Account",
-                "Hi " + credentialsDTO.getFirstName() + ",\na new Virtuallabs account named has been created for you.\n"
-                        + "Please, click on the link here below in order to validate your account: \nhttp://localhost:3000/api/signup/confirm/" + token + "\n"
-                        + "If you didn't request this subscription you can ignore this email.\n"
+                "Confirm your Virtuallabs Account",
+                "Hi " + credentialsDTO.getFirstName() + ",\nthanks for creating a VirtualLabs account.\n"
+                        + "Please click on the link below in order to validate your account: \nhttp://localhost:4200/signup/confirm/" + token + "\n"
+                        + "If you didn't request this subscription, you can ignore this email.\n"
                 );
     }
 
     @Override
     public void notifyNewGroupProposal(TeamProposalDTO teamProposalDTO) {
-        teamProposalDTO.getMembersIds().forEach(s -> {
-            String email = "s" + s + "@studenti.polito.it";
+        teamProposalDTO.getMembersIds().stream().map(id -> getter.student(id)).forEach(s -> {
             sendMessage(
-                    email,
+                    s.getEmail(),
                     "Invitation to new group " + teamProposalDTO.getName(),
-                    "Hi " + email + "," +
-                            "\n you received a new invitation to join a group.\n" +
+                    "Hi " + s.getFirstName() + "," +
+                            "\nyou received a new invitation to join a group.\n" +
                             "Please visit your account for additional details."
             );
         });
