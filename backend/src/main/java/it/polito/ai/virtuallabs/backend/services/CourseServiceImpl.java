@@ -37,9 +37,6 @@ public class CourseServiceImpl implements CourseService {
     private StudentRepository studentRepository;
 
     @Autowired
-    private HomeworkRepository homeworkRepository;
-
-    @Autowired
     private AuthenticatedEntityMapper authenticatedEntityMapper;
 
     @Autowired
@@ -47,19 +44,6 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private GetterProxy getter;
-
-    @Override
-    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
-    public boolean addCourse(CourseDTO course) {
-        Course c = modelMapper.map(course, Course.class);
-
-        if(courseRepository.existsById(course.getCode()))
-            return false;
-
-        c.addProfessor((Professor) authenticatedEntityMapper.get());
-        courseRepository.save(c);
-        return true;
-    }
 
     @Override
     public Optional<CourseDTO> getCourse(String courseCode) {
@@ -73,6 +57,20 @@ public class CourseServiceImpl implements CourseService {
                 .stream()
                 .map(c -> modelMapper.map(c, CourseDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    public boolean addCourse(CourseDTO course) {
+        Course c = modelMapper.map(course, Course.class);
+
+        // check if course code exists already
+        if(courseRepository.existsById(course.getCode()))
+            return false;
+
+        c.addProfessor((Professor) authenticatedEntityMapper.get());
+        courseRepository.save(c);
+        return true;
     }
 
     @Override
@@ -114,6 +112,7 @@ public class CourseServiceImpl implements CourseService {
         if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
 
+        // check if professor is teaching course already
         if(course.getProfessors().contains(professor))
             return false;
 
@@ -128,6 +127,7 @@ public class CourseServiceImpl implements CourseService {
         if(page < 0 || pageSize < 0)
             throw new InvalidPageException();
 
+        // get enrolled students, each with its own team information
         Page<CourseStudent> studentPage = studentRepository.findAllWithTeamByCoursesIsContaining(
                 PageRequest.of(page, pageSize, Sort.by(
                         sortDirection.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField
@@ -137,6 +137,7 @@ public class CourseServiceImpl implements CourseService {
         return new PageDTO<>(course.getStudents().size(), studentPage.stream().map(cs ->
                 new CourseStudentDTO(
                         modelMapper.map(cs.getStudent(), StudentDTO.class),
+                        // team may be null
                         cs.getTeam() != null ? modelMapper.map(cs.getTeam(), TeamDTO.class) : null
                 )
         ).collect(Collectors.toList()));
@@ -176,10 +177,8 @@ public class CourseServiceImpl implements CourseService {
 
         if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
-
         if(!course.getEnabled())
             throw new CourseNotEnabledException();
-
         if(student.getCourses().contains(course))
             return false;
 
@@ -194,7 +193,6 @@ public class CourseServiceImpl implements CourseService {
 
         if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
-
         if(!course.getEnabled())
             throw new CourseNotEnabledException();
 
@@ -222,21 +220,20 @@ public class CourseServiceImpl implements CourseService {
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
     public List<Boolean> unenrollAll(List<Long> studentsIds, String courseCode) {
-        //Vari controlli su esistenza e validità del corso. Controllo su ownership del Professor
         Course course = getter.course(courseCode);
 
         if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
-
         if(!course.getEnabled())
             throw new CourseNotEnabledException();
-        //Rimuovo ogni Student iscritto al corso, se esiste
+
         return studentsIds.stream()
                 .map(s -> {
                     Student stud = getter.student(s);
-                    if(!stud.getCourses().contains(course)) {
+
+                    if(!stud.getCourses().contains(course))
                         return false;
-                    }
+
                     course.removeStudent(stud);
                     return true;
                 })
@@ -268,11 +265,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<HomeworkDTO> getHomeworks(String courseCode) {
         Course course = getter.course(courseCode);
-            return course.getHomeworks()
-                    .stream()
-                    .map(h -> modelMapper.map(h, HomeworkDTO.class))
-                    .sorted(byDueDate)
-                    .collect(Collectors.toList());
+        return course.getHomeworks()
+                .stream()
+                .map(h -> modelMapper.map(h, HomeworkDTO.class))
+                .sorted((h1, h2) -> Long.valueOf(h1.getDueDate().getTime()).compareTo(h2.getDueDate().getTime()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -295,11 +292,5 @@ public class CourseServiceImpl implements CourseService {
 
         return course.getProfessors().contains(professor);
     }
-
-    private Comparator<HomeworkDTO> byDueDate = new Comparator<HomeworkDTO>() {
-        public int compare(HomeworkDTO h1, HomeworkDTO h2) {
-            return Long.valueOf(h1.getDueDate().getTime()).compareTo(h2.getDueDate().getTime());
-        }
-    };
 
 }

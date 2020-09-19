@@ -65,6 +65,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 
     @Override
     public List<ProfessorDTO> search(String q, String excludeCourse) {
+        // initially no filter
         Specification<Professor> filters = Specification.where(null);
 
         if(excludeCourse != null)
@@ -72,8 +73,11 @@ public class ProfessorServiceImpl implements ProfessorService {
 
         return professorRepository.findAll(filters)
                 .stream()
+                // compute match quality
                 .map(p -> new AbstractMap.SimpleEntry<>(p, UserSearchEngine.getSimilarity(q, "d" + p.getId(), p.getFirstName(), p.getLastName())))
+                // sort to have best matches first
                 .sorted(Comparator.comparingDouble(AbstractMap.SimpleEntry<Professor, Double>::getValue).reversed())
+                // limit to three matches
                 .limit(3)
                 .map(e -> modelMapper.map(e.getKey(), ProfessorDTO.class))
                 .collect(Collectors.toList());
@@ -83,8 +87,10 @@ public class ProfessorServiceImpl implements ProfessorService {
     @Override
     public void addPicture(Long id, MultipartFile file) {
         Professor professor = getter.professor(id);
+
         if(!((Professor) authenticatedEntityMapper.get()).equals(professor))
             throw new NotAllowedException();
+
         picturesUtility.postProfilePicture(id, ProfilePicturesUtility.ProfileType.PROFESSOR, file);
         professor.setHasPicture(true);
         professorRepository.save(professor);
@@ -93,8 +99,10 @@ public class ProfessorServiceImpl implements ProfessorService {
     @Override
     public Resource getPicture(Long id) {
         Professor professor = getter.professor(id);
+
         if(!professor.getHasPicture())
             throw new ProfilePictureNotFoundException();
+
         return picturesUtility.getProfilePicture(id, ProfilePicturesUtility.ProfileType.PROFESSOR);
     }
 }

@@ -44,6 +44,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             username = "d" + credentialsDTO.getId();
         } else throw new InvalidUserException();
 
+        // check if email or username exists already
         if(userRepository.existsByEmail(credentialsDTO.getEmail()) || userRepository.existsByUsername(username))
             return null;
 

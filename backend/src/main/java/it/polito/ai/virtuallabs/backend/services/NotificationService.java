@@ -8,11 +8,7 @@ import java.util.List;
 
 
 public interface NotificationService {
-
     void sendMessage(String address, String subject, String body);
-
     void notifyNewUser(CredentialsDTO credentialsDTO, String token);
-
     void notifyNewGroupProposal(TeamProposalDTO teamProposalDTO);
-
-    }
+}

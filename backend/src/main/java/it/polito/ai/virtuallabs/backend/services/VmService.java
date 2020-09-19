@@ -16,10 +16,6 @@ public interface VmService {
     void deleteVm(Long vmId);
     void turnOnVm(Long vmId);
     void turnOffVm(Long vmId);
-    //byte[] connectVm(Long vmId);
-    //VmConfigurationLimitsDTO addVmConfigurationLimit(Long teamId, Integer maxvcpus, Integer maxDiskSpace, Integer maxRam, Integer maxInstances, Integer maxActiveInstances);
-    //VmConfigurationLimitsDTO getVmConfigurationLimits(Long vmConfigurationLimitsId);
-    //VmConfigurationLimitsDTO updateVmConfigurationLimits(Long vmConfigurationLimitsId, Integer maxvcpus, Integer maxDiskSpace, Integer maxRam, Integer maxInstances, Integer maxActiveInstances);
     Boolean studentHasSignalPermission(Long vmId, Long studentId);
     Boolean professorHasSignalPermission(Long vmId, Long professorId);
 }

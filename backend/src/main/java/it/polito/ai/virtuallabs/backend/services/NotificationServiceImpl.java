@@ -83,13 +83,11 @@ public class NotificationServiceImpl implements NotificationService {
             String username = t.getUsername();
             char role = username.charAt(0);
             long id = Long.parseLong(username.substring(1));
-            System.out.println(role);
-            if(role == 's'){
+
+            if(role == 's')
                 studentRepository.deleteById(id);
-            } else {
-                System.out.println(id);
+            else
                 professorRepository.deleteById(id);
-            }
         });
 
     }

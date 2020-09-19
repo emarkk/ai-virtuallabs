@@ -84,6 +84,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDTO> search(String q, String course, Boolean teamed, String excludeCourse, List<Long> excludeIds) {
+        // initially no filter
         Specification<Student> filters = Specification.where(null);
 
         if(course != null) {
@@ -99,8 +100,11 @@ public class StudentServiceImpl implements StudentService {
 
         return studentRepository.findAll(filters)
                 .stream()
+                // compute match quality
                 .map(s -> new AbstractMap.SimpleEntry<>(s, UserSearchEngine.getSimilarity(q, "s" + s.getId(), s.getFirstName(), s.getLastName())))
+                // sort to have best matches first
                 .sorted(Comparator.comparingDouble(AbstractMap.SimpleEntry<Student, Double>::getValue).reversed())
+                // limit to three matches
                 .limit(3)
                 .map(e -> modelMapper.map(e.getKey(), StudentDTO.class))
                 .collect(Collectors.toList());
@@ -110,8 +114,10 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void addPicture(Long id, MultipartFile file) {
         Student student = getter.student(id);
+
         if(!((Student) authenticatedEntityMapper.get()).equals(student))
             throw new NotAllowedException();
+
         picturesUtility.postProfilePicture(id, ProfilePicturesUtility.ProfileType.STUDENT, file);
         student.setHasPicture(true);
         studentRepository.save(student);
@@ -120,8 +126,10 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Resource getPicture(Long id) {
         Student student = getter.student(id);
+
         if(!student.getHasPicture())
             throw new ProfilePictureNotFoundException();
+
         return picturesUtility.getProfilePicture(id, ProfilePicturesUtility.ProfileType.STUDENT);
     }
 }
