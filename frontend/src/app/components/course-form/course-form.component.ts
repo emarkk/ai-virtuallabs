@@ -24,7 +24,7 @@ export class CourseFormComponent implements OnInit {
     acronym: new FormControl({ value: '', disabled: false }, [Validators.required]),
     minTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required, numberValidator, Validators.min(1)]),
     maxTeamMembers: new FormControl({ value: '', disabled: false }, [Validators.required, numberValidator, Validators.min(1)]),
-    enabled: new FormControl({ value: '', disabled: false }, [Validators.required])
+    enabled: new FormControl({ value: false, disabled: false }, [Validators.required])
   }, newCourseFormValidator);
 
   // used with course edit, to show current course information in the form
