@@ -11,7 +11,9 @@ import { ImageService } from 'src/app/core/services/image.service';
   styleUrls: ['./secure-image.component.css']
 })
 export class SecureImageComponent implements OnInit {
+  // whether image is loaded or not
   loaded: boolean = false;
+  // image source url
   imageSrc: string = null;
 
   @Input() set user(value: Student|Professor) {

@@ -14,8 +14,9 @@ import { navHome, navCourses } from 'src/app/student/student.navdata';
   styleUrls: ['./courses.component.css']
 })
 export class StudentCoursesComponent implements OnInit {
-  navigationData: Array<any> = [navHome, navCourses];
   courses$: Observable<Course[]>;
+  
+  navigationData: Array<any> = [navHome, navCourses];
 
   constructor(private authService: AuthService, private studentService: StudentService) {
   }

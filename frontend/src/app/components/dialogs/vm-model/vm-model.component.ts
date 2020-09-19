@@ -75,9 +75,13 @@ ENTRYPOINT ["nginx", "-g", "daemon off;"]`;
       // request is a creation of a new vm model
       request = this.vmService.addModel(name, config, this.data.courseCode);
 
+    // lock until request is completed
     this.lock();
+    // add or update model
     request.subscribe((res: APIResult) => {
+      // unlock form
       this.unlock();
+      // return result to parent
       this.dialogRef.close(res);
     });
   }

@@ -45,10 +45,10 @@ export class StudentVmsDetailComponent implements OnInit {
     this.joinedTeam = value;
 
     if(this.joinedTeam) {
-      forkJoin(
+      forkJoin([
         this.signalService.teamVmsUpdates(this.joinedTeam.id),
         this.signalService.teamVmsResourcesUpdates(this.joinedTeam.id)
-      ).subscribe(([vmSignal, vmsLimitsSignal]) => {
+      ]).subscribe(([vmSignal, vmsLimitsSignal]) => {
         this.vmUpdatesSignal = vmSignal;
         this.vmsResourcesUpdatesSignal = vmsLimitsSignal;
         this.vmsRefreshToken.next(undefined);

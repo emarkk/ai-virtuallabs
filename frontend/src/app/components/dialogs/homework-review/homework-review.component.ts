@@ -19,7 +19,9 @@ export interface HomeworkReviewDialogData {
   styleUrls: ['./homework-review.component.css']
 })
 export class HomeworkReviewDialog implements OnInit {
+  // whether it is possible to edit the form or not
   locked: boolean = false;
+  // form fields for homework review
   form = new FormGroup({
     file: new FormControl({ value: null, disabled: false }, [Validators.required]),
     final: new FormControl({ value: '', disabled: false }, [Validators.required]),
@@ -29,6 +31,7 @@ export class HomeworkReviewDialog implements OnInit {
   constructor(public dialogRef: MatDialogRef<HomeworkReviewDialog>, @Inject(MAT_DIALOG_DATA) public data: HomeworkReviewDialogData, private homeworkService: HomeworkService) {}
 
   ngOnInit(): void {
+    // 'mark' field should be enabled or not based on 'final' field
     this.form.get('final').valueChanges.subscribe(final => {
       if(final)
         this.form.get('mark').enable();
@@ -60,15 +63,21 @@ export class HomeworkReviewDialog implements OnInit {
     this.form.enable();
   }
   saveButtonClicked() {
+    // if form is invalid or locked, ignore
     if(this.form.invalid || this.locked)
       return;
       
+    // collect form data
     const file = this.form.get('file').value._files[0];
     const mark = this.form.get('mark').value || null;
 
+    // lock until request is completed
     this.lock();
+    // post review attempt
     this.homeworkService.postReview(this.data.homeworkId, this.data.actionId, file, mark).subscribe((res: APIResult) => {
+      // unlock form
       this.unlock();
+      // return result to parent
       this.dialogRef.close(res);
     });
   }

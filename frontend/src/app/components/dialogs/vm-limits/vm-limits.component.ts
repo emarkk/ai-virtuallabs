@@ -124,9 +124,13 @@ export class VmLimitsDialog implements OnInit {
     const activeInstances = +this.form.get('maxActiveInstances').value;
     const instances = +this.form.get('maxInstances').value;
 
+    // lock until request is completed
     this.lock();
+    // update vms resources limits attempt
     this.teamService.updateVmsResourcesLimits(this.data.teamId, vcpus, diskSpace, ram, activeInstances, instances).subscribe((res: APIResult) => {
+      // unlock form
       this.unlock();
+      // return result to parent
       this.dialogRef.close(res);
     });
   }

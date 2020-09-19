@@ -17,7 +17,9 @@ export class HomeworkListComponent implements OnInit {
     if(data) {
       this.activeHomeworkList = this.homeworkList.filter(h => h.dueDate > new Date());
       this.pastHomeworkList = this.homeworkList.filter(h => h.dueDate < new Date());
+      // for active homeworks, we want the closest one (due date most forthcoming in future) to appear first
       this.activeHomeworkList.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+      // for past homeworks, we want the closest one (due date most forthcoming in past) to appear first
       this.pastHomeworkList.sort((a, b) => b.dueDate.getTime() - a.dueDate.getTime());
     }
   }
