@@ -24,7 +24,6 @@
               </div>
               <div class="block" *ngIf="action.actionType == ActionType.READ">
                 <h4><mat-icon>menu_book</mat-icon> Assignment text downloaded</h4>
-                <span></span>
               </div>
               <div class="block" *ngIf="action.actionType == ActionType.DELIVERY">
                 <h4><mat-icon>how_to_vote</mat-icon> Homework solution submitted</h4>
@@ -33,10 +32,20 @@
                 </div>
                 <span *ngIf="first">Carefully go through the assignment solution, and whenever you feel ready you can <a [routerLink]="[]" [queryParams]="{ review: action.id }">upload a review</a></span>
               </div>
-              <div class="block" *ngIf="action.actionType == ActionType.REVIEW">
+              <div class="block" *ngIf="action.actionType == ActionType.REVIEW && !action.mark">
                 <h4><mat-icon>verified</mat-icon> You reviewed the assignment solution</h4>
                 <div class="resource-container" [routerLink]="[]" [queryParams]="{ action: action.id }" *ngIf="action.resource$ | async as resource">
                   <img class="resource" [src]="resource" />
+                </div>
+              </div>
+              <div class="block" *ngIf="action.actionType == ActionType.REVIEW && action.mark">
+                <h4><mat-icon>assignment_turned_in</mat-icon> You evaluated the assignment solution</h4>
+                <div class="resource-container" [routerLink]="[]" [queryParams]="{ action: action.id }" *ngIf="action.resource$ | async as resource">
+                  <img class="resource" [src]="resource" />
+                </div>
+                <div class="mark-container">
+                  <span class="label">final mark</span>
+                  <span class="mark">{{ action.mark }}</span>
                 </div>
               </div>
               <div class="time-dot"></div>

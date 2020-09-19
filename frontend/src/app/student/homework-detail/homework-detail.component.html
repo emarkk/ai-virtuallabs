@@ -33,9 +33,22 @@
                   <img class="resource" [src]="resource" />
                 </div>
               </div>
-              <div class="block" *ngIf="action.actionType == ActionType.REVIEW">
+              <div class="block" *ngIf="action.actionType == ActionType.REVIEW && !action.mark">
                 <h4><mat-icon>verified</mat-icon> Assignment solution reviewed</h4>
-                <span></span>
+                <div class="resource-container" [routerLink]="[]" [queryParams]="{ action: action.id }" *ngIf="action.resource$ | async as resource">
+                  <img class="resource" [src]="resource" />
+                </div>
+                <span *ngIf="first">Take some time to read the professor's suggestions, and then <a (click)="submitHomeworkSolution()">upload an improved solution</a></span>
+              </div>
+              <div class="block" *ngIf="action.actionType == ActionType.REVIEW && action.mark">
+                <h4><mat-icon>assignment_turned_in</mat-icon> Assignment solution reviewed and evaluated</h4>
+                <div class="resource-container" [routerLink]="[]" [queryParams]="{ action: action.id }" *ngIf="action.resource$ | async as resource">
+                  <img class="resource" [src]="resource" />
+                </div>
+                <div class="mark-container">
+                  <span class="label">final mark</span>
+                  <span class="mark">{{ action.mark }}</span>
+                </div>
               </div>
               <div class="time-dot"></div>
               <span class="timestamp">{{ action.date.toLocaleString() }}</span>
