@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     // if user is logged, redirect to role-related homepage
     if(this.authService.isLogged()) {
+      // role is ROLE_STUDENT or ROLE_PROFESSOR, so split by '_' and take second element
       const role = this.authService.getUserData().roles[0].split('_')[1].toLowerCase();
       this.router.navigate([`/${role}`]);
     }

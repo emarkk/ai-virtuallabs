@@ -86,7 +86,7 @@ export class CourseService {
       reduce((a, t) => a.concat(t), [])
     );
   }
-  //
+  // get course homework assignments
   getHomeworks(code: string): Observable<Homework[]> {
     return this.http.get<any[]>(url(`courses/${code}/homeworks`)).pipe(
       map(arr => arr.map(x => new Homework(x.id, x.title, new Date(x.publicationDate), new Date(x.dueDate)))),
@@ -107,7 +107,7 @@ export class CourseService {
       catchError(res => of(APIResult.error(res.error.message)))
     );
   }
-  // delete course
+  // update course info
   update(code: string, name: string, acronym: string, minTeamMembers: number, maxTeamMembers: number, enabled: boolean): Observable<APIResult> {
     return this.http.put(url(`courses/${code}`), { code, name, acronym, minTeamMembers, maxTeamMembers, enabled }, httpOptions).pipe(
       map(res => APIResult.ok(res)),

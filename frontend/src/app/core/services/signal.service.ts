@@ -38,6 +38,7 @@ export class SignalService {
   constructor() {
   }
 
+  // connect to websocket
   initWebsocket(token: string) {
     if(this.stompClient)
       return;
@@ -49,6 +50,7 @@ export class SignalService {
       this.connected.next(true);
     });
   }
+  // disconnect from websocket
   releaseWebsocket() {
     if(!this.stompClient)
       return;
@@ -60,32 +62,40 @@ export class SignalService {
     this.connected.next(false);
   }
 
+  // get updates on a vm
   vmUpdates(vmId: number): Observable<SignalObservable<VmSignal>> {
     return this._subscribeTo(`/vm/${vmId}`, msg => VmSignal.fromMsg(msg));
   }
+  // get updates on a vm screen
   vmScreenUpdates(vmId: number): Observable<SignalObservable<VmScreenSignal>> {
     return this._subscribeTo(`/vm/${vmId}/screen`, msg => VmScreenSignal.fromMsg(msg));
   }
+  // get updates on a team's vms
   teamVmsUpdates(teamId: number): Observable<SignalObservable<VmSignal>> {
     return this._subscribeTo(`/team/${teamId}/vms`, msg => VmSignal.fromMsg(msg));
   }
+  // get updates on a team's vm resources
   teamVmsResourcesUpdates(teamId: number): Observable<SignalObservable<TeamVmsResourcesSignal>> {
     return this._subscribeTo(`/team/${teamId}/vms-resources`, msg => TeamVmsResourcesSignal.fromMsg(msg));
   }
+  // get updates on a course's vms
   courseVmsUpdates(courseCode: string): Observable<SignalObservable<VmSignal>> {
     return this._subscribeTo(`/course/${courseCode}/vms`, msg => VmSignal.fromMsg(msg));
   }
 
+  // send updates on vm screen
   sendScreenSignal(vmId: number, token: string, signal: VmScreenSignal): void {
     this._sendTo(`/signal/vm/${vmId}/screen`, signal, token);
   }
   
+  // subscribe to updates from a specific websocket url
   private _subscribeTo(url, map): Observable<SignalObservable<any>> {
     return this.connected.pipe(
       first(c => c),
       switchMap(() => of(new SignalObservable(cb => this.stompClient.subscribe(url, cb, { token: this.token }), map)))
     );
   }
+  // send some data to a websocket url
   private _sendTo(url, data, token): void {
     this.connected.pipe(
       first(c => c),

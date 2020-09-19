@@ -21,15 +21,18 @@ export class HomeworkService {
   constructor(private http: HttpClient, private imageService: ImageService) {
   }
   
+  // get homework metadata by id
   get(id: number): Observable<Homework> {
     return this.http.get<any>(url(`homeworks/${id}`)).pipe(
       map(x => new Homework(x.id, x.title, new Date(x.publicationDate), new Date(x.dueDate))),
       catchError(error => of(null))
     );
   }
+  // get homework assignment text
   getText(id: number): Observable<string> {
     return this.imageService.get(`homeworks/${id}/text`);
   }
+  // get all homework actions for a specific student
   getStudentActions(id: number, studentId: number): Observable<HomeworkAction[]> {
     return this.http.get<any[]>(url(`homeworks/${id}/actions/${studentId}`)).pipe(
       map(arr => arr.map(x =>
@@ -44,6 +47,7 @@ export class HomeworkService {
       catchError(error => of(null))
     );
   }
+  // get last action for course students
   getStudentsLastActions(id: number, filterBy: string, pageIndex: number = 0, pageSize: number = 15): Observable<Page<HomeworkAction>> {
     let params = new HttpParams().set('page', pageIndex.toString()).set('pageSize', pageSize.toString());
     if(filterBy)
@@ -62,9 +66,11 @@ export class HomeworkService {
       catchError(error => of(null))
     );
   }
+  // get image related to homework action (delivery or review)
   getActionResource(actionId: number): Observable<string> {
     return this.imageService.get(`homeworks/actions/${actionId}/resource`);
   }
+  // create a new homework
   add(title: string, dueDate: number, file: File, courseCode: string): Observable<APIResult> {      
     const formData: FormData = new FormData();
     formData.append('title', title);
@@ -76,6 +82,7 @@ export class HomeworkService {
       catchError(res => of(APIResult.error(res.error.message)))
     );
   }
+  // submit a solution for the homework
   submitSolution(id: number, file: File): Observable<APIResult> {    
     const formData: FormData = new FormData();
     formData.append('id', `${id}`);
@@ -85,6 +92,7 @@ export class HomeworkService {
       catchError(res => of(APIResult.error(res.error.message)))
     );
   }
+  // post a review for homework
   postReview(id: number, actionId: number, file: File, mark?: number): Observable<APIResult> {  
     const formData: FormData = new FormData();
     formData.append('id', `${id}`);
@@ -96,6 +104,7 @@ export class HomeworkService {
       catchError(res => of(APIResult.error(res.error.message)))
     );
   }
+  // delete homework
   delete(id: number): Observable<APIResult> {
     return this.http.delete(url(`homeworks/${id}`)).pipe(
       map(res => APIResult.ok(res)),

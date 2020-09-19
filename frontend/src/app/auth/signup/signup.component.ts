@@ -40,7 +40,7 @@ export class SignUpComponent implements OnInit {
   }
   getFormSubmissionErrorMessage() {
     if(this.form.hasError('error'))
-      return 'An error occurred.';
+      return this.form.getError('error');
   }
   getFirstNameErrorMessage() {
     if(this.form.get('firstName').hasError('required'))
@@ -100,7 +100,7 @@ export class SignUpComponent implements OnInit {
         this.router.navigate(['/signup/success']);
       } else {
         // some error occurred
-        this.form.setErrors({ error: true });
+        this.form.setErrors({ error: res.errorMessage });
       }
     });
   }

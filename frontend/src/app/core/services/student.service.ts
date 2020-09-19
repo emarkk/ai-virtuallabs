@@ -87,6 +87,7 @@ export class StudentService {
       map(arr => arr.find(t => t.status == TeamStatus.COMPLETE))
     );
   }
+  // set student profile picture
   setProfilePicture(studentId: number, file: File): Observable<APIResult> {
     const formData: FormData = new FormData();
     formData.append('file', file);

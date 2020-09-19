@@ -50,6 +50,7 @@ export class ProfessorService {
       catchError(error => of(null))
     );
   }
+  // set professor profile picture
   setProfilePicture(professorId: number, file: File): Observable<APIResult> {
     const formData: FormData = new FormData();
     formData.append('file', file);
