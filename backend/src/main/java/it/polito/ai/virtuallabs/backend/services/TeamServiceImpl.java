@@ -202,7 +202,7 @@ public class TeamServiceImpl implements TeamService {
         ts.setInvitationStatus(TeamStudent.InvitationStatus.REJECTED);
         teamStudentRepository.save(ts);
 
-        //Setto il team come ABORTED
+        // set team as ABORTED
         team.setFormationStatus(Team.FormationStatus.ABORTED);
         team.setLastAction(new Timestamp(System.currentTimeMillis()));
         teamRepository.save(team);
@@ -247,7 +247,7 @@ public class TeamServiceImpl implements TeamService {
         Timestamp oneWeekAgo = new Timestamp( nowMilliseconds - 1000 * 60 * 60 * 24 * 7);
         Timestamp now = new Timestamp(nowMilliseconds);
 
-        //Passo da PROVISIONAL ad EXPIRED se scaduti da meno di 7 giorni
+        // set PROVISIONAL teams to EXPIRED if expiration is passed (less than 7 days ago)
         List<Team> teams = teamRepository
                 .findAllByFormationStatusIsAndInvitationsExpirationIsBetween(
                         Team.FormationStatus.PROVISIONAL, oneWeekAgo, now);
@@ -256,14 +256,14 @@ public class TeamServiceImpl implements TeamService {
             teamRepository.save(et);
         });
 
-        //Cancello i team EXPIRED da più di 7 giorni
+        // delete teams with EXPIRED status whose expiration was more than 7 days ago
         teams = teamRepository
                 .findAllByFormationStatusIsAndInvitationsExpirationIsBefore(
                         Team.FormationStatus.EXPIRED, oneWeekAgo);
         teams.forEach(t -> teamStudentRepository.deleteAll(t.getMembers()));
         teamRepository.deleteAll(teams);
 
-        //Cancello i team ABORTED con lastAction a più di 7 giorni fa
+        // delete teams with ABORTED status whose lastAction was more than 7 days ago
         teams = teamRepository.findAllByFormationStatusIsAndLastActionIsBefore(
                 Team.FormationStatus.ABORTED, oneWeekAgo);
         teams.forEach(t -> teamStudentRepository.deleteAll(t.getMembers()));

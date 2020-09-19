@@ -44,12 +44,22 @@ public class VmServiceImpl implements VmService {
 
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
+    public VmModelDTO getVmModel(Long vmModelId) {
+        VmModel vmModel = getter.vmModel(vmModelId);
+
+        if(!vmModel.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+        return modelMapper.map(vmModel, VmModelDTO.class);
+    }
+
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @Override
     public VmModelDTO addVmModel(String courseCode, String name, String configuration) {
         Course course = getter.course(courseCode);
 
         if(!course.getProfessors().contains((Professor) authenticatedEntityMapper.get()))
             throw new NotAllowedException();
-
         if(course.getVmModel() != null)
             throw new VmModelAlreadyExistsException();
 
@@ -80,25 +90,16 @@ public class VmServiceImpl implements VmService {
         return modelMapper.map(vmModel, VmModelDTO.class);
     }
 
-    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
-    @Override
-    public VmModelDTO getVmModel(Long vmModelId) {
-        VmModel vmModel = getter.vmModel(vmModelId);
-
-        if(!vmModel.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
-            throw new NotAllowedException();
-
-        return modelMapper.map(vmModel, VmModelDTO.class);
-    }
-
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
     public VmDTO addVm(Long teamId, Integer vcpus, Integer diskSpace, Integer ram) {
         Team team = getter.team(teamId);
         Student authenticated = (Student) authenticatedEntityMapper.get();
 
+        // team must be active
         if(!team.isComplete())
             throw new TeamNotActiveException();
+        // requesting student must be part of the team
         if(!team.getMembers().stream().map(TeamStudent::getStudent).collect(Collectors.toList()).contains(authenticated))
             throw new StudentNotInTeamException();
         if(vcpus < 0 || diskSpace < 0 || ram < 0)
@@ -127,10 +128,10 @@ public class VmServiceImpl implements VmService {
     @Override
     public List<Boolean> addVmOwners(Long vmId, List<Long> studentIds) {
         Vm vm = getter.vm(vmId);
+        HashSet<Long> hashSet = new HashSet<>(studentIds);
 
         if(vm.getOnline())
             throw new VmOnlineException();
-        HashSet<Long> hashSet = new HashSet<>(studentIds);
         if(hashSet.size() < studentIds.size())
             throw new DuplicateParticipantException();
         if(!vm.getOwners().contains((Student) authenticatedEntityMapper.get()))
@@ -140,6 +141,7 @@ public class VmServiceImpl implements VmService {
                 .stream()
                 .map(id -> {
                     Student s = getter.student(id);
+                    // student must be part of the team
                     if(!vm.getTeam().getMembers().stream().map(TeamStudent::getStudent).collect(Collectors.toList()).contains(s))
                         throw new NotAllowedException();
                     if(vm.getOwners().contains(s))

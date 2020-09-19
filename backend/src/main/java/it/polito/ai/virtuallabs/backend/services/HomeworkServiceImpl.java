@@ -70,14 +70,14 @@ public class HomeworkServiceImpl implements HomeworkService {
         if(!course.getEnabled())
             throw new CourseNotEnabledException();
 
-        try{
+        try {
             BufferedImage converted = ImageConverterEngine.convert(file);
 
             Timestamp now = new Timestamp(System.currentTimeMillis());
             Timestamp due = new Timestamp(dueDate);
-            if(due.before(now)) {
+            if(due.before(now))
                 throw new HomeworkDueDateException();
-            }
+
             Path coursePath = Paths.get( "uploads/homeworks/" + courseCode);
             if(!Files.exists(coursePath))
                 Files.createDirectory(coursePath);
@@ -103,7 +103,6 @@ public class HomeworkServiceImpl implements HomeworkService {
         } catch (IOException e) {
             throw new FileHandlingException();
         }
-
     }
 
     @Override
@@ -144,6 +143,7 @@ public class HomeworkServiceImpl implements HomeworkService {
 
                 Timestamp now = new Timestamp(System.currentTimeMillis());
 
+                // add READ action, only if not done already and homework still active
                 if(actions.get(actions.size() -1).isNull() && now.before(homework.getDueDate())) {
                     HomeworkAction homeworkAction = new HomeworkAction();
                     homeworkAction.setDate(now);
@@ -276,6 +276,7 @@ public class HomeworkServiceImpl implements HomeworkService {
     public Resource getHomeworkActionResource(Long homeworkActionId) {
         HomeworkAction homeworkDelivery = getter.homeworkAction(homeworkActionId);
 
+        // get resource only available for DELIVERY and REVIEW
         if(homeworkDelivery.isRead() || homeworkDelivery.isNull())
             throw new HomeworkActionNotAllowedException();
         if(!homeworkDelivery.getHomework().getCourse().getEnabled())
@@ -291,9 +292,9 @@ public class HomeworkServiceImpl implements HomeworkService {
         Path file = root.resolve("homeworks/deliveries/" + homeworkDelivery.getHomework().getId() + "/" + homeworkDelivery.getId() + ".jpg");
         try{
             Resource resource = new UrlResource(file.toUri());
-            if (!resource.exists() || !resource.isReadable())
+            if(!resource.exists() || !resource.isReadable())
                 throw new RuntimeException("Could not read the file!");
-            return  resource;
+            return resource;
         } catch (MalformedURLException e) {
             throw new FileHandlingException();
         }
@@ -395,10 +396,7 @@ public class HomeworkServiceImpl implements HomeworkService {
         }
     }
 
-    private Comparator<HomeworkAction> byHomeworkActionDate = new Comparator<HomeworkAction>() {
-        public int compare(HomeworkAction a1, HomeworkAction a2) {
-            return Long.valueOf(a1.getDate().getTime()).compareTo(a2.getDate().getTime());
-        }
-    };
+    private final Comparator<HomeworkAction> byHomeworkActionDate = (a1, a2) ->
+            Long.valueOf(a1.getDate().getTime()).compareTo(a2.getDate().getTime());
 
 }
