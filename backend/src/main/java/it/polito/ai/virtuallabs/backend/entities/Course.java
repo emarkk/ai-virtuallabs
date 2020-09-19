@@ -39,7 +39,7 @@ public class Course {
     private List<Team> teams = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Homework> homeworks = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -77,13 +77,8 @@ public class Course {
     }
 
     public void removeAllTeams(){
-        this.teams.forEach(t -> t.setCourse(null));
+        this.teams.forEach(Team::unsetCourse);
         this.teams.clear();
-    }
-
-    public void removeAllHomeworks() {
-        this.homeworks.forEach(h -> h.setCourse(null));
-        this.homeworks.clear();
     }
 
     public void setVmModel(VmModel vmModel) {

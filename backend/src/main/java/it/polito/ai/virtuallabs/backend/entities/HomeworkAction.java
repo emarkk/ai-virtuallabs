@@ -46,19 +46,9 @@ public class HomeworkAction {
         h.getHomeworkActions().add(this);
     }
 
-    public void removeHomework() {
-        this.homework.getHomeworkActions().remove(this);
-        this.homework = null;
-    }
-
     public void assignStudent(Student s) {
         this.student = s;
         s.getHomeworkActions().add(this);
-    }
-
-    public void removeStudent() {
-        this.student.getHomeworkActions().remove(this);
-        this.student = null;
     }
 
     public Boolean isDelivery() {

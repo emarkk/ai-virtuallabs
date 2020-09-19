@@ -84,4 +84,7 @@ public class Team {
         c.getTeams().add(this);
     }
 
+    public void unsetCourse() {
+        this.course = null;
+    }
 }

@@ -105,8 +105,7 @@ public class TeamController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Members list does not include requesting user");
         } catch (DuplicateTeamNameException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate Team Name");
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         }
     }

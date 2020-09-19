@@ -32,16 +32,15 @@ public class Homework {
     private Course course;
 
     @Builder.Default
-    @OneToMany(mappedBy = "homework")
+    @OneToMany(mappedBy = "homework", cascade = CascadeType.ALL)
     private List<HomeworkAction> homeworkActions = new ArrayList<>();
 
-    private void assignCourse(Course c) {
+    public void assignCourse(Course c) {
         this.course = c;
         c.getHomeworks().add(this);
     }
 
-    private void removeCourse() {
-        this.course.getHomeworks().remove(this);
+    public void removeCourse() {
         this.course = null;
     }
 
