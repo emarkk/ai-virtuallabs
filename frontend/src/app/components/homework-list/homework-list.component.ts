@@ -17,6 +17,8 @@ export class HomeworkListComponent implements OnInit {
     if(data) {
       this.activeHomeworkList = this.homeworkList.filter(h => h.dueDate > new Date());
       this.pastHomeworkList = this.homeworkList.filter(h => h.dueDate < new Date());
+      this.activeHomeworkList.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+      this.pastHomeworkList.sort((a, b) => b.dueDate.getTime() - a.dueDate.getTime());
     }
   }
 
@@ -28,6 +30,8 @@ export class HomeworkListComponent implements OnInit {
       if(this.homeworkList) {
         this.activeHomeworkList = this.homeworkList.filter(h => h.dueDate > new Date());
         this.pastHomeworkList = this.homeworkList.filter(h => h.dueDate < new Date());
+        this.activeHomeworkList.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+        this.pastHomeworkList.sort((a, b) => b.dueDate.getTime() - a.dueDate.getTime());
       }
     }, 60*1000);
   }
