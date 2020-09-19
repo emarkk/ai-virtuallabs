@@ -83,20 +83,24 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         if(destination == null)
             return false;
 
+        // path /vm/{id}
         if(destination.matches("/vm/\\d+")) {
             Long vmId = Long.parseLong(destination.replaceFirst("/vm/(\\d+)", "$1"));
             return (user instanceof Student && vmService.studentHasSignalPermission(vmId, ((Student) user).getId()))
                     || (user instanceof Professor && vmService.professorHasSignalPermission(vmId, ((Professor) user).getId()));
         }
+        // path /team/{id}/vms
         if(destination.matches("/team/\\d+/vms")) {
             Long teamId = Long.parseLong(destination.replaceFirst("/team/(\\d+)/vms", "$1"));
             return user instanceof Student && teamService.studentHasSignalPermission(teamId, ((Student) user).getId());
         }
+        // path /team/{id}/vms-resources
         if(destination.matches("/team/\\d+/vms-resources")) {
             Long teamId = Long.parseLong(destination.replaceFirst("/team/(\\d+)/vms-resources", "$1"));
             return (user instanceof Student && teamService.studentHasSignalPermission(teamId, ((Student) user).getId()))
                     || (user instanceof Professor && teamService.professorHasSignalPermission(teamId, ((Professor) user).getId()));
         }
+        // path /course/{id}/vms
         if(destination.matches("/course/\\w+/vms")) {
             String courseCode = destination.replaceFirst("/course/(\\w+)/vms", "$1");
             return user instanceof Professor && courseService.professorHasSignalPermission(courseCode, ((Professor) user).getId());
