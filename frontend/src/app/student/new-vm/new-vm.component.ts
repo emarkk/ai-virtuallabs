@@ -50,55 +50,56 @@ export class StudentNewVmComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.courseCode = params.code;
-      this.course$ = this.courseService.get(this.courseCode);
+    this.courseCode = this.route.snapshot.params.code;
+    this.init();
+  }
+  init() {
+    this.course$ = this.courseService.get(this.courseCode);
       
-      this.courseService.getVmModel(this.courseCode).subscribe(model => {
-        this.vmModel = model;
-      });
+    this.courseService.getVmModel(this.courseCode).subscribe(model => {
+      this.vmModel = model;
+    });
 
-      this.studentService.getTeamsForCourse(this.authService.getId(), this.courseCode).pipe(map(teams => teams.find(t => t.status == TeamStatus.COMPLETE))).subscribe(team => {
-        if(team) {
-          this.teamId = team.id;
+    this.studentService.getTeamsForCourse(this.authService.getId(), this.courseCode).pipe(map(teams => teams.find(t => t.status == TeamStatus.COMPLETE))).subscribe(team => {
+      if(team) {
+        this.teamId = team.id;
 
-          this.signalService.teamVmsResourcesUpdates(this.teamId).subscribe(signal => {
-            this.teamVmsResourcesUpdatesSignal = signal;
-            this.vmInfo = {
-              vm: of(null),
-              resourcesUsed: merge(this.teamService.getVmsResourcesUsed(this.teamId), this.teamVmsResourcesUpdatesSignal.data()).pipe(
-                scan((resources: TeamVmsResources, update: TeamVmsResources | TeamVmsResourcesSignal | null) => {
-                  if(update == null)
-                    return resources;
-                  if(!(update instanceof TeamVmsResourcesSignal))
-                    return update;
-    
-                  if(update.updateType == TeamVmsResourcesSignalUpdateType.USED)
-                    resources = update.vmsResources;
+        this.signalService.teamVmsResourcesUpdates(this.teamId).subscribe(signal => {
+          this.teamVmsResourcesUpdatesSignal = signal;
+          this.vmInfo = {
+            vm: of(null),
+            resourcesUsed: merge(this.teamService.getVmsResourcesUsed(this.teamId), this.teamVmsResourcesUpdatesSignal.data()).pipe(
+              scan((resources: TeamVmsResources, update: TeamVmsResources | TeamVmsResourcesSignal | null) => {
+                if(update == null)
                   return resources;
-                }, null)
-              ),
-              resourcesLimits: merge(this.teamService.getVmsResourcesLimits(this.teamId), this.teamVmsResourcesUpdatesSignal.data()).pipe(
-                scan((resources: TeamVmsResources, update: TeamVmsResources | TeamVmsResourcesSignal | null) => {
-                  if(update == null)
-                    return resources;
-                  if(!(update instanceof TeamVmsResourcesSignal))
-                    return update;
-    
-                  if(update.updateType == TeamVmsResourcesSignalUpdateType.TOTAL)
-                    resources = update.vmsResources;
+                if(!(update instanceof TeamVmsResourcesSignal))
+                  return update;
+  
+                if(update.updateType == TeamVmsResourcesSignalUpdateType.USED)
+                  resources = update.vmsResources;
+                return resources;
+              }, null)
+            ),
+            resourcesLimits: merge(this.teamService.getVmsResourcesLimits(this.teamId), this.teamVmsResourcesUpdatesSignal.data()).pipe(
+              scan((resources: TeamVmsResources, update: TeamVmsResources | TeamVmsResourcesSignal | null) => {
+                if(update == null)
                   return resources;
-                }, null)
-              )
-            };
-          });
-        }
-      });
+                if(!(update instanceof TeamVmsResourcesSignal))
+                  return update;
+  
+                if(update.updateType == TeamVmsResourcesSignalUpdateType.TOTAL)
+                  resources = update.vmsResources;
+                return resources;
+              }, null)
+            )
+          };
+        });
+      }
+    });
 
-      this.course$.subscribe(course => {
-        this.courseName = course.name;
-        this.navigationData = [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('VMs', `/student/course/${course.code}/vms`), nav('New')];
-      });
+    this.course$.subscribe(course => {
+      this.courseName = course.name;
+      this.navigationData = [navHome, navCourses, nav(course.name, `/student/course/${course.code}`), nav('VMs', `/student/course/${course.code}/vms`), nav('New')];
     });
   }
   ngOnDestroy(): void {

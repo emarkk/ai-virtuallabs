@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, Subscription, BehaviorSubject, combineLatest } from 'rxjs';
+import { Observable, Subject, Subscription, BehaviorSubject, combineLatest, of } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
 
 import { APIResult } from 'src/app/core/models/api-result.model';
@@ -56,69 +56,70 @@ export class ProfessorCourseDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.courseCode = params.code;
-      this.course$ = this.courseService.get(this.courseCode);
-      this.professors$ = this.professorsRefreshToken.pipe(
-        switchMap(() => this.courseService.getProfessors(this.courseCode))
-      );
-      this.studentsPreview$ = this.courseService.getStudents(this.courseCode, null, null, 0, 30);
-      this.vmModel$ = this.vmModelRefreshToken.pipe(
-        switchMap(() => this.courseService.getVmModel(this.courseCode)),
-        switchMap(x => this.vmService.getModel(x.id))
-      );
-      this.homeworks$ = this.courseService.getHomeworks(this.courseCode).pipe(
-        map(homeworks => homeworks.filter(h => h.dueDate > new Date()).map(h => {
-          h.link = `/professor/course/${this.courseCode}/homework/${h.id}`; 
-          return h;
-        }))
-      );
+    this.courseCode = this.route.snapshot.params.code;
+    this.init();
+  }
+  init() {
+    this.course$ = this.courseService.get(this.courseCode);
+    this.professors$ = this.professorsRefreshToken.pipe(
+      switchMap(() => this.courseService.getProfessors(this.courseCode))
+    );
+    this.studentsPreview$ = this.courseService.getStudents(this.courseCode, null, null, 0, 30);
+    this.vmModel$ = this.vmModelRefreshToken.pipe(
+      switchMap(() => this.courseService.getVmModel(this.courseCode)),
+      switchMap(x => this.vmService.getModel(x.id))
+    );
+    this.homeworks$ = this.courseService.getHomeworks(this.courseCode).pipe(
+      map(homeworks => homeworks.filter(h => h.dueDate > new Date()).map(h => {
+        h.link = `/professor/course/${this.courseCode}/homework/${h.id}`; 
+        return h;
+      }))
+    );
 
-      combineLatest([this.route.queryParams, this.vmModel$]).subscribe(([queryParams, vmModel]) => {
-        if(queryParams.edit == 'vm-model') {
-          this.vmModelDialogRef = this.dialog.open(VmModelDialog, {
-            data: {
-              id: vmModel.id,
-              name: vmModel.name,
-              configuration: vmModel.configuration,
-              courseCode: this.courseCode,
-              courseName: this.courseName
-            }
-          });
-          this.vmModelDialogRef.afterClosed().subscribe(res => {
-            if(res instanceof APIResult) {
-              if(res.ok) {
-                this.vmModelRefreshToken.next(undefined);
-                this.toastService.show({ type: 'success', text: 'VM model information saved successfully.' });
-              } else if(res.error)
-                this.toastService.show({ type: 'danger', text: res.errorMessage });
-            }
-              
-            this.router.navigate([]);
-          });
-        } else if(this.vmModelDialogRef)
-          this.vmModelDialogRef.close();
-      });
+    combineLatest([this.route.queryParams, this.vmModel$]).subscribe(([queryParams, vmModel]) => {
+      if(queryParams.edit == 'vm-model') {
+        this.vmModelDialogRef = this.dialog.open(VmModelDialog, {
+          data: {
+            id: vmModel.id,
+            name: vmModel.name,
+            configuration: vmModel.configuration,
+            courseCode: this.courseCode,
+            courseName: this.courseName
+          }
+        });
+        this.vmModelDialogRef.afterClosed().subscribe(res => {
+          if(res instanceof APIResult) {
+            if(res.ok) {
+              this.vmModelRefreshToken.next(undefined);
+              this.toastService.show({ type: 'success', text: 'VM model information saved successfully.' });
+            } else if(res.error)
+              this.toastService.show({ type: 'danger', text: res.errorMessage });
+          }
+            
+          this.router.navigate([]);
+        });
+      } else if(this.vmModelDialogRef)
+        this.vmModelDialogRef.close();
+    });
 
-      this.course$.subscribe(course => {
-        this.courseName = course.name;
-        this.courseEnabled = course.enabled;
-        this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`)];
-      });
-      
-      this.searchSubject.pipe(
-        debounceTime(250),
-      ).subscribe(input => {
-        if(this.searchSubscription)
-          this.searchSubscription.unsubscribe();
+    this.course$.subscribe(course => {
+      this.courseName = course.name;
+      this.courseEnabled = course.enabled;
+      this.navigationData = [navHome, navCourses, nav(course.name, `/professor/course/${course.code}`)];
+    });
+    
+    this.searchSubject.pipe(
+      debounceTime(250),
+    ).subscribe(input => {
+      if(this.searchSubscription)
+        this.searchSubscription.unsubscribe();
 
-        if(input.length > 0) {
-          this.searchSubscription = this.professorService.search(input, new ProfessorSearchFilters({ excludeCourse: this.courseCode })).subscribe(professors => {
-            this.professorMatches = professors.map(s => Object.assign(s, { username: `d${s.id}` }));
-          });
-        } else
-          this.professorMatches = [];
-      });
+      if(input.length > 0) {
+        this.searchSubscription = this.professorService.search(input, new ProfessorSearchFilters({ excludeCourse: this.courseCode })).subscribe(professors => {
+          this.professorMatches = professors.map(s => Object.assign(s, { username: `d${s.id}` }));
+        });
+      } else
+        this.professorMatches = [];
     });
   }
 
