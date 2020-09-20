@@ -84,22 +84,21 @@ export class SignalService {
   }
 
   // send updates on vm screen
-  sendScreenSignal(vmId: number, token: string, signal: VmScreenSignal): void {
-    this._sendTo(`/signal/vm/${vmId}/screen`, signal, token);
+  sendScreenSignal(vmId: number, signal: VmScreenSignal): void {
+    this._sendTo(`/signal/vm/${vmId}/screen`, signal, null);
   }
   
   // subscribe to updates from a specific websocket url
-  private _subscribeTo(url, map): Observable<SignalObservable<any>> {
+  private _subscribeTo(url, mapFn): Observable<SignalObservable<any>> {
     return this.connected.pipe(
       first(c => c),
-      switchMap(() => of(new SignalObservable(cb => this.stompClient.subscribe(url, cb, { token: this.token }), map)))
+      switchMap(() => of(new SignalObservable(cb => this.stompClient.subscribe(url, cb, { token: this.token }), mapFn)))
     );
   }
   // send some data to a websocket url
   private _sendTo(url, data, token): void {
     this.connected.pipe(
-      first(c => c),
-      switchMap(() => this.stompClient.send(url, { token }, JSON.stringify(data)))
-    );
+      first(c => c)
+    ).subscribe(_ => this.stompClient.send(url, token ? { token } : {}, JSON.stringify(data)));
   }
 }

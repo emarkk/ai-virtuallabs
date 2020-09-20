@@ -1,9 +1,8 @@
 package it.polito.ai.virtuallabs.backend.websockets;
 
 import it.polito.ai.virtuallabs.backend.entities.*;
-import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
-import it.polito.ai.virtuallabs.backend.security.jwt.JwtTokenProvider;
 import it.polito.ai.virtuallabs.backend.services.*;
+import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
@@ -22,10 +21,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private AuthenticatedEntityMapper authenticatedEntityMapper;
+    private GetterProxy getterProxy;
 
     @Autowired
     private CourseService courseService;
@@ -65,19 +61,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         });
     }
 
-    private AuthenticatedEntity getUser(StompHeaderAccessor accessor) {
-        String token = accessor.getFirstNativeHeader("token");
-        if(token != null && jwtTokenProvider.validateToken(token))
-            return authenticatedEntityMapper.getByAuthentication(jwtTokenProvider.getAuthentication(token));
-        return null;
-    }
-
     private boolean authorizeConnection(StompHeaderAccessor accessor) {
-        return this.getUser(accessor) != null;
+        return getterProxy.authenticatedEntity(accessor) != null;
     }
 
     private boolean authorizeSubscription(StompHeaderAccessor accessor) {
-        AuthenticatedEntity user = this.getUser(accessor);
+        AuthenticatedEntity user = getterProxy.authenticatedEntity(accessor);
         String destination = accessor.getDestination();
 
         if(destination == null)
@@ -86,6 +75,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // path /vm/{id}
         if(destination.matches("/vm/\\d+")) {
             Long vmId = Long.parseLong(destination.replaceFirst("/vm/(\\d+)", "$1"));
+            return (user instanceof Student && vmService.studentHasSignalPermission(vmId, ((Student) user).getId()))
+                    || (user instanceof Professor && vmService.professorHasSignalPermission(vmId, ((Professor) user).getId()));
+        }
+        // path /vm/{id}/screen
+        if(destination.matches("/vm/\\d+/screen")) {
+            Long vmId = Long.parseLong(destination.replaceFirst("/vm/(\\d+)/screen", "$1"));
             return (user instanceof Student && vmService.studentHasSignalPermission(vmId, ((Student) user).getId()))
                     || (user instanceof Professor && vmService.professorHasSignalPermission(vmId, ((Professor) user).getId()));
         }

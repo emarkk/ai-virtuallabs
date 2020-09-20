@@ -4,21 +4,32 @@
       <div *ngIf="navigationData$ | async as navigationData">
         <app-navigation [navigationData]="navigationData.concat({ name: 'VM-' + vmName })"></app-navigation>
       </div>
-      <div>
-        <table class="info main">
-          <tr>
-            <td>Team</td>
-            <td>???</td>
-          </tr>
-          <tr>
-            <td>People connected to this VM</td>
-            <td>
-              <i>You</i>
-            </td>
-          </tr>
-        </table>
+      <div *ngIf="vmOnline">
+        <div>
+          <table class="info main">
+            <tr>
+              <td>Team</td>
+              <td>{{ teamName || '...' }}</td>
+            </tr>
+            <tr>
+              <td>People connected to this VM</td>
+              <td>
+                <div class="vm-professor" *ngFor="let professor of connectedProfessors">
+                  <app-user-tag [firstName]="professor.firstName" [lastName]="professor.lastName.toUpperCase()" [user]="professor" [id]="'d' + professor.id"></app-user-tag>
+                </div>
+                <div class="vm-student" *ngFor="let student of connectedStudents">
+                  <app-user-tag [firstName]="student.firstName" [lastName]="student.lastName.toUpperCase()" [user]="student" [id]="'s' + student.id"></app-user-tag>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="vm-screen" #screen></div>
       </div>
-      <div class="vm-screen"></div>
+      <div *ngIf="vmOnline === false" class="offline">
+        <div><mat-icon>tv_off</mat-icon></div>
+        <p>This VM is offline.</p>
+      </div>
     </div>
   </app-page>
 </div>

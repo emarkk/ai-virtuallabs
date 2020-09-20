@@ -4,3 +4,26 @@
 .info.main {
   margin-bottom: 15px;
 }
+.vm-professor, .vm-student {
+  display: inline-block;
+  padding: 4px;
+  margin-right: 6px;
+  border-radius: 12px;
+}
+.vm-professor {
+  border: 2px solid #3f51b5;
+}
+.vm-student {
+  border: 2px solid #ff6647;
+}
+.offline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20vh;
+  opacity: 0.3;
+  font-size: 2em;
+}
+.offline mat-icon {
+  transform: scale(3.5);
+}

@@ -2,14 +2,12 @@ package it.polito.ai.virtuallabs.backend.utils;
 
 import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.repositories.*;
+import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
+import it.polito.ai.virtuallabs.backend.security.jwt.JwtTokenProvider;
 import it.polito.ai.virtuallabs.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 public class GetterProxy {
@@ -37,6 +35,12 @@ public class GetterProxy {
 
     @Autowired
     private HomeworkRepository homeworkRepository;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private AuthenticatedEntityMapper authenticatedEntityMapper;
 
     public Course course(String courseCode) {
         Optional<Course> courseOptional = courseRepository.findById(courseCode);
@@ -108,6 +112,13 @@ public class GetterProxy {
             throw new HomeworkActionNotFoundException();
 
         return homeworkActionOptional.get();
+    }
+
+    public AuthenticatedEntity authenticatedEntity(StompHeaderAccessor accessor) {
+        String token = accessor.getFirstNativeHeader("token");
+        if(token != null && jwtTokenProvider.validateToken(token))
+            return authenticatedEntityMapper.getByAuthentication(jwtTokenProvider.getAuthentication(token));
+        return null;
     }
 
 }
