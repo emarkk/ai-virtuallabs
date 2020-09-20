@@ -6,24 +6,21 @@ import it.polito.ai.virtuallabs.backend.entities.AuthenticatedEntity;
 import it.polito.ai.virtuallabs.backend.entities.Professor;
 import it.polito.ai.virtuallabs.backend.entities.Student;
 import it.polito.ai.virtuallabs.backend.entities.Vm;
-import it.polito.ai.virtuallabs.backend.services.NotAllowedException;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import it.polito.ai.virtuallabs.backend.websockets.signals.VmScreenSignal;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.data.geo.Point;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
+import java.awt.*;
 import java.util.*;
 
 @Controller
@@ -41,16 +38,6 @@ public class ScreenController implements ApplicationListener<SessionUnsubscribeE
     private final Map<String, String> sessions = new HashMap<>();
     private final Map<Long, Set<ProfessorDTO>> connectedProfessors = new HashMap<>();
     private final Map<Long, Set<StudentDTO>> connectedStudents = new HashMap<>();
-    private final Map<Long, Map<Long, Point>> mousePos = new HashMap<>();
-
-    @MessageMapping("/signal/vm/{vmId}/screen")
-    @SendTo("/vm/{vmId}/screen")
-    public VmScreenSignal screenMessage(@DestinationVariable Long vmId, VmScreenSignal signal) {
-        /*if(!this.secret.containsKey(vmId) || this.secret.get(vmId) != signal.getSecret())
-            throw new NotAllowedException();*/
-
-        return new VmScreenSignal(null, null, null, null, this.mousePos.get(vmId));
-    }
 
     @SubscribeMapping("/vm/{vmId}/screen")
     @SendTo("/vm/{vmId}/screen")
@@ -62,8 +49,6 @@ public class ScreenController implements ApplicationListener<SessionUnsubscribeE
             this.connectedProfessors.put(vm.getId(), new HashSet<>());
         if(!this.connectedStudents.containsKey(vm.getId()))
             this.connectedStudents.put(vm.getId(), new HashSet<>());
-        if(!this.mousePos.containsKey(vm.getId()))
-            this.mousePos.put(vm.getId(), new HashMap<>());
 
         AuthenticatedEntity user = getterProxy.authenticatedEntity(accessor);
         if(user instanceof Professor) {
@@ -80,8 +65,7 @@ public class ScreenController implements ApplicationListener<SessionUnsubscribeE
                 vm.getOnline(),
                 vm.getTeam().getName(),
                 new ArrayList<>(this.connectedProfessors.get(vm.getId())),
-                new ArrayList<>(this.connectedStudents.get(vm.getId())),
-                null
+                new ArrayList<>(this.connectedStudents.get(vm.getId()))
         );
     }
 
@@ -89,10 +73,10 @@ public class ScreenController implements ApplicationListener<SessionUnsubscribeE
     public void onApplicationEvent(SessionUnsubscribeEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String data = this.sessions.get(accessor.getSessionId() + "/" + accessor.getSubscriptionId());
-
         Long vmId = Long.parseLong(data.split("/")[0]);
         Long userId = Long.parseLong(data.split("/")[1]);
 
+        this.sessions.remove(accessor.getSessionId() + "/" + accessor.getSubscriptionId());
         this.connectedProfessors.get(vmId).removeIf(p -> p.getId().equals(userId));
         this.connectedStudents.get(vmId).removeIf(p -> p.getId().equals(userId));
 
@@ -100,8 +84,7 @@ public class ScreenController implements ApplicationListener<SessionUnsubscribeE
                 null,
                 null,
                 new ArrayList<>(this.connectedProfessors.get(vmId)),
-                new ArrayList<>(this.connectedStudents.get(vmId)),
-                null)
+                new ArrayList<>(this.connectedStudents.get(vmId)))
         );
     }
 

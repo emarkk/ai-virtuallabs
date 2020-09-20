@@ -82,11 +82,6 @@ export class SignalService {
   courseVmsUpdates(courseCode: string): Observable<SignalObservable<VmSignal>> {
     return this._subscribeTo(`/course/${courseCode}/vms`, msg => VmSignal.fromMsg(msg));
   }
-
-  // send updates on vm screen
-  sendScreenSignal(vmId: number, signal: VmScreenSignal): void {
-    this._sendTo(`/signal/vm/${vmId}/screen`, signal, null);
-  }
   
   // subscribe to updates from a specific websocket url
   private _subscribeTo(url, mapFn): Observable<SignalObservable<any>> {

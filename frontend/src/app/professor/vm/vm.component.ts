@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { fromEvent, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
@@ -19,7 +19,7 @@ import { navHome, navCourses, nav } from '../professor.navdata';
   templateUrl: './vm.component.html',
   styleUrls: ['./vm.component.css']
 })
-export class ProfessorVmComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ProfessorVmComponent implements OnInit, OnDestroy {
   courseCode: string;
   vmId: number;
 
@@ -33,9 +33,6 @@ export class ProfessorVmComponent implements OnInit, AfterViewInit, OnDestroy {
   vmScreenUpdatesSignal: SignalObservable<VmScreenSignal>;
 
   navigationData$: Observable<Array<any>>;
-
-  @ViewChild('screen')
-  screen: ElementRef;
 
   constructor(private route: ActivatedRoute, private courseService: CourseService, private signalService: SignalService) {
   }
@@ -59,16 +56,11 @@ export class ProfessorVmComponent implements OnInit, AfterViewInit, OnDestroy {
         if(update.teamName != null)
           this.teamName = update.teamName;
         if(update.connectedProfessors != null)
-          this.connectedProfessors = update.connectedProfessors;
-        if(update.connectedStudents != null)
-          this.connectedStudents = update.connectedStudents;
+        this.connectedProfessors = update.connectedProfessors;
+      if(update.connectedStudents != null)
+        this.connectedStudents = update.connectedStudents;
       });
     });
-  }
-  ngAfterViewInit() {
-    /*fromEvent(this.screen.nativeElement, 'mousemove').pipe(debounceTime(125)).subscribe(e => {
-      console.log(e);
-    });*/
   }
   ngOnDestroy(): void {
     if(this.vmScreenUpdatesSignal)

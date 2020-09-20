@@ -46,7 +46,7 @@ public class SignalServiceImpl implements SignalService {
 
     private void signalVmStateChanged(Vm vm, VmSignal.UpdateType updateType) {
         VmSignal vmSignal = new VmSignal(modelMapper.map(vm, VmDTO.class), vm.getTeam().getId(), updateType);
-        VmScreenSignal vmScreenSignal = new VmScreenSignal(vm.getOnline(), null, null, null, null);
+        VmScreenSignal vmScreenSignal = new VmScreenSignal(vm.getOnline(), null, null, null);
         messagingTemplate.convertAndSend("/vm/" + vm.getId(), vmSignal);
         messagingTemplate.convertAndSend("/vm/" + vm.getId() + "/screen", vmScreenSignal);
         messagingTemplate.convertAndSend("/team/" + vm.getTeam().getId() + "/vms", vmSignal);

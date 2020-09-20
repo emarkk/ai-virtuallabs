@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { fromEvent, Observable } from 'rxjs';
+import { map, throttleTime } from 'rxjs/operators';
 
 import { Course } from 'src/app/core/models/course.model';
 import { Team } from 'src/app/core/models/team.model';
@@ -22,7 +22,7 @@ import { navHome, navCourses, nav } from '../student.navdata';
   templateUrl: './vm.component.html',
   styleUrls: ['./vm.component.css']
 })
-export class StudentVmComponent implements OnInit, AfterViewInit, OnDestroy {
+export class StudentVmComponent implements OnInit, OnDestroy {
   courseCode: string;
   vmId: number;
 
@@ -36,9 +36,6 @@ export class StudentVmComponent implements OnInit, AfterViewInit, OnDestroy {
   vmScreenUpdatesSignal: SignalObservable<VmScreenSignal>;
 
   navigationData$: Observable<Array<any>>;
-
-  @ViewChild('screen')
-  screen: ElementRef;
 
   constructor(private route: ActivatedRoute, private authService: AuthService, private courseService: CourseService, private studentService: StudentService, private signalService: SignalService) {
   }
@@ -66,8 +63,6 @@ export class StudentVmComponent implements OnInit, AfterViewInit, OnDestroy {
           this.connectedStudents = update.connectedStudents;
       });
     });
-  }
-  ngAfterViewInit() {
   }
   ngOnDestroy(): void {
     if(this.vmScreenUpdatesSignal)
