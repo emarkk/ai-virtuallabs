@@ -16,7 +16,4 @@ import java.util.List;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpecificationExecutor<Student> {
     List<Student> findAll(Specification<Student> filters);
-
-    @Query("SELECT s AS student, t as team, t.name as teamName FROM Student s LEFT OUTER JOIN s.teams ts ON (ts.invitationStatus = 'CREATOR' OR ts.invitationStatus = 'ACCEPTED') LEFT OUTER JOIN ts.team t ON ((t.formationStatus = 'PROVISIONAL' OR t.formationStatus = 'COMPLETE') AND t.course = :course) WHERE :course MEMBER OF s.courses")
-    Page<CourseStudent> findAllWithTeamByCoursesIsContaining(Pageable pageable, Course course);
 }

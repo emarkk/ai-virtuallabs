@@ -132,19 +132,26 @@ public class CourseServiceImpl implements CourseService {
             throw new InvalidPageException();
 
         // get enrolled students, each with its own team information
-        Page<CourseStudent> studentPage = studentRepository.findAllWithTeamByCoursesIsContaining(
-                PageRequest.of(page, pageSize, Sort.by(
-                        sortDirection.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortField
-                )),
-                course);
-
-        return new PageDTO<>(course.getStudents().size(), studentPage.stream().map(cs ->
-                new CourseStudentDTO(
-                        modelMapper.map(cs.getStudent(), StudentDTO.class),
-                        // team may be null
-                        cs.getTeam() != null ? modelMapper.map(cs.getTeam(), TeamDTO.class) : null
-                )
-        ).collect(Collectors.toList()));
+        return new PageDTO<>(course.getStudents().size(), course.getStudents().stream().map(s -> {
+            Optional<Team> team = s.getTeams().stream()
+                    .filter(ts -> ts.getInvitationStatus() == TeamStudent.InvitationStatus.CREATOR || ts.getInvitationStatus() == TeamStudent.InvitationStatus.ACCEPTED)
+                    .map(TeamStudent::getTeam)
+                    .filter(t -> t.isActive() && t.getCourse().equals(course))
+                    .findFirst();
+            return new CourseStudentDTO(modelMapper.map(s, StudentDTO.class), team.map(t -> modelMapper.map(t, TeamDTO.class)).orElse(null));
+        }).sorted((cs1, cs2) -> {
+            int direction = sortDirection.equals("desc") ? -1 : 1;
+            if(sortField.equals("firstName"))
+                return cs1.getStudent().getFirstName().compareTo(cs2.getStudent().getFirstName()) * direction;
+            if(sortField.equals("lastName"))
+                return cs1.getStudent().getLastName().compareTo(cs2.getStudent().getLastName()) * direction;
+            if(sortField.equals("teamName")) {
+                String t1 = cs1.getTeam() != null ? cs1.getTeam().getName() : "-";
+                String t2 = cs2.getTeam() != null ? cs2.getTeam().getName() : "-";
+                return t1.compareTo(t2) * direction;
+            }
+            return cs1.getStudent().getId().compareTo(cs2.getStudent().getId()) * direction;
+        }).skip(page * pageSize).limit(pageSize).collect(Collectors.toList()));
     }
 
     @Override
