@@ -22,31 +22,14 @@ public class TeamController {
     @Autowired
     NotificationService notificationService;
 
-    @GetMapping("/{id}")
-    public TeamDTO getOne(@PathVariable("id") Long id) {
-        Optional<TeamDTO> team = teamService.getTeam(id);
-
-        if(team.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team '" + id + "' not found");
-
-        return team.get();
-    }
-
-    @GetMapping("/{id}/members")
-    public List<StudentDTO> getMembers(@PathVariable("id") Long id) {
-        try {
-            return teamService.getMembers(id);
-        } catch(TeamNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team '" + id + "' not found");
-        }
-    }
-
     @GetMapping("/{id}/members/status")
     public List<TeamMemberStatusDTO> getMembersStatus(@PathVariable("id") Long id) {
         try {
             return teamService.getMembersStatus(id);
         } catch(TeamNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team '" + id + "' not found");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
         }
     }
 
@@ -56,6 +39,8 @@ public class TeamController {
             return teamService.getVms(id);
         } catch(TeamNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team '" + id + "' not found");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
         }
     }
 
@@ -105,6 +90,8 @@ public class TeamController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Members list does not include requesting user");
         } catch (DuplicateTeamNameException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate Team Name");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
         } catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         }
@@ -120,6 +107,8 @@ public class TeamController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not enrolled in team");
         } catch (IllegalTeamInvitationReplyException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Illegal team invitation accept request");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Action Not Allowed");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
         }

@@ -19,19 +19,13 @@ public class CourseController {
     @Autowired
     CourseService courseService;
 
-    @GetMapping({ "", "/" })
-    public List<CourseDTO> getAll() {
-        return courseService.getAllCourses();
-    }
-
     @GetMapping("/{code}")
-    public CourseDTO getOne(@PathVariable("code") String courseCode) {
-        Optional<CourseDTO> courseOptional = courseService.getCourse(courseCode);
-
-        if(courseOptional.isEmpty())
+    public CourseDTO getCourse(@PathVariable("code") String courseCode) {
+        try{
+            return courseService.getCourse(courseCode);
+        } catch (CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
-
-        return courseOptional.get();
+        }
     }
 
     @GetMapping("/{code}/enrolled")
@@ -47,6 +41,8 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
         } catch (InvalidPageException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "page or pageSize Field Not Valid");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         }
     }
 
@@ -56,6 +52,8 @@ public class CourseController {
             return courseService.getProfessors(courseCode);
         } catch(CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         }
     }
 
@@ -65,6 +63,8 @@ public class CourseController {
             return courseService.getTeams(courseCode);
         } catch(CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         }
     }
 
@@ -74,12 +74,14 @@ public class CourseController {
             return courseService.getVmModel(courseCode);
         } catch(CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
+        }  catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         }
     }
 
     @PostMapping({ "", "/" })
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseDTO addOne(@RequestBody CourseDTO courseDTO) {
+    public CourseDTO addCourse(@RequestBody CourseDTO courseDTO) {
         boolean result = courseService.addCourse(courseDTO);
 
         if(!result)
@@ -112,7 +114,7 @@ public class CourseController {
     }
 
     @PostMapping("/{code}/enroll")
-    public void enrollOne(@PathVariable("code") String courseCode, @RequestBody Map<String, String> input) {
+    public void addStudentToCourse(@PathVariable("code") String courseCode, @RequestBody Map<String, String> input) {
         if(!input.containsKey("id"))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
 
@@ -181,7 +183,7 @@ public class CourseController {
     }
 
     @PostMapping("/{code}/professors")
-    public void addProfessor(@PathVariable("code") String courseCode, @RequestBody Map<String, String> input) {
+    public void inviteProfessor(@PathVariable("code") String courseCode, @RequestBody Map<String, String> input) {
         if(!input.containsKey("id"))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input");
 
@@ -199,7 +201,7 @@ public class CourseController {
     }
 
     @PutMapping("/{code}")
-    public void updateOne(@PathVariable("code") String courseCode, @RequestBody CourseDTO courseDTO) {
+    public void updateCourse(@PathVariable("code") String courseCode, @RequestBody CourseDTO courseDTO) {
         try {
             courseService.updateCourse(courseCode, courseDTO);
         } catch(CourseNotFoundException e) {
@@ -226,6 +228,8 @@ public class CourseController {
             return courseService.getHomeworks(courseCode);
         } catch (CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course " + courseCode + "Not Found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         }
     }
 

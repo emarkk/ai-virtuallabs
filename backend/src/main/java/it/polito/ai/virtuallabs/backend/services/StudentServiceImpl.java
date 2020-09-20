@@ -43,39 +43,48 @@ public class StudentServiceImpl implements StudentService {
     private ProfilePicturesUtility picturesUtility;
 
     @Override
-    public Optional<StudentDTO> getStudent(Long studentId) {
-        Optional<Student> studentOptional = studentRepository.findById(studentId);
-        return studentOptional.map(s -> modelMapper.map(s, StudentDTO.class));
+    public StudentDTO getStudent(Long studentId) {
+        return modelMapper.map(getter.student(studentId), StudentDTO.class);
     }
 
-    @Override
-    public List<StudentDTO> getAllStudents() {
-        return studentRepository.findAll()
-                .stream()
-                .map(s -> modelMapper.map(s, StudentDTO.class))
-                .collect(Collectors.toList());
-    }
-
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
     public List<CourseDTO> getCoursesForStudent(Long studentId) {
-        return getter.student(studentId).getCourses()
+        Student student = getter.student(studentId);
+
+        if(!student.equals((Student) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+        return student.getCourses()
                 .stream()
                 .map(c -> modelMapper.map(c, CourseDTO.class))
                 .collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
     public List<TeamDTO> getTeamsForStudent(Long studentId) {
-        return getter.student(studentId).getTeams()
+        Student student = getter.student(studentId);
+
+        if(!student.equals((Student) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+        return student.getTeams()
                 .stream()
                 .map(ts -> modelMapper.map(ts.getTeam(), TeamDTO.class))
                 .collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
     public List<TeamDTO> getTeamsForStudent(Long studentId, String courseCode) {
         Course course = getter.course(courseCode);
-        return getter.student(studentId).getTeams()
+        Student student = getter.student(studentId);
+
+        if(!student.equals((Student) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+        return student.getTeams()
                 .stream()
                 .filter(ts -> ts.getTeam().getCourse().equals(course))
                 .map(ts -> modelMapper.map(ts.getTeam(), TeamDTO.class))

@@ -10,8 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProfessorService {
-    Optional<ProfessorDTO> getProfessor(Long professorId);
-    List<ProfessorDTO> getAllProfessors();
+    ProfessorDTO getProfessor(Long professorId);
     List<ProfessorDTO> search(String q, String excludeCourse);
     List<CourseDTO> getCoursesForProfessor(Long professorId);
     void addPicture(Long id, MultipartFile file);

@@ -42,22 +42,21 @@ public class ProfessorServiceImpl implements ProfessorService {
     private ProfilePicturesUtility picturesUtility;
 
     @Override
-    public Optional<ProfessorDTO> getProfessor(Long professorId) {
-        Optional<Professor> professorOptional = professorRepository.findById(professorId);
-        return professorOptional.map(s -> modelMapper.map(s, ProfessorDTO.class));
+    public ProfessorDTO getProfessor(Long professorId) {
+        Professor professor = getter.professor(professorId);
+
+        return modelMapper.map(professor, ProfessorDTO.class);
     }
 
-    @Override
-    public List<ProfessorDTO> getAllProfessors() {
-        return professorRepository.findAll()
-                .stream()
-                .map(s -> modelMapper.map(s, ProfessorDTO.class))
-                .collect(Collectors.toList());
-    }
-
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
     public List<CourseDTO> getCoursesForProfessor(Long professorId) {
-        return getter.professor(professorId).getCourses()
+        Professor professor = getter.professor(professorId);
+
+        if(!professor.equals((Professor) authenticatedEntityMapper.get()))
+            throw new NotAllowedException();
+
+        return professor.getCourses()
                 .stream()
                 .map(c -> modelMapper.map(c, CourseDTO.class))
                 .collect(Collectors.toList());

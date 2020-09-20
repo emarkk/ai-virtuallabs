@@ -42,12 +42,14 @@ public class VmServiceImpl implements VmService {
     @Autowired
     private SignalService signalService;
 
-    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @Override
     public VmModelDTO getVmModel(Long vmModelId) {
         VmModel vmModel = getter.vmModel(vmModelId);
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
 
-        if(!vmModel.getCourse().getProfessors().contains((Professor) authenticatedEntityMapper.get()))
+        if(authenticated instanceof Professor && !vmModel.getCourse().getProfessors().contains((Professor) authenticated))
+            throw new NotAllowedException();
+        if(authenticated instanceof Student && !vmModel.getCourse().getStudents().contains((Student) authenticated))
             throw new NotAllowedException();
 
         return modelMapper.map(vmModel, VmModelDTO.class);
@@ -157,15 +159,15 @@ public class VmServiceImpl implements VmService {
         return result;
     }
 
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
     public VmDTO getVm(Long vmId) {
         Vm vm = getter.vm(vmId);
-        AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
+        Student authenticated = (Student) authenticatedEntityMapper.get();
 
-        if(authenticatedEntity instanceof Student && ((Student) authenticatedEntity).getTeams().stream().noneMatch(ts -> ts.getTeam().equals(vm.getTeam())))
+        if(authenticated.getTeams().stream().noneMatch(ts -> ts.getTeam().equals(vm.getTeam())))
             throw new NotAllowedException();
-        if(authenticatedEntity instanceof Professor && !((Professor) authenticatedEntity).getCourses().contains(vm.getTeam().getCourse()))
-            throw new NotAllowedException();
+
         if(!vm.getTeam().isComplete())
             throw new TeamNotActiveException();
 

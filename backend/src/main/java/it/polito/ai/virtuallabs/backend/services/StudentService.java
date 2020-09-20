@@ -10,8 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StudentService {
-    Optional<StudentDTO> getStudent(Long studentId);
-    List<StudentDTO> getAllStudents();
+    StudentDTO getStudent(Long studentId);
     List<StudentDTO> search(String q, String course, Boolean teamed, String excludeCourse, List<Long> excludeIds);
     List<CourseDTO> getCoursesForStudent(Long studentId);
     List<TeamDTO> getTeamsForStudent(Long studentId);

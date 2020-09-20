@@ -8,8 +8,7 @@ import java.util.Optional;
 
 public interface CourseService {
     boolean addCourse(CourseDTO course);
-    Optional<CourseDTO> getCourse(String courseCode);
-    List<CourseDTO> getAllCourses();
+    CourseDTO getCourse(String courseCode);
     void updateCourse(String courseCode, CourseDTO course);
     void removeCourse(String courseCode);
     boolean inviteProfessor(String courseCode, Long professorId);

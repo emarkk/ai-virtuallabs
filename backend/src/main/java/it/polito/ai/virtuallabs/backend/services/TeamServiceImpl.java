@@ -42,23 +42,16 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     private GetterProxy getter;
 
-    @Override
-    public Optional<TeamDTO> getTeam(Long teamId) {
-        Optional<Team> teamOpt = teamRepository.findById(teamId);
-        return teamOpt.map(t -> modelMapper.map(t, TeamDTO.class));
-    }
-
-    @Override
-    public List<StudentDTO> getMembers(Long teamId) {
-        return getter.team(teamId).getMembers()
-                .stream()
-                .map(ts -> modelMapper.map(ts.getStudent(), StudentDTO.class))
-                .collect(Collectors.toList());
-    }
-
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     @Override
     public List<TeamMemberStatusDTO> getMembersStatus(Long teamId) {
-        return getter.team(teamId).getMembers()
+        Team team = getter.team(teamId);
+        Student authenticated = (Student) authenticatedEntityMapper.get();
+
+        if(!team.getMembers().stream().filter(ts -> !ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.REJECTED)).map(TeamStudent::getStudent).collect(Collectors.toList()).contains(authenticated))
+            throw new NotAllowedException();
+
+        return team.getMembers()
                 .stream()
                 .map(ts -> new TeamMemberStatusDTO(modelMapper.map(ts.getStudent(), StudentDTO.class), ts.getInvitationStatus()))
                 .collect(Collectors.toList());
@@ -66,7 +59,15 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<VmDTO> getVms(Long teamId) {
-        return getter.team(teamId).getVms()
+        Team team = getter.team(teamId);
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
+
+        if(authenticated instanceof Professor && !team.getCourse().getProfessors().contains((Professor) authenticated))
+            throw new NotAllowedException();
+        if(authenticated instanceof Student && !team.getMembers().stream().map(TeamStudent::getStudent).collect(Collectors.toList()).contains((Student) authenticated))
+            throw new NotAllowedException();
+
+        return team.getVms()
                 .stream()
                 .map(vm -> modelMapper.map(vm, VmDTO.class))
                 .collect(Collectors.toList());
@@ -75,11 +76,11 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public TeamVmsResourcesDTO getTeamVmsResourcesUsed(Long teamId) {
         Team team = getter.team(teamId);
-        AuthenticatedEntity authenticatedEntity = authenticatedEntityMapper.get();
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
 
-        if(authenticatedEntity instanceof Student && ((Student) authenticatedEntity).getTeams().stream().noneMatch(ts -> ts.getTeam().equals(team)))
+        if(authenticated instanceof Student && ((Student) authenticated).getTeams().stream().noneMatch(ts -> ts.getTeam().equals(team)))
             throw new NotAllowedException();
-        if(authenticatedEntity instanceof Professor && !((Professor) authenticatedEntity).getCourses().contains(team.getCourse()))
+        if(authenticated instanceof Professor && !((Professor) authenticated).getCourses().contains(team.getCourse()))
             throw new NotAllowedException();
 
         return modelMapper.map(team.getVmsResourcesUsed(), TeamVmsResourcesDTO.class);
@@ -107,7 +108,7 @@ public class TeamServiceImpl implements TeamService {
         if(!course.getEnabled())
             throw new CourseNotEnabledException();
         if(!authenticated.getCourses().contains(course))
-            throw new StudentNotEnrolledException();
+            throw new NotAllowedException();
         if(course.getTeams().stream().anyMatch(t -> t.getName().equals(teamProposalDTO.getName())))
             throw new DuplicateTeamNameException();
         if(new HashSet<>(teamProposalDTO.getMembersIds()).size() < teamProposalDTO.getMembersIds().size())
@@ -165,11 +166,11 @@ public class TeamServiceImpl implements TeamService {
 
         Optional<TeamStudent> optionalTeamStudent = team.getMembers().stream().filter(ts -> ts.getStudent().equals(authenticated)).findFirst();
         if(optionalTeamStudent.isEmpty())
-            throw new StudentNotInTeamException();
+            throw new NotAllowedException();
 
         TeamStudent ts = optionalTeamStudent.get();
         if(!ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING))
-            throw new IllegalTeamInvitationReplyException();
+            throw new NotAllowedException();
 
         ts.setInvitationStatus(TeamStudent.InvitationStatus.ACCEPTED);
         teamStudentRepository.save(ts);
@@ -193,11 +194,11 @@ public class TeamServiceImpl implements TeamService {
 
         Optional<TeamStudent> optionalTeamStudent = team.getMembers().stream().filter(ts -> ts.getStudent().equals(authenticated)).findFirst();
         if(optionalTeamStudent.isEmpty())
-            throw new StudentNotInTeamException();
+            throw new NotAllowedException();
 
         TeamStudent ts = optionalTeamStudent.get();
         if(!ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING))
-            throw new IllegalTeamInvitationReplyException();
+            throw new NotAllowedException();
 
         ts.setInvitationStatus(TeamStudent.InvitationStatus.REJECTED);
         teamStudentRepository.save(ts);

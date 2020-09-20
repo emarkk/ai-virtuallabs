@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface TeamService {
-    Optional<TeamDTO> getTeam(Long teamId);
-    List<StudentDTO> getMembers(Long teamId);
     List<TeamMemberStatusDTO> getMembersStatus(Long teamId);
     List<VmDTO> getVms(Long teamId);
     TeamVmsResourcesDTO getTeamVmsResourcesUsed(Long teamId);

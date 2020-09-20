@@ -47,17 +47,16 @@ public class CourseServiceImpl implements CourseService {
     private GetterProxy getter;
 
     @Override
-    public Optional<CourseDTO> getCourse(String courseCode) {
-        Optional<Course> courseOptional = courseRepository.findById(courseCode);
-        return courseOptional.map(c -> modelMapper.map(c, CourseDTO.class));
-    }
+    public CourseDTO getCourse(String courseCode) {
+        Course course = getter.course(courseCode);
 
-    @Override
-    public List<CourseDTO> getAllCourses() {
-        return courseRepository.findAll()
-                .stream()
-                .map(c -> modelMapper.map(c, CourseDTO.class))
-                .collect(Collectors.toList());
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
+        if(authenticated instanceof Professor && !course.getProfessors().contains(authenticated))
+            throw new NotAllowedException();
+        if(authenticated instanceof Student && !course.getStudents().contains(authenticated))
+            throw new NotAllowedException();
+
+        return modelMapper.map(course, CourseDTO.class);
     }
 
     @Override
@@ -125,6 +124,10 @@ public class CourseServiceImpl implements CourseService {
     public PageDTO<CourseStudentDTO> getEnrolledStudents(String courseCode, String sortField, String sortDirection, int page, int pageSize) {
         Course course = getter.course(courseCode);
 
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
+        if(authenticated instanceof Professor && !course.getProfessors().contains(authenticated))
+            throw new NotAllowedException();
+
         if(page < 0 || pageSize < 0)
             throw new InvalidPageException();
 
@@ -146,7 +149,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<ProfessorDTO> getProfessors(String courseCode) {
-        return getter.course(courseCode).getProfessors()
+        Course course = getter.course(courseCode);
+
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
+        if(authenticated instanceof Professor && !course.getProfessors().contains(authenticated))
+            throw new NotAllowedException();
+        if(authenticated instanceof Student && !course.getStudents().contains(authenticated))
+            throw new NotAllowedException();
+
+        return course.getProfessors()
                 .stream()
                 .map(p -> modelMapper.map(p, ProfessorDTO.class))
                 .collect(Collectors.toList());
@@ -154,7 +165,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<TeamDTO> getTeams(String courseCode) {
-        return getter.course(courseCode).getTeams()
+        Course course = getter.course(courseCode);
+
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
+        if(authenticated instanceof Professor && !course.getProfessors().contains(authenticated))
+            throw new NotAllowedException();
+        if(authenticated instanceof Student && !course.getStudents().contains(authenticated))
+            throw new NotAllowedException();
+
+        return course.getTeams()
                 .stream()
                 .map(t -> modelMapper.map(t, TeamDTO.class))
                 .collect(Collectors.toList());
@@ -163,6 +182,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public VmModelDTO getVmModel(String courseCode) {
         VmModel vmModel = getter.course(courseCode).getVmModel();
+
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
+        if(authenticated instanceof Professor && !vmModel.getCourse().getProfessors().contains(authenticated))
+            throw new NotAllowedException();
+        if(authenticated instanceof Student && !vmModel.getCourse().getStudents().contains(authenticated))
+            throw new NotAllowedException();
 
         if(vmModel == null)
             return null;
@@ -276,6 +301,13 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<HomeworkDTO> getHomeworks(String courseCode) {
         Course course = getter.course(courseCode);
+
+        AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
+        if(authenticated instanceof Professor && !course.getProfessors().contains(authenticated))
+            throw new NotAllowedException();
+        if(authenticated instanceof Student && !course.getStudents().contains(authenticated))
+            throw new NotAllowedException();
+
         return course.getHomeworks()
                 .stream()
                 .map(h -> modelMapper.map(h, HomeworkDTO.class))

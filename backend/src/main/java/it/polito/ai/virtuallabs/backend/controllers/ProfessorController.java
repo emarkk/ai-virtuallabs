@@ -24,19 +24,13 @@ public class ProfessorController {
     @Autowired
     private ProfessorService professorService;
 
-    @GetMapping({ "", "/" })
-    public List<ProfessorDTO> all() {
-        return professorService.getAllProfessors();
-    }
-
     @GetMapping("/{id}")
-    public ProfessorDTO getOne(@PathVariable("id") Long id) {
-        Optional<ProfessorDTO> professorOptional = professorService.getProfessor(id);
-
-        if(professorOptional.isEmpty())
+    public ProfessorDTO getProfessor(@PathVariable("id") Long id) {
+        try{
+            return professorService.getProfessor(id);
+        } catch (ProfessorNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor '" + id + "' not found");
-
-        return professorOptional.get();
+        }
     }
 
     @GetMapping("/search")
@@ -52,11 +46,13 @@ public class ProfessorController {
     }
 
     @GetMapping("/{id}/courses")
-    public List<CourseDTO> getCourses(@PathVariable("id") Long id) {
+    public List<CourseDTO> getCoursesForProfessor(@PathVariable("id") Long id) {
         try {
             return professorService.getCoursesForProfessor(id);
         } catch(ProfessorNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor '" + id + "' not found");
+        } catch (NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient Authorization");
         }
     }
 
