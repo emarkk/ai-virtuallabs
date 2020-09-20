@@ -24,7 +24,7 @@ export class HomeworkReviewDialog implements OnInit {
   // form fields for homework review
   form = new FormGroup({
     file: new FormControl({ value: null, disabled: false }, [Validators.required]),
-    final: new FormControl({ value: '', disabled: false }, [Validators.required]),
+    final: new FormControl({ value: false, disabled: false }, [Validators.required]),
     mark: new FormControl({ value: '', disabled: true }, [numberValidator, Validators.min(1), Validators.max(30)]),
   });
   
