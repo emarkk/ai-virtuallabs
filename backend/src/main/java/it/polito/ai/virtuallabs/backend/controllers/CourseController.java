@@ -25,6 +25,8 @@ public class CourseController {
             return courseService.getCourse(courseCode);
         } catch (CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course '" + courseCode + "' not found");
+        } catch(NotAllowedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient authorization");
         }
     }
 
