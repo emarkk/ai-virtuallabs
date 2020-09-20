@@ -14,13 +14,11 @@ export class StudentSearchFilters {
   course: string;
   excludeCourse: string;
   excludeIds: string;
-  teamed: boolean;
 
   constructor(filters: any) {
     this.course = filters.course;
     this.excludeCourse = filters.excludeCourse;
     this.excludeIds = filters.excludeIds;
-    this.teamed = filters.teamed;
   }
   toParams(params: HttpParams): HttpParams {
     return Object.getOwnPropertyNames(this).reduce((p, i) => this[i] !== undefined ? p.set(i, this[i]) : p, params);

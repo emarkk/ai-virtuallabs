@@ -39,12 +39,11 @@ public class StudentController {
     public List<StudentDTO> searchStudents(
             @RequestParam(name = "q") String q,
             @RequestParam(name = "course", required = false) String course,
-            @RequestParam(name = "teamed", required = false) Boolean teamed,
             @RequestParam(name = "excludeCourse", required = false) String excludeCourse,
             @RequestParam(name = "excludeIds", required = false) List<Long> excludeIds)
             throws CourseNotFoundException, CourseNotEnabledException {
         try {
-            return studentService.search(q, course, teamed, excludeCourse, excludeIds);
+            return studentService.search(q, course, excludeCourse, excludeIds);
         } catch (CourseNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course Not Found");
         } catch (CourseNotEnabledException e) {

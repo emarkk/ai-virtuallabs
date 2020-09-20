@@ -92,15 +92,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDTO> search(String q, String course, Boolean teamed, String excludeCourse, List<Long> excludeIds) {
+    public List<StudentDTO> search(String q, String course, String excludeCourse, List<Long> excludeIds) {
         // initially no filter
         Specification<Student> filters = Specification.where(null);
 
         if(course != null) {
             Course c = getter.course(course);
             filters = filters.and(StudentSpecifications.enrolledInCourse(c));
-            if(teamed != null)
-                filters = filters.and(StudentSpecifications.teamedForCourse(c, teamed));
         }
         if(excludeCourse != null)
             filters = filters.and(StudentSpecifications.notEnrolledInCourse(getter.course(excludeCourse)));

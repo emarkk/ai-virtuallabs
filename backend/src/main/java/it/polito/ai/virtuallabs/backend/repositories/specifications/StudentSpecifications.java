@@ -31,18 +31,4 @@ public class StudentSpecifications {
             return builder.not(id.in(ids));
         };
     }
-
-    public static Specification<Student> teamedForCourse(Course c, Boolean teamed) {
-        return (Specification<Student>) (student, query, builder) -> {
-            final Path<Team> team = student.join("teams", JoinType.LEFT).get("team");
-            Subquery<Team> subquery = query.subquery(Team.class);
-            subquery.select(subquery.from(Team.class));
-            subquery.where(builder.and(
-                    builder.equal(team.get("course"), c),
-                    builder.equal(team.get("formationStatus"), Team.FormationStatus.COMPLETE)
-            ));
-            Predicate predicate = builder.exists(subquery);
-            return teamed ? predicate : predicate.not();
-        };
-    }
 }
