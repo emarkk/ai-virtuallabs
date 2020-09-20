@@ -41,5 +41,5 @@
       <tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="selectable-table-row"></tr>
     </ng-container>
   </table>
-  <mat-paginator [length]="tableDataSource.size" [pageSize]="15" [pageSizeOptions]="[15, 30, 50, 100]" showFirstLastButtons></mat-paginator>
+  <mat-paginator [length]="tableDataSource.size" [pageSize]="15" [pageSizeOptions]="[3, 15, 30, 50, 100]" showFirstLastButtons></mat-paginator>
 </div>
