@@ -71,21 +71,33 @@ public class ScreenController implements ApplicationListener<SessionUnsubscribeE
 
     @Override
     public void onApplicationEvent(SessionUnsubscribeEvent event) {
+        ArrayList<String> data = new ArrayList<>();
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
-        String data = this.sessions.get(accessor.getSessionId() + "/" + accessor.getSubscriptionId());
-        Long vmId = Long.parseLong(data.split("/")[0]);
-        Long userId = Long.parseLong(data.split("/")[1]);
 
-        this.sessions.remove(accessor.getSessionId() + "/" + accessor.getSubscriptionId());
-        this.connectedProfessors.get(vmId).removeIf(p -> p.getId().equals(userId));
-        this.connectedStudents.get(vmId).removeIf(p -> p.getId().equals(userId));
+        if(accessor.getSubscriptionId() != null && accessor.getSubscriptionId().equals("$ALL$")) {
+            sessions.entrySet().stream()
+                    .filter(e -> e.getKey().startsWith(accessor.getSessionId() + "/"))
+                    .forEach(e -> data.add(e.getValue()));
+        } else {
+            String d = this.sessions.get(accessor.getSessionId() + "/" + accessor.getSubscriptionId());
+            if(d != null)
+                data.add(d);
+        }
+        for(String d : data) {
+            Long vmId = Long.parseLong(d.split("/")[0]);
+            Long userId = Long.parseLong(d.split("/")[1]);
 
-        messagingTemplate.convertAndSend("/vm/" + vmId + "/screen", new VmScreenSignal(
-                null,
-                null,
-                new ArrayList<>(this.connectedProfessors.get(vmId)),
-                new ArrayList<>(this.connectedStudents.get(vmId)))
-        );
+            this.sessions.remove(accessor.getSessionId() + "/" + accessor.getSubscriptionId());
+            this.connectedProfessors.get(vmId).removeIf(p -> p.getId().equals(userId));
+            this.connectedStudents.get(vmId).removeIf(p -> p.getId().equals(userId));
+
+            messagingTemplate.convertAndSend("/vm/" + vmId + "/screen", new VmScreenSignal(
+                    null,
+                    null,
+                    new ArrayList<>(this.connectedProfessors.get(vmId)),
+                    new ArrayList<>(this.connectedStudents.get(vmId)))
+            );
+        }
     }
 
 }

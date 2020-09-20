@@ -4,6 +4,8 @@ import it.polito.ai.virtuallabs.backend.entities.*;
 import it.polito.ai.virtuallabs.backend.services.*;
 import it.polito.ai.virtuallabs.backend.utils.GetterProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -12,9 +14,13 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
+
+import static org.springframework.messaging.support.MessageBuilder.createMessage;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -31,6 +37,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Autowired
     private VmService vmService;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -55,6 +64,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
                 if(StompCommand.SUBSCRIBE.equals(accessor.getCommand()) && !authorizeSubscription(accessor))
                     throw new NotAllowedException();
+
+                if(StompCommand.DISCONNECT.equals(accessor.getCommand())) {
+                    accessor.setSubscriptionId("$ALL$");
+                    eventPublisher.publishEvent(new SessionUnsubscribeEvent(this, (Message)MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders())));
+                }
 
                 return message;
             }
@@ -103,5 +117,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         return false;
     }
-
 }
