@@ -16,9 +16,6 @@
 .vm-student {
   border: 2px solid #ff6647;
 }
-.vm-screen {
-  cursor: none;
-}
 .offline {
   display: flex;
   flex-direction: column;
