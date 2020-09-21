@@ -1,31 +1,29 @@
-//////////////////////////////////////////
-// Applicazioni Internet a.a. 2019/2020 //
-// Progetto - Virtuallabs               //
-// Componenti del gruppo:				//
-// Emanuele	Marchetta	s257546			//
-// Antonio	Casto		s262622			//
-//////////////////////////////////////////
+# Applicazioni Internet a.a. 2019/2020
+# Progetto: VirtualLabs
+## Componenti del gruppo:
+- Emanuele	Marchetta	s257546
+- Antonio	Casto		s262622
 
-Prerequisiti per l'avvio del progetto:
-	- Pc o Mac con Docker Compose installato
+## Prerequisiti per l'avvio del progetto:
+- Pc o Mac con Docker Compose installato
 
-Istruzioni per l'avvio del progetto:
-	- Estrarre l'archivio compresso del progetto nella directory desiderata
+## Istruzioni per l'avvio del progetto:
+- Estrarre l'archivio compresso del progetto nella directory desiderata
 	
-	- Aprire il Terminale/Prompt/PowerShell e posizionarsi 
+- Aprire il Terminale/Prompt/PowerShell e posizionarsi 
 	  all'interno della directory di progetto "ai-virtuallabs"
 	  (dove sono presenti le directory "frontend" e "backend")
 	  
-	- Lanciare il comando "docker-compose up" per avviare
+- Lanciare il comando "docker-compose up" per avviare
 	  db, server ed applicazione client
 	  
-	- Aprire un browser internet e navigare all'indirizzo
+- Aprire un browser internet e navigare all'indirizzo
 	  "http://localhost:4200/"
 	  
-Istruzioni per l'uso della piattaforma:
-	- Password per tutti gli account pre-caricati: "password"
+## Istruzioni per l'uso della piattaforma:
+- Password per tutti gli account pre-caricati: "password"
 
-	- Si può effettuare l'accesso registrando un nuovo utente
+- Si può effettuare l'accesso registrando un nuovo utente
 	  oppure utilizzando gli account docente/studente elencati
 	  in calce a questo documento.
 	  Nel caso si scelga di creare un nuovo utente si faccia attenzione
@@ -40,13 +38,13 @@ Istruzioni per l'uso della piattaforma:
 	  email: "virtuallabs.notfier@gmail.com"
 	  password: "6lJ0jxaMGeid"
 	  
-Account docente di esempio:
-	- docenti:
-		- "fabio.capello@polito.it"
-		- "alessio.defranco@polito.it"
-		- "fabiana.canella@polito.it"
+## Account docente di esempio:
+- docenti:
+	- "fabio.capello@polito.it"
+	- "alessio.defranco@polito.it"
+	- "fabiana.canella@polito.it"
 		
-	- studenti:
-		- "s218506@studenti.polito.it"
-		- "s251129@studenti.polito.it"
-		- "s202123@studenti.polito.it"
+- studenti:
+	- "s218506@studenti.polito.it"
+	- "s251129@studenti.polito.it"
+	- "s202123@studenti.polito.it"
