@@ -10,6 +10,7 @@ import { SignUpSuccessComponent } from './auth/signup-success/signup-success.com
 import { ConfirmComponent } from './auth/confirm/confirm.component';
 import { ContainerComponent } from './container/container.component';
 import { HomeComponent } from './home/home.component';
+import { NotFoundComponent } from './notfound/notfound.component';
 
 const routes: Routes = [
   {
@@ -36,8 +37,16 @@ const routes: Routes = [
         path: '',
         component: HomeComponent
       },
+      {
+        path: 'notfound',
+        component: NotFoundComponent
+      },
       ...professorRouting,
-      ...studentRouting
+      ...studentRouting,
+      {
+        path: '**',
+        redirectTo: '/notfound'
+      }
     ]
   }
 ];
