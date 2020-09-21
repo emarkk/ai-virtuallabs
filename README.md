@@ -1,13 +1,13 @@
 # Applicazioni Internet a.a. 2019/2020
 # Progetto: VirtualLabs
-## Componenti del gruppo:
+## Componenti del gruppo
 - Emanuele	Marchetta	s257546
 - Antonio	Casto		s262622
 
-## Prerequisiti per l'avvio del progetto:
+## Prerequisiti per l'avvio del progetto
 - Pc o Mac con Docker Compose installato
 
-## Istruzioni per l'avvio del progetto:
+## Istruzioni per l'avvio del progetto
 - Estrarre l'archivio compresso del progetto nella directory desiderata
 	
 - Aprire il Terminale/Prompt/PowerShell e posizionarsi 
@@ -20,7 +20,7 @@
 - Aprire un browser internet e navigare all'indirizzo
 	  "http://localhost:4200/"
 	  
-## Istruzioni per l'uso della piattaforma:
+## Istruzioni per l'uso della piattaforma
 - Password per tutti gli account pre-caricati: "password"
 
 - Si può effettuare l'accesso registrando un nuovo utente
@@ -38,13 +38,13 @@
 	  email: "virtuallabs.notfier@gmail.com"
 	  password: "6lJ0jxaMGeid"
 	  
-## Account docente di esempio:
-- docenti:
+## Account docente di esempio
+- Docenti
 	- "fabio.capello@polito.it"
 	- "alessio.defranco@polito.it"
 	- "fabiana.canella@polito.it"
 		
-- studenti:
+- Studenti
 	- "s218506@studenti.polito.it"
 	- "s251129@studenti.polito.it"
 	- "s202123@studenti.polito.it"
