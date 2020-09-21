@@ -5,6 +5,8 @@ import it.polito.ai.virtuallabs.backend.dtos.StudentDTO;
 import it.polito.ai.virtuallabs.backend.dtos.TeamDTO;
 import it.polito.ai.virtuallabs.backend.entities.Course;
 import it.polito.ai.virtuallabs.backend.entities.Student;
+import it.polito.ai.virtuallabs.backend.entities.Team;
+import it.polito.ai.virtuallabs.backend.entities.TeamStudent;
 import it.polito.ai.virtuallabs.backend.repositories.StudentRepository;
 import it.polito.ai.virtuallabs.backend.repositories.specifications.StudentSpecifications;
 import it.polito.ai.virtuallabs.backend.security.AuthenticatedEntityMapper;
@@ -92,12 +94,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDTO> search(String q, String course, String excludeCourse, List<Long> excludeIds) {
+    public List<StudentDTO> search(String q, String course, Boolean teamed, String excludeCourse, List<Long> excludeIds) {
+        Course c = null;
         // initially no filter
         Specification<Student> filters = Specification.where(null);
 
         if(course != null) {
-            Course c = getter.course(course);
+            c = getter.course(course);
             filters = filters.and(StudentSpecifications.enrolledInCourse(c));
         }
         if(excludeCourse != null)
@@ -105,8 +108,13 @@ public class StudentServiceImpl implements StudentService {
         if(excludeIds != null)
             filters = filters.and(StudentSpecifications.excludeIds(excludeIds));
 
+        final Course finalC = c;
         return studentRepository.findAll(filters)
                 .stream()
+                // teamed filter
+                .filter(s -> course == null || teamed == null || teamed == s.getTeams().stream()
+                        .map(TeamStudent::getTeam)
+                        .anyMatch(t -> t.getCourse().equals(finalC) && t.getFormationStatus() == Team.FormationStatus.COMPLETE))
                 // compute match quality
                 .map(s -> new AbstractMap.SimpleEntry<>(s, UserSearchEngine.getSimilarity(q, "s" + s.getId(), s.getFirstName(), s.getLastName())))
                 // sort to have best matches first
