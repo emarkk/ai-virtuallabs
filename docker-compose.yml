@@ -3,6 +3,7 @@ services:
 
   mysql:
     image: "mariadb:10.4"
+    restart: always
     container_name: mariadb
     volumes:
       - container-volume:/var/lib/mysql
