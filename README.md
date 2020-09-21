@@ -18,7 +18,7 @@
 	  db, server ed applicazione client
 	  
 - Aprire un browser internet e navigare all'indirizzo
-	  "http://localhost:4200/"
+	  http://localhost:4200/
 	  
 ## Istruzioni per l'uso della piattaforma
 - Password per tutti gli account pre-caricati: "password"
@@ -35,16 +35,16 @@
 	  da cui vengono spedite. 
 	  Di seguito ne vengono indicate le credenziali:
 	  
-	  email: "virtuallabs.notfier@gmail.com"
-	  password: "6lJ0jxaMGeid"
+	  email: virtuallabs.notfier@gmail.com
+	  password: 6lJ0jxaMGeid
 	  
 ## Account docente di esempio
 - Docenti
-	- "fabio.capello@polito.it"
-	- "alessio.defranco@polito.it"
-	- "fabiana.canella@polito.it"
+	- fabio.capello@polito.it
+	- alessio.defranco@polito.it
+	- fabiana.canella@polito.it
 		
 - Studenti
-	- "s218506@studenti.polito.it"
-	- "s251129@studenti.polito.it"
-	- "s202123@studenti.polito.it"
+	- s218506@studenti.polito.it
+	- s251129@studenti.polito.it
+	- s202123@studenti.polito.it
