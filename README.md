@@ -11,17 +11,17 @@
 - Estrarre l'archivio compresso del progetto nella directory desiderata
 	
 - Aprire il Terminale/Prompt/PowerShell e posizionarsi 
-	  all'interno della directory di progetto "ai-virtuallabs"
-	  (dove sono presenti le directory "frontend" e "backend")
+	  all'interno della directory di progetto `ai-virtuallabs`
+	  (dove sono presenti le directory `frontend` e `backend`)
 	  
-- Lanciare il comando "docker-compose up" per avviare
+- Lanciare il comando `docker-compose up` per avviare
 	  db, server ed applicazione client
 	  
 - Aprire un browser internet e navigare all'indirizzo
 	  http://localhost:4200/
 	  
 ## Istruzioni per l'uso della piattaforma
-- Password per tutti gli account pre-caricati: "password"
+- Password per tutti gli account pre-caricati: `password`
 
 - Si può effettuare l'accesso registrando un nuovo utente
 	  oppure utilizzando gli account docente/studente elencati
