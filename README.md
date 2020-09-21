@@ -6,6 +6,7 @@
 
 ## Prerequisiti per l'avvio del progetto
 - Pc o Mac con Docker Compose installato
+- Docker Engine >= 19.03.08 e Docker Compose >= 1.25.4
 
 ## Istruzioni per l'avvio del progetto
 - Estrarre l'archivio compresso del progetto nella directory desiderata
