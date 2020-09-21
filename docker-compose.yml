@@ -23,7 +23,7 @@ services:
       - MYSQL_DATABASE=virtuallabs
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
-      - EMAIL_SENDER_PASS=ifrprdyqimbovpys
+      - EMAIL_SENDER_PASS=6lJ0jxaMGeid
       - EMAIL_SENDER_EMAIL=virtuallabs.notfier@gmail.com
     ports:
       - 3000:3000
