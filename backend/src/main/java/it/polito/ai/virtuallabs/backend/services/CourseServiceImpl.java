@@ -190,14 +190,14 @@ public class CourseServiceImpl implements CourseService {
     public VmModelDTO getVmModel(String courseCode) {
         VmModel vmModel = getter.course(courseCode).getVmModel();
 
+        if(vmModel == null)
+            return null;
+
         AuthenticatedEntity authenticated = authenticatedEntityMapper.get();
         if(authenticated instanceof Professor && !vmModel.getCourse().getProfessors().contains(authenticated))
             throw new NotAllowedException();
         if(authenticated instanceof Student && !vmModel.getCourse().getStudents().contains(authenticated))
             throw new NotAllowedException();
-
-        if(vmModel == null)
-            return null;
 
         return new VmModelDTO(vmModel.getId(), vmModel.getName(), null);
     }
