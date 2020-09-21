@@ -42,7 +42,7 @@ public class Team {
     private Course course;
 
     @Builder.Default
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<TeamStudent> members = new ArrayList<>();
 
     @Builder.Default

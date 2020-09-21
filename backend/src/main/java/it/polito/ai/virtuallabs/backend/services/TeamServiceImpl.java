@@ -258,16 +258,9 @@ public class TeamServiceImpl implements TeamService {
         });
 
         // delete teams with EXPIRED status whose expiration was more than 7 days ago
-        teams = teamRepository
-                .findAllByFormationStatusIsAndInvitationsExpirationIsBefore(
-                        Team.FormationStatus.EXPIRED, oneWeekAgo);
-        teams.forEach(t -> teamStudentRepository.deleteAll(t.getMembers()));
-        teamRepository.deleteAll(teams);
+        teamRepository.deleteAllByFormationStatusIsAndInvitationsExpirationIsBefore(Team.FormationStatus.EXPIRED, oneWeekAgo);
 
         // delete teams with ABORTED status whose lastAction was more than 7 days ago
-        teams = teamRepository.findAllByFormationStatusIsAndLastActionIsBefore(
-                Team.FormationStatus.ABORTED, oneWeekAgo);
-        teams.forEach(t -> teamStudentRepository.deleteAll(t.getMembers()));
-        teamRepository.deleteAll(teams);
+        teamRepository.deleteAllByFormationStatusIsAndLastActionIsBefore(Team.FormationStatus.ABORTED, oneWeekAgo);
     }
 }

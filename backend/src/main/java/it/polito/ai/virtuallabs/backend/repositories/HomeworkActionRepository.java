@@ -15,8 +15,6 @@ import java.util.Optional;
 
 @Repository
 public interface HomeworkActionRepository extends JpaRepository<HomeworkAction, Long> {
-    Optional<HomeworkAction> findByHomeworkAndStudent(Homework h, Student s);
-
     @Query("SELECT ha FROM HomeworkAction ha INNER JOIN ha.homework h INNER JOIN ha.student s WHERE h.id = :homeworkId AND ha.id IN (SELECT ha1.id FROM HomeworkAction ha1 INNER JOIN ha1.student s1 WHERE s1.id = s.id AND ha1.date = (SELECT MAX(ha2.date) FROM HomeworkAction ha2 INNER JOIN ha2.student s2 INNER JOIN ha2.homework h2 WHERE s2.id = s1.id AND h2.id = :homeworkId))")
     Page<HomeworkAction> findAllActions(Pageable pageable, @Param("homeworkId") Long homeworkId);
 
