@@ -48,7 +48,7 @@ public class TeamServiceImpl implements TeamService {
         Team team = getter.team(teamId);
         Student authenticated = (Student) authenticatedEntityMapper.get();
 
-        if(!team.getMembers().stream().filter(ts -> !ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.REJECTED)).map(TeamStudent::getStudent).collect(Collectors.toList()).contains(authenticated))
+        if(!team.getMembers().stream().map(TeamStudent::getStudent).collect(Collectors.toList()).contains(authenticated))
             throw new NotAllowedException();
 
         return team.getMembers()
