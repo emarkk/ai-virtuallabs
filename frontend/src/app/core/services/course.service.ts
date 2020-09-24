@@ -139,7 +139,7 @@ export class CourseService {
   // enroll students from CSV
   enrollFromCSV(code: string, csvFile: File): Observable<APIResult> {
     const formData: FormData = new FormData();
-    formData.append('csvFile', csvFile);
+    formData.append('csvFile', new File([csvFile.slice()], csvFile.name, { type: 'text/csv', lastModified: csvFile.lastModified }));
     return this.http.post(url(`courses/${code}/enroll/csv`), formData).pipe(
       map(res => APIResult.ok(res)),
       catchError(res => of(APIResult.error(res.error.message)))
