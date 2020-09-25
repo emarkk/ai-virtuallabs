@@ -65,7 +65,7 @@ export class StudentCourseTeamDetailComponent implements OnInit {
       }
 
       this.activeTeamInvitations = teams.filter(t => t.status == TeamStatus.PROVISIONAL && !this.isAccepted(t));
-      this.inactiveTeamInvitations = teams.filter(t => [TeamStatus.ABORTED, TeamStatus.EXPIRED].includes(t.status) && !this.isAccepted(t));
+      this.inactiveTeamInvitations = teams.filter(t => [TeamStatus.ABORTED, TeamStatus.EXPIRED].includes(t.status));
     });
   }
 
