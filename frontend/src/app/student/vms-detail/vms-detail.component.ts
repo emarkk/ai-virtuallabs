@@ -102,8 +102,10 @@ export class StudentVmsDetailComponent implements OnInit {
     combineLatest([this.route.queryParams, this.vms$]).subscribe(([queryParams, vms]) => {
       if(vms && queryParams.edit == 'vm-owners') {
         const vm = vms.find(vm => vm.id == queryParams.vm);
-        if(!vm || vm.online)
+        if(!vm || vm.online) {
           this.router.navigate([]);
+          return;
+        }
 
         this.vmAddOwnersDialogRef = this.dialog.open(VmAddOwnersDialog, {
           data: {
