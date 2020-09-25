@@ -68,8 +68,6 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
             return teamsVms;
           }
 
-          console.log(teamsVms);
-
           if(update.updateType == VmSignalUpdateType.CREATED) {
             teamsVms = teamsVms.some(tv => tv.team.id == update.teamId && tv.vm == null)
               ? teamsVms.map(tv => tv.team.id == update.teamId && tv.vm == null ? { team: tv.team, vm: update.vm } : tv)
