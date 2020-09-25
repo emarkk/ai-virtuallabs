@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { Observable, combineLatest, merge } from 'rxjs';
-import { scan } from 'rxjs/operators';
+import { Observable, combineLatest, merge, BehaviorSubject } from 'rxjs';
+import { scan, switchMap } from 'rxjs/operators';
 
 import { APIResult } from 'src/app/core/models/api-result.model';
 import { Course } from 'src/app/core/models/course.model';
@@ -33,6 +33,8 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
   
   teamsVms$: Observable<{ team: Team, vm: Vm }[]>;
   columnsToDisplay: string[] = ['team', 'vm', 'creator', 'online', '_connect'];
+  
+  courseVmsRefreshToken = new BehaviorSubject(undefined);
 
   vmUpdatesSignal: SignalObservable<VmSignal>;
   teamVmsResourcesUpdatesSignal: SignalObservable<TeamVmsResourcesSignal>;
@@ -56,17 +58,24 @@ export class ProfessorVmsComponent implements OnInit, OnDestroy {
     
     this.signalService.courseVmsUpdates(this.courseCode).subscribe(signal => {
       this.vmUpdatesSignal = signal;
-      this.teamsVms$ = merge(this.courseService.getTeamsAndVms(this.courseCode), this.vmUpdatesSignal.data()).pipe(
+      this.teamsVms$ = merge(this.courseVmsRefreshToken.pipe(switchMap(() => this.courseService.getTeamsAndVms(this.courseCode))), this.vmUpdatesSignal.data()).pipe(
         scan((teamsVms, update) => {
           if(!(update instanceof VmSignal))
             return update;
+
+          if(!teamsVms.some(tv => tv.team.id == update.teamId)) {
+            this.courseVmsRefreshToken.next(undefined);
+            return teamsVms;
+          }
+
+          console.log(teamsVms);
 
           if(update.updateType == VmSignalUpdateType.CREATED) {
             teamsVms = teamsVms.some(tv => tv.team.id == update.teamId && tv.vm == null)
               ? teamsVms.map(tv => tv.team.id == update.teamId && tv.vm == null ? { team: tv.team, vm: update.vm } : tv)
               : teamsVms.concat({ team: teamsVms.find(tv => tv.team.id == update.teamId).team, vm: update.vm }).sort((a, b) => a.team.id - b.team.id || a.vm.id - b.vm.id);
           } else if(update.updateType == VmSignalUpdateType.UPDATED)
-            teamsVms = teamsVms.map(tv => tv.vm.id == update.vm.id ? { team: tv.team, vm: update.vm } : tv);
+            teamsVms = teamsVms.map(tv => tv.vm && tv.vm.id == update.vm.id ? { team: tv.team, vm: update.vm } : tv);
           else if(update.updateType == VmSignalUpdateType.DELETED)
             teamsVms = teamsVms.filter(tv => tv.team.id == update.teamId).length > 1
               ? teamsVms.filter(tv => tv.vm.id != update.vm.id)
