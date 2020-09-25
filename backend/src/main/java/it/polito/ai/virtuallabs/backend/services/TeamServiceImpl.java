@@ -156,11 +156,12 @@ public class TeamServiceImpl implements TeamService {
         if(!team.isProvisional())
             throw new IllegalTeamInvitationReplyException();
 
+        // if student created/accepted another (still active) team for this course, fail
         if(authenticated.getTeams()
                 .stream()
-                .filter(ts -> ts.getInvitationStatus().equals(TeamStudent.InvitationStatus.ACCEPTED) && ts.getTeam().getCourse().equals(team.getCourse()))
+                .filter(ts -> ts.getInvitationStatus() == TeamStudent.InvitationStatus.CREATOR || ts.getInvitationStatus() == TeamStudent.InvitationStatus.ACCEPTED)
                 .map(TeamStudent::getTeam)
-                .anyMatch(t -> t.isActive())) {
+                .anyMatch(t -> t.getCourse().equals(team.getCourse()) && t.isActive())) {
             throw new IllegalTeamInvitationReplyException();
         }
 
@@ -175,7 +176,7 @@ public class TeamServiceImpl implements TeamService {
         ts.setInvitationStatus(TeamStudent.InvitationStatus.ACCEPTED);
         teamStudentRepository.save(ts);
 
-        //Se non ci sono inviti rejected o pending abilito il team
+        // if no more pending requests for the team, set it as COMPLETE
         if(team.getMembers().stream().noneMatch(m -> m.getInvitationStatus().equals(TeamStudent.InvitationStatus.PENDING))) {
             team.setFormationStatus(Team.FormationStatus.COMPLETE);
             team.setLastAction(new Timestamp(System.currentTimeMillis()));
