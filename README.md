@@ -1,51 +1,31 @@
-# Applicazioni Internet a.a. 2019/2020
-# Progetto: VirtualLabs
-## Componenti del gruppo
+# Applicazioni Internet a.y. 2019/2020
+# Project: VirtualLabs
+## Team Members
 - Emanuele	Marchetta	s257546
 - Antonio	Casto		s262622
 
-## Prerequisiti per l'avvio del progetto
-- Pc o Mac con Docker Compose installato
-- Docker Engine >= 19.03.08 e Docker Compose >= 1.25.4
+## Prerequisites
+- Pc or Mac with Docker installed
+- Docker Engine >= 19.03.08 and Docker Compose >= 1.25.4
 
-## Istruzioni per l'avvio del progetto
-- Estrarre l'archivio compresso del progetto nella directory desiderata
-	
-- Aprire il Terminale/Prompt/PowerShell e posizionarsi 
-	  all'interno della directory di progetto `ai-virtuallabs`
-	  (dove sono presenti le directory `frontend` e `backend`)
+## Quickstart
+- Run `docker-compose up` from inside the `ai-virtuallabs` folder
 	  
-- Lanciare il comando `docker-compose up` per avviare
-	  db, server ed applicazione client
-	  
-- Aprire un browser internet e navigare all'indirizzo
+- Open a browser and navigate to
 	  http://localhost:4200/
 	  
-## Istruzioni per l'uso della piattaforma
-- Password per tutti gli account pre-caricati: `password`
+## Usage Instructions
+- Password shared by all preset accounts: `password`
 
-- Si può effettuare l'accesso registrando un nuovo utente
-	  oppure utilizzando gli account docente/studente elencati
-	  in calce a questo documento.
-	  Nel caso si scelga di creare un nuovo utente si faccia attenzione
-	  a far coincidere matricola (es. s111111) ed email 
-	  (es. s111111@stuenti.polito.it).
-	  Successivamente si dovrà cliccare sul link di conferma ricevuto
-	  via email. Per evitare di inviare email ad indirizzi possibilmente
-	  esistenti si è scelto di farle arrivare allo stesso indirizzo
-	  da cui vengono spedite. 
-	  Di seguito ne vengono indicate le credenziali:
+- It is possible to register a new user or use a pre-existing one. For new users, make sure the matricola (e.g. s111111) is the same as the one specified in the email address (e.g. s111111@stuenti.polito.it). New accounts should be confirmed by clicking on the link received via email. To avoid sending unsolicited email, all messages are redirected to the same address they are sent from (`virtuallabs.notfier@gmail.com`). You can ask us for having your account confirmed or you can make the appropriate changes directly in the DB.
 	  
-	  email: virtuallabs.notfier@gmail.com
-	  password: 6lJ0jxaMGeid
-	  
-## Account docente di esempio
-- Docenti
+## Example accounts
+- Professors
 	- fabio.capello@polito.it
 	- alessio.defranco@polito.it
 	- fabiana.canella@polito.it
 		
-- Studenti
+- Students
 	- s218506@studenti.polito.it
 	- s251129@studenti.polito.it
 	- s202123@studenti.polito.it
